@@ -58,6 +58,43 @@ function DevisPage() {
 
   const cats = [...new Set(addons.map(a => a.cat))];
 
+  // Envoi de la demande de devis par e-mail (fonction Vercel /api/contact → contact@hivingfood.fr)
+  const [envoi, setEnvoi] = React.useState({ etat: 'idle', msg: '' }); // idle | envoi | ok | erreur
+  const [piege, setPiege] = React.useState('');
+  const CONTACT = 'contact@hivingfood.fr';
+  const envoyerDevis = () => {
+    if (envoi.etat === 'envoi') return;
+    const email = info.email.trim();
+    if (!info.name.trim() || !email) { setEnvoi({ etat: 'erreur', msg: 'Indiquez votre nom et votre e-mail (étape 4) pour recevoir le devis.' }); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { setEnvoi({ etat: 'erreur', msg: 'Adresse e-mail invalide.' }); return; }
+    const lignes = [
+      'Demande de devis depuis le configurateur (hivingstudio.fr/pages/devis.html)', '',
+      `Plateau : ${plateau.name}`,
+      `Durée : ${duration === 'half' ? '½ journée' : days + ' jour(s)'} · ${fmt(platTotal)} € HT`,
+      ...Object.entries(ax).filter(([_, q]) => q > 0).map(([id, q]) => {
+        const a = addons.find(x => x.id === id);
+        return a ? `Option : ${a.name} ×${q} · ${fmt(a.price * q)} € HT` : '';
+      }).filter(Boolean),
+      discount > 0 ? `Remise fidélité −10 % : −${fmt(discount)} € HT` : '',
+      `Total estimé : ${fmt(ht)} € HT (${fmt(ttc)} € TTC)`,
+    ].filter(l => l !== '');
+    setEnvoi({ etat: 'envoi', msg: 'Envoi en cours…' });
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: info.name, email, company: info.company,
+        subject: 'Demande de devis studio', source: 'devis', message: lignes.join('\n'), website: piege,
+      }),
+    })
+      .then(r => r.json().catch(() => ({})).then(d => ({ ok: r.ok, status: r.status, data: d })), () => ({ ok: false, status: 0, data: {} }))
+      .then(res => {
+        if (res.ok) setEnvoi({ etat: 'ok', msg: 'Merci, votre demande est bien partie. Nous vous envoyons le devis sous 4h ouvrées.' });
+        else if (res.status === 400 && res.data.error) setEnvoi({ etat: 'erreur', msg: res.data.error });
+        else setEnvoi({ etat: 'indispo', msg: `Envoi momentanément indisponible, écrivez-nous à ${CONTACT}.` });
+      });
+  };
+
   return (
     <window.PageShell active="tarifs">
       <window.Breadcrumb items={[{ label: 'Devis instantané' }]} />
@@ -155,13 +192,16 @@ function DevisPage() {
             <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.16em', color: P.inkSoft, marginBottom: 16, textTransform: 'uppercase' }}>4 · Contact (pour recevoir le devis)</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
               {[
-                { k: 'name', l: 'Nom' },
-                { k: 'email', l: 'Email' },
-                { k: 'company', l: 'Société' },
+                { k: 'name', l: 'Nom *', t: 'text', a: 'name' },
+                { k: 'email', l: 'Email *', t: 'email', a: 'email' },
+                { k: 'company', l: 'Société', t: 'text', a: 'organization' },
               ].map(f => (
-                <input key={f.k} placeholder={f.l} value={info[f.k]} onChange={e => setInfo({ ...info, [f.k]: e.target.value })}
+                <input key={f.k} type={f.t} autoComplete={f.a} aria-label={f.l} placeholder={f.l} value={info[f.k]} onChange={e => setInfo({ ...info, [f.k]: e.target.value })}
                   style={{ padding: '14px 16px', fontFamily: P.sans, fontSize: 15, border: `1px solid ${P.ink}25`, borderRadius: 12, background: P.bg }} />
               ))}
+            </div>
+            <div aria-hidden="true" style={{ position: 'absolute', left: -10000, width: 1, height: 1, overflow: 'hidden' }}>
+              <input type="text" name="website" tabIndex={-1} autoComplete="off" value={piege} onChange={e => setPiege(e.target.value)} />
             </div>
           </div>
         </div>
@@ -198,9 +238,14 @@ function DevisPage() {
             <span style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', opacity: 0.7 }}>Total TTC</span>
             <span style={{ fontFamily: P.display, fontSize: 36, fontWeight: 700, letterSpacing: '-0.02em', color: P.lime }}>{fmt(ttc)}&nbsp;€</span>
           </div>
-          <button style={{ marginTop: 20, width: '100%', padding: '16px 22px', background: P.lime, color: P.ink, border: `1.5px solid ${P.lime}`, borderRadius: 999, fontFamily: P.sans, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
-            Recevoir mon devis →
+          <button type="button" onClick={envoyerDevis} disabled={envoi.etat === 'envoi'} aria-disabled={envoi.etat === 'envoi'}
+            style={{ marginTop: 20, width: '100%', padding: '16px 22px', background: P.lime, color: P.ink, border: `1.5px solid ${P.lime}`, borderRadius: 999, fontFamily: P.sans, fontSize: 15, fontWeight: 700, cursor: envoi.etat === 'envoi' ? 'wait' : 'pointer', opacity: envoi.etat === 'envoi' ? 0.6 : 1 }}>
+            {envoi.etat === 'envoi' ? 'Envoi en cours…' : 'Recevoir mon devis →'}
           </button>
+          <p role="status" aria-live="polite" style={{ fontFamily: P.sans, fontSize: 14, lineHeight: 1.5, margin: envoi.msg ? '14px 0 0' : 0, color: P.bg, fontWeight: envoi.etat === 'erreur' || envoi.etat === 'indispo' ? 600 : 400 }}>
+            {envoi.msg}
+            {envoi.etat === 'indispo' && <> <a href={'mailto:' + CONTACT + '?subject=' + encodeURIComponent('Demande de devis studio')} style={{ color: P.lime }}>Écrire un e-mail</a></>}
+          </p>
           <p style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.1em', opacity: 0.5, marginTop: 14, textAlign: 'center' }}>
             Sans engagement · Réponse sous 4h ouvrées
           </p>
