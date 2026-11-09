@@ -123,7 +123,7 @@ function V3Page({ palette }) {
 
 // ─── MARQUEE TOP ───────────────────────────────────────────────────
 function V3Marquee({ P }) {
-  const items = ['STUDIOS FOOD À CLICHY', '⊹ OUVERT 7J/7 ⊹', '3 PLATEAUX', 'CUISINE PRO', '155M² · 4 RUE MOZART'];
+  const items = ['STUDIOS FOOD À CLICHY', '⊹ OUVERT 7J/7 ⊹', '2 PLATEAUX', 'CUISINE PRO', '155M² · 4 RUE MOZART'];
   return (
     <div style={{
       background: P.ink, color: P.bg, padding: '10px 0',
@@ -404,7 +404,7 @@ function V3Hero({ P }) {
           fontFamily: P.serif, fontSize: 21, lineHeight: 1.4, margin: 0, color: P.inkSoft,
           maxWidth: 460,
         }}>
-          Trois plateaux dédiés à la photo et au film culinaire, à 5 minutes de
+          Deux plateaux dédiés à la photo et au film culinaire, à 5 minutes de
           Paris. Pensés par et pour ceux qui font de la nourriture leur sujet.
         </p>
         <div style={{
@@ -599,11 +599,11 @@ function V3Studios({ P }) {
         lineHeight: 0.9, letterSpacing: '-0.045em', margin: '0 0 80px',
         fontWeight: 600, position: 'relative', display: 'inline-block',
       }}>
-        Trois plateaux —<br />
+        Deux plateaux —<br />
         <span style={{
           fontFamily: P.hand, color: P.accent, fontWeight: 700,
           fontSize: '0.85em', display: 'inline-block', transform: 'rotate(-2deg)',
-        }}>trois ambiances.</span>
+        }}>deux ambiances.</span>
       </h2>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 64, alignItems: 'start' }}>
@@ -1256,7 +1256,7 @@ function V3Booking({ P }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 64, alignItems: 'start' }}>
         <div>
           <div style={{ fontFamily: P.hand, fontSize: 26, color: P.inkSoft, marginBottom: 12, transform: 'rotate(-1deg)', display: 'inline-block', fontWeight: 600 }}>
-            01 — choisis ton plateau
+            01 — choisissez votre plateau
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 36 }}>
             {HIVING_STUDIOS.map((s, i) => (
