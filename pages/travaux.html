@@ -12,16 +12,16 @@
 <meta property="og:url" content="https://hivingstudio.fr/pages/travaux.html" />
 <meta property="og:image" content="https://hivingstudio.fr/img/ph/pro-1.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://unpkg.com" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@400;500;600;700&family=Familjen+Grotesk:wght@400;500;600;700&family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>body { margin: 0; background: #fafaf5; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } *, *::before, *::after { box-sizing: border-box; }</style>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script type="text/babel" src="../site-i18n.jsx"></script>
-<script type="text/babel" src="../site-data.jsx"></script>
-<script type="text/babel" src="../site-shared.jsx"></script>
+<script defer src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
+<script defer src="../js/site-i18n.min.js?v=89191c18ed"></script>
+<script defer src="../js/site-data.min.js?v=d492463904"></script>
+<script defer src="../js/site-shared.min.js?v=77e281b402"></script>
 </head>
 <body>
 <div id="root">
@@ -30,78 +30,6 @@
 <p>Sélection de campagnes shootées chez HIVING FOOD : Picard, Bonne Maman, Ladurée, Bordier, Maille. Photo, packshot, stop motion, spot TV.</p>
 </div>
 </div>
-<script type="text/babel">
-const P = window.HIVING_PALETTE;
-
-const WORKS = [
-  { id: 'picard', client: 'Picard', cat: 'Packshot · Print', year: 2025, count: '480 visuels', featured: true, href: 'case-picard.html' },
-  { id: 'bonne-maman', client: 'Bonne Maman', cat: 'Lifestyle · Social', year: 2025, count: '120 visuels' },
-  { id: 'laduree', client: 'Ladurée', cat: 'Éditorial · Catalogue', year: 2025, count: '95 visuels' },
-  { id: 'bordier', client: 'Bordier', cat: 'Stop motion · Social', year: 2024, count: '8 spots' },
-  { id: 'maille', client: 'Maille', cat: 'Spot TV · 30s', year: 2024, count: '1 film' },
-  { id: 'septime', client: 'Septime', cat: 'Éditorial chef', year: 2024, count: '40 visuels' },
-];
-
-function TravauxPage() {
-  const [feat, ...rest] = WORKS;
-  return (
-    <window.PageShell active="travaux">
-      <window.Breadcrumb items={[{ label: 'Travaux' }]} />
-
-      <section style={{ padding: '60px 40px 60px', maxWidth: 1400, margin: '0 auto' }}>
-        <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>¶ Travaux · Sélection</div>
-        <h1 style={{ fontFamily: P.display, fontSize: 'clamp(50px, 8vw, 130px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 0.92, margin: 0 }}>
-          Quelques-uns<br /><span style={{ fontFamily: P.hand, color: P.lime, transform: 'rotate(-2deg)', display: 'inline-block' }}>de nos shoots.</span>
-        </h1>
-      </section>
-
-      <section style={{ padding: '0 40px 40px', maxWidth: 1400, margin: '0 auto' }}>
-        <a href={feat.href} style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 0,
-          background: P.lime, color: P.ink, borderRadius: 28, overflow: 'hidden',
-          textDecoration: 'none', border: `1.5px solid ${P.ink}`, minHeight: 380,
-        }}>
-          <div style={{ padding: '48px 44px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.7, marginBottom: 16, textTransform: 'uppercase' }}>★ Case study · {feat.year}</div>
-              <h2 style={{ fontFamily: P.display, fontSize: 'clamp(48px, 6vw, 88px)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 0.95, margin: 0 }}>{feat.client}</h2>
-              <div style={{ fontFamily: P.serif, fontSize: 22, marginTop: 16, opacity: 0.8 }}>{feat.cat} · {feat.count}</div>
-            </div>
-            <div style={{ marginTop: 24, fontFamily: P.sans, fontSize: 14, fontWeight: 600 }}>Lire le case study →</div>
-          </div>
-          <div style={{ background: P.ink, color: P.bg, padding: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ fontFamily: P.display, fontSize: 240, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.85, color: P.lime }}>{feat.count.split(' ')[0]}</div>
-          </div>
-        </a>
-      </section>
-
-      <section style={{ padding: '20px 40px 80px', maxWidth: 1400, margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-          {rest.map((w, i) => (
-            <div key={w.id} style={{
-              background: i % 2 === 0 ? P.cream : P.paper,
-              padding: '28px 26px', borderRadius: 20,
-              border: `1px solid ${P.ink}10`, minHeight: 220,
-              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-            }}>
-              <div>
-                <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, textTransform: 'uppercase', marginBottom: 16 }}>{w.year} · {w.cat}</div>
-                <div style={{ fontFamily: P.display, fontSize: 36, fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1 }}>{w.client}</div>
-                <div style={{ fontFamily: P.serif, fontSize: 17, color: P.inkSoft, marginTop: 14 }}>{w.count}</div>
-              </div>
-              <div style={{ marginTop: 24, fontFamily: P.mono, fontSize: 11, letterSpacing: '0.12em', opacity: 0.5, textTransform: 'uppercase' }}>Bientôt en case study</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <window.BigCTA eyebrow="Le prochain ?" title="Le vôtre" hand="peut-être." ctaLabel="Devis instantané" ctaHref="devis.html" />
-    </window.PageShell>
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<TravauxPage />);
-</script>
+<script defer src="../js/pages/travaux.min.js?v=8c3f156995"></script>
 </body>
 </html>
