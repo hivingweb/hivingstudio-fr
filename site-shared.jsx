@@ -267,8 +267,10 @@
         color: dark ? PALETTE.bg : PALETTE.ink,
         minHeight: '100vh', fontFamily: PALETTE.sans,
       }}>
+        {/* lien d'évitement : invisible, apparaît au premier Tab (styles .skip-link dans la page) */}
+        <a className="skip-link" href="#contenu" style={{ background: PALETTE.ink, color: PALETTE.paper }}>Aller au contenu</a>
         <GlobalNav active={active} />
-        <main>{children}</main>
+        <main id="contenu" tabIndex={-1} style={{ outline: 'none' }}>{children}</main>
         <GlobalFooter />
       </div>
     );

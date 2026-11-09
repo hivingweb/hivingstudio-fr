@@ -8,6 +8,8 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://hivingstudio.fr/">
 <link rel="icon" href="favicon.svg?v=hf" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hiving Studio">
 <meta property="og:locale" content="fr_FR">
@@ -20,20 +22,98 @@
 {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
+  "@id": "https://hivingstudio.fr/#studio",
   "name": "Hiving Studio",
   "description": "2 plateaux food & photo à louer à Clichy : Studio Pro, Studio Famille. Réservation en ligne.",
   "url": "https://hivingstudio.fr/",
   "email": "contact@hivingfood.fr",
-  "image": "https://hivingstudio.fr/img/ph/pro-1.jpg",
+  "image": [
+    "https://hivingstudio.fr/img/ph/pro-1.jpg",
+    "https://hivingstudio.fr/img/ph/famille-1.jpg"
+  ],
+  "logo": "https://hivingstudio.fr/assets/logo-hiving-studio-black.png",
   "priceRange": "850 € HT - 1 000 € HT / jour",
-  "openingHours": "Mo-Su 08:00-22:00",
+  "currenciesAccepted": "EUR",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "4 rue Mozart",
     "postalCode": "92110",
     "addressLocality": "Clichy",
     "addressCountry": "FR"
-  }
+  },
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Clichy"
+    },
+    {
+      "@type": "City",
+      "name": "Paris"
+    }
+  ],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "08:00",
+      "closes": "22:00"
+    }
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "name": "Studio Pro · location à la journée",
+      "url": "https://hivingstudio.fr/#plateaux",
+      "price": "850",
+      "priceCurrency": "EUR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "850",
+        "priceCurrency": "EUR",
+        "unitCode": "DAY",
+        "unitText": "jour",
+        "valueAddedTaxIncluded": false
+      },
+      "availability": "https://schema.org/InStock",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Studio Pro",
+        "serviceType": "Location de plateau de tournage culinaire"
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Studio Famille · location à la journée",
+      "url": "https://hivingstudio.fr/#plateaux",
+      "price": "1000",
+      "priceCurrency": "EUR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "1000",
+        "priceCurrency": "EUR",
+        "unitCode": "DAY",
+        "unitText": "jour",
+        "valueAddedTaxIncluded": false
+      },
+      "availability": "https://schema.org/InStock",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Studio Famille",
+        "serviceType": "Location de plateau de tournage culinaire"
+      }
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/hivingfood/"
+  ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -405,9 +485,18 @@
     .pf-row:hover .pf-cta span, .pf-row:focus-within .pf-cta span{transform:none}
     .rthumbs img:hover{transform:none}
   }
+  /* ---------- ACCESSIBILITÉ : évitement, focus clavier, mouvements réduits ---------- */
+  .skip-link{position:absolute; left:12px; top:-80px; z-index:300; background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:var(--squig-b); font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-decoration:none}
+  .skip-link:focus{top:12px}
+  :focus-visible{outline:2px solid currentColor; outline-offset:3px}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important}
+    .strip__in,.hg-col{animation:none!important}
+  }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#top">Aller au contenu</a>
 
 <div class="strip"><div class="strip__in">
   <span>Hiving Studio · Clichy 92</span><b>●</b><span>2 plateaux food & photo</span><b>●</b><span>7j/7 · 8h à 22h</span><b>●</b><span>Métro 13 · RER C · Mairie de Clichy</span><b>●</b>
@@ -491,7 +580,7 @@
         <span class="tx">Lancer la visite <b>· 33 s</b></span>
       </button>
       <!-- mobile : la visite en carrousel — 1er clip en lecture auto, puis on swipe -->
-      <div class="mcar" aria-hidden="true">
+      <div class="mcar">
         <div class="mcar-track" id="mtrack">
           <div class="mpanel">
             <video class="mvid" data-src="video/pro.mp4?v=2" muted playsinline preload="none" poster="img/ph/pro-1-800.webp"></video>
@@ -504,7 +593,7 @@
         </div>
         <button class="mcar-nav prev" id="mprev" type="button" aria-label="Studio précédent">‹</button>
         <button class="mcar-nav next" id="mnext" type="button" aria-label="Studio suivant">›</button>
-        <div class="mcar-dots" id="mdots"><i class="on"></i><i></i></div>
+        <div class="mcar-dots" id="mdots" aria-hidden="true"><i class="on"></i><i></i></div>
         <button class="mcar-tap" id="mtap" type="button" aria-label="Lancer la visite"><span>▶</span></button>
       </div>
 
@@ -520,7 +609,7 @@
       <div class="cap" id="vcap"></div>
 
       <div class="scard" id="card-pro">
-        <h3>Studio <span class="it">Pro.</span></h3>
+        <h3 aria-level="2">Studio <span class="it">Pro.</span></h3>
         <div class="tag">la cuisine des chefs</div>
         <div class="specs">
           <div class="spec"><div class="v">80 m²</div><div class="k">surface</div></div>
@@ -532,7 +621,7 @@
         </div>
       </div>
       <div class="scard" id="card-fam">
-        <h3>Studio <span class="it">Famille.</span></h3>
+        <h3 aria-level="2">Studio <span class="it">Famille.</span></h3>
         <div class="tag">comme à la maison, en mieux éclairé</div>
         <div class="specs">
           <div class="spec"><div class="v">65 m²</div><div class="k">surface</div></div>
@@ -635,10 +724,10 @@
     <div class="wrap">
       <h2 data-r>Tout ce qu'il faut <span class="it">savoir.</span></h2>
       <div class="infos" data-r>
-        <div class="info"><h4>Adresse</h4><div class="big">Clichy, <span class="it">Grand Paris.</span></div><p>4 rue Mozart, 92110<br>à 8 min de Saint-Lazare</p></div>
-        <div class="info"><h4>Accès</h4><div class="big">Métro 13 <span class="it">&</span> 14</div><p>Mairie de Clichy · Saint-Ouen<br>RER C · Porte de Clichy</p></div>
-        <div class="info"><h4>Horaires</h4><div class="big">8h à 22h, <span class="it">7j/7.</span></div><p>Toute la semaine,<br>week-ends compris</p></div>
-        <div class="info"><h4>Inclus</h4><div class="big">Tout est <span class="it">prêt.</span></div><p>Mobilier, café & wifi, aide<br>au setup · éclairage en option</p></div>
+        <div class="info"><h4 aria-level="3">Adresse</h4><div class="big">Clichy, <span class="it">Grand Paris.</span></div><p>4 rue Mozart, 92110<br>à 8 min de Saint-Lazare</p></div>
+        <div class="info"><h4 aria-level="3">Accès</h4><div class="big">Métro 13 <span class="it">&</span> 14</div><p>Mairie de Clichy · Saint-Ouen<br>RER C · Porte de Clichy</p></div>
+        <div class="info"><h4 aria-level="3">Horaires</h4><div class="big">8h à 22h, <span class="it">7j/7.</span></div><p>Toute la semaine,<br>week-ends compris</p></div>
+        <div class="info"><h4 aria-level="3">Inclus</h4><div class="big">Tout est <span class="it">prêt.</span></div><p>Mobilier, café & wifi, aide<br>au setup · éclairage en option</p></div>
       </div>
       <div class="infos-hand" data-r><a href="mailto:contact@hivingfood.fr?subject=Équipe de production">+ une équipe de production <b>sur demande</b> ↗</a></div>
     </div>
