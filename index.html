@@ -121,7 +121,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#faf9f4; --cream:#f1ecdf; --ink:#111009; --ink-dim:rgba(17,16,9,.66); --ink-faint:rgba(17,16,9,.42);
+    --paper:#faf9f4; --cream:#f1ecdf; --ink:#111009; --ink-dim:rgba(17,16,9,.66); --ink-faint:rgba(17,16,9,.62);
     --lime:#d4e85a; --lime-deep:#b5d039; --line:rgba(17,16,9,.14);
     --display:'Familjen Grotesk',sans-serif; --serif:'Fraunces',serif; --mono:'Familjen Grotesk',sans-serif; --hand:'Caveat',cursive;
     --ease:cubic-bezier(.22,1,.36,1);
@@ -169,9 +169,9 @@
   .badge:nth-child(3){transform:rotate(-.5deg)}
   .hero-cta{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
   .hero-scroll{font-family:var(--hand); font-size:22px; color:var(--ink-dim); transform:rotate(-3deg); margin-top:20px}
-  .hero-scroll b{color:var(--lime-deep)}
+  .hero-scroll b{color:var(--ink); background:linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%)}
   .hand{font-family:var(--hand); font-size:22px; color:var(--ink-dim); transform:rotate(-3deg)}
-  .hand b{color:var(--lime-deep)}
+  .hand b{color:var(--ink); background:linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%)}
 
   /* galerie : petites photos qui glissent doucement (2 colonnes, sens opposés) */
   .hero-gallery{position:relative; height:min(560px,74vh); display:flex; gap:14px; overflow:hidden;
@@ -221,7 +221,7 @@
   .scard .num{display:inline-block; font-family:var(--mono); font-size:10px; background:var(--ink); color:var(--lime); border-radius:999px; padding:5px 11px; letter-spacing:.12em; margin-bottom:10px}
   .scard h3{font-size:25px; font-weight:700; letter-spacing:-.03em; line-height:1}
   .scard h3 .it{font-family:var(--serif); font-style:italic; font-weight:400}
-  .scard .tag{font-family:var(--hand); font-size:20px; color:var(--lime-deep); margin:3px 0 10px}
+  .scard .tag{font-family:var(--hand); font-size:20px; color:var(--ink); background:linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%); margin:3px 0 10px; align-self:flex-start; display:inline-block}
   .scard .specs{display:flex; gap:18px; margin-bottom:11px}
   .scard .spec .v{font-weight:700; font-size:15px}
   .scard .spec .k{font-family:var(--mono); font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px}
@@ -246,7 +246,7 @@
   section{padding:clamp(60px,9vh,110px) clamp(20px,4vw,54px)}
   .wrap{max-width:1400px; margin:0 auto}
   .sec-kick{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:14px}
-  .sec-kick b{color:var(--lime-deep); font-weight:500}
+  .sec-kick b{color:var(--ink); background:linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%); font-weight:500}
   h2{font-size:clamp(32px,4.4vw,58px); letter-spacing:-.03em; line-height:1.02; font-weight:700; margin-bottom:18px}
   h2 .it{font-family:var(--serif); font-style:italic; font-weight:400}
   h2 .hl{background:linear-gradient(transparent 60%, var(--lime) 60%, var(--lime) 94%, transparent 94%)}
@@ -266,7 +266,7 @@
   .duo .box.dark li{color:rgba(250,249,244,.75)}
   .duo .box li::before{content:'→'; position:absolute; left:0; color:var(--lime-deep)}
   .duo .box.dark li::before{color:var(--lime)}
-  .duo .hand2{position:absolute; top:20px; right:26px; font-family:var(--hand); font-size:22px; transform:rotate(4deg); color:var(--lime-deep)}
+  .duo .hand2{position:absolute; top:20px; right:26px; font-family:var(--hand); font-size:22px; transform:rotate(4deg); color:var(--ink); background:linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%)}
 
   /* ---------- LES PLATEAUX : plein cadre alterné ---------- */
 
@@ -305,7 +305,7 @@
   /* le surligneur lime qui se dessine, le même geste que le h1 du hero */
   .pf-title .hl{background:linear-gradient(var(--lime),var(--lime)) no-repeat 0 78%; background-size:0% 28%;
     transition:background-size .6s var(--ease)}
-  .pf-tag{font-family:var(--hand); font-size:clamp(20px,1.8vw,23px); color:var(--lime-deep);
+  .pf-tag{font-family:var(--hand); font-size:clamp(20px,1.8vw,23px); color:var(--ink); background:linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%);
     transform:rotate(-1.4deg); margin-top:-8px}
   .pf-desc{font-size:15.5px; line-height:1.7; color:var(--ink-dim); max-width:48ch}
   .pf-specs{display:flex; flex-wrap:wrap; margin-top:4px}
@@ -334,7 +334,7 @@
   .pf-split i{flex:1; height:1px; background:repeating-linear-gradient(to right, var(--line) 0 5px, transparent 5px 11px)}
   .pf-split-in{display:flex; flex-direction:column; align-items:center; gap:2px; text-align:center}
   .pf-split b{font-family:var(--serif); font-style:italic; font-weight:400; line-height:1;
-    font-size:clamp(26px,3vw,40px); color:var(--lime-deep); transform:rotate(-7deg)}
+    font-size:clamp(26px,3vw,40px); color:var(--ink); background:linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%); transform:rotate(-7deg)}
   .pf-split p{font-family:var(--hand); font-size:clamp(17px,1.7vw,21px); line-height:1.15;
     color:var(--ink-faint); transform:rotate(-1.6deg)}
 
@@ -370,8 +370,8 @@
   .info p{font-size:14px; line-height:1.6; color:var(--ink-dim)}
   .infos-hand{display:flex; justify-content:flex-end; margin-top:16px}
   .infos-hand a{font-family:var(--hand); font-size:25px; color:var(--ink-dim); transform:rotate(-2deg); text-decoration:none; display:inline-block}
-  .infos-hand a b{color:var(--lime-deep); font-weight:600}
-  .infos-hand a:hover b{border-bottom:2px solid var(--lime-deep)}
+  .infos-hand a b{color:var(--ink); background:linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%); font-weight:600}
+  .infos-hand a:hover b{border-bottom:2px solid var(--ink)}
   .faq{max-width:820px}
   details{border-top:1px solid var(--line); padding:20px 4px}
   details:last-child{border-bottom:1px solid var(--line)}
@@ -386,9 +386,9 @@
   .final p{color:rgba(250,249,244,.66); margin:14px auto 34px; max-width:52ch; font-size:16px; line-height:1.6}
   .final .hand{position:absolute; top:26px; right:36px; color:var(--lime); transform:rotate(5deg)}
   footer{padding:44px clamp(20px,4vw,54px); display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; border-top:1px solid var(--line); font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); background:var(--paper)}
-  .maison{display:flex; gap:20px}
+  .maison{display:flex; gap:10px 20px; flex-wrap:wrap}
   .maison a{text-decoration:none; color:var(--ink-dim); transition:color .25s}
-  .maison a:hover{color:var(--lime-deep)}
+  .maison a:hover{color:var(--ink); text-decoration:underline; text-decoration-color:var(--lime-deep); text-underline-offset:3px}
 
   /* visite mobile : carrousel masqué sur desktop (desktop = scrub vidéo) */
   .v-play{display:none}
@@ -739,10 +739,11 @@
       <div class="faq" data-r>
         <details><summary>Peut-on louer à la demi-journée ou à l'heure ?</summary><p>Oui : la demi-journée se réserve directement en ligne. Pour un créneau plus court, écrivez-nous avec vos horaires et on vous propose la formule la plus avantageuse.</p></details>
         <details><summary>Le devis en ligne m'engage-t-il ?</summary><p>Non. Le devis est indicatif et instantané ; le créneau n'est bloqué qu'après notre confirmation écrite, sous 24h ouvrées.</p></details>
-        <details><summary>Le matériel de tournage est-il fourni ?</summary><p>Le mobilier, le café, le wifi et l'aide à l'installation sont inclus. L'éclairage se prend en <b>package</b> (à partir de 150 €). Caméras, optiques, stabilisateurs et équipe technique (cadreur, chef op) sont disponibles en option, chiffrés avec vous.</p></details>
+        <details><summary>Le matériel de tournage est-il fourni ?</summary><p>Le mobilier, le café, le wifi et l'aide à l'installation sont inclus. L'éclairage se prend en <b>package</b> (à partir de 150 € HT). Caméras, optiques, stabilisateurs et équipe technique (cadreur, chef op) sont disponibles en option, chiffrés avec vous.</p></details>
         <details><summary>Peut-on cuisiner réellement sur place ?</summary><p>Oui : les deux cuisines sont fonctionnelles (four pro, plaques, frigo). Vous pouvez cuisiner, dresser et shooter dans la foulée.</p></details>
         <details><summary>Faut-il passer par l'agence Hiving ?</summary><p>Non. Les plateaux sont ouverts à toutes les marques, agences et créateurs indépendants. Et si vous cherchez talents ou production, la maison Hiving est dans le même immeuble, ou juste au-dessus.</p></details>
       </div>
+      <p class="infos-hand" style="justify-content:flex-start"><a href="pages/faq.html">toutes les <b>questions</b> →</a></p>
     </div>
   </section>
 
@@ -762,6 +763,12 @@
 
   <footer>
     <span>© 2026 Hiving Studio · Clichy</span>
+    <nav class="maison" aria-label="Pages du studio">
+      <a href="pages/location-studio-cuisine-paris.html">Location studio cuisine Paris</a>
+      <a href="pages/studio-tournage-recette.html">Tournage recette</a>
+      <a href="pages/studio-cuisine-createurs.html">Créateurs</a>
+      <a href="pages/faq.html">FAQ complète</a>
+    </nav>
     <div class="maison">
       <a href="https://hiving.me">Hiving · talents</a>
       <a href="https://www.hivingfood.fr">Hiving Food · agence</a>

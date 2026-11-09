@@ -35,8 +35,8 @@ const BODIES = {
 };
 
 const META = {
-  'article-photo-food': { eyebrow: 'Pratique', title: '7 erreurs à éviter en photo culinaire', author: 'Léa Marchand · Cheffe styliste', date: '22 avril 2026', read: 6, hand: 'à éviter.' },
-  'article-styliste': { eyebrow: 'Méthode', title: 'Comment bien briefer un styliste culinaire', author: 'Camille Dorsay · Directrice studio', date: '8 avril 2026', read: 5, hand: 'au styliste.' },
+  'article-photo-food': { eyebrow: 'Pratique', title: '7 erreurs à éviter en photo culinaire', author: 'Studio Hiving', date: '22 avril 2026', read: 6, hand: 'à éviter.' },
+  'article-styliste': { eyebrow: 'Méthode', title: 'Comment bien briefer un styliste culinaire', author: 'Studio Hiving', date: '8 avril 2026', read: 5, hand: 'au styliste.' },
   'article-tendances-2026': { eyebrow: 'Tendances', title: 'Tendances food photography 2026', author: 'Studio Hiving', date: '30 mars 2026', read: 8, hand: 'cette année.' },
 };
 
@@ -52,7 +52,7 @@ function ArticlePage() {
       "@type": "Article",
       "headline": m.title,
       "datePublished": m.date,
-      "author": { "@type": "Person", "name": m.author.split(' · ')[0] },
+      "author": { "@type": "Organization", "name": m.author },
       "publisher": { "@type": "Organization", "name": "HIVING FOOD", "url": "https://hivingstudio.fr" }
     });
   }, [slug]);
@@ -66,7 +66,7 @@ function ArticlePage() {
           ¶ {m.eyebrow} · {m.read} min de lecture
         </div>
         <h1 style={{ fontFamily: P.display, fontSize: 'clamp(40px, 6vw, 84px)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 0.98, margin: 0 }}>
-          {m.title.split(' ').slice(0, -1).join(' ')} <span style={{ fontFamily: P.hand, color: P.lime, transform: 'rotate(-2deg)', display: 'inline-block' }}>{m.hand}</span>
+          {m.title.split(' ').slice(0, -1).join(' ')} <span style={{ ...window.HIVING_HAND_ON_LIGHT, transform: 'rotate(-2deg)', display: 'inline-block' }}>{m.hand}</span>
         </h1>
         <div style={{ marginTop: 32, paddingBottom: 24, borderBottom: `1px solid ${P.ink}15`, fontFamily: P.mono, fontSize: 11, letterSpacing: '0.14em', color: P.inkSoft, textTransform: 'uppercase', display: 'flex', gap: 16, flexWrap: 'wrap' }}>
           <span>Publié le {m.date}</span>

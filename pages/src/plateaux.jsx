@@ -18,7 +18,7 @@ function PlateauxHub() {
           fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.9, margin: 0,
         }}>
           Deux plateaux,<br />
-          <span style={{ fontFamily: P.hand, color: P.lime, transform: 'rotate(-2deg)', display: 'inline-block', marginLeft: '-0.05em' }}>un toit.</span>
+          <span style={{ ...window.HIVING_HAND_ON_LIGHT, transform: 'rotate(-2deg)', display: 'inline-block', marginLeft: '-0.05em' }}>un toit.</span>
         </h1>
         <p style={{ fontFamily: P.serif, fontSize: 22, lineHeight: 1.5, color: P.inkSoft, marginTop: 24, maxWidth: 720 }}>
           Deux plateaux, deux ambiances, le même immeuble à Clichy. Vous réservez votre journée en ligne, tout est déjà installé quand vous arrivez.

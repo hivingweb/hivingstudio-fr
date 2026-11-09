@@ -10,6 +10,7 @@ function detectSlug() {
 }
 
 function ServiceDetail() {
+  const narrow = window.useHivingNarrow(900);
   const slug = detectSlug();
   const services = window.HIVING_SERVICES;
   const service = services.find(s => s.slug === slug) || services[0];
@@ -51,8 +52,8 @@ function ServiceDetail() {
       ]} />
 
       {/* Hero */}
-      <section style={{ padding: '60px 40px 80px', maxWidth: 1400, margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 80, alignItems: 'flex-end' }}>
+      <section style={{ padding: narrow ? '40px 20px 60px' : '60px 40px 80px', maxWidth: 1400, margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: narrow ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 380px', gap: narrow ? 40 : 80, alignItems: 'flex-end' }}>
           <div>
             <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>
               ¶ {service.eyebrow}
@@ -75,7 +76,7 @@ function ServiceDetail() {
           </div>
           <div style={{
             background: P.lime, padding: 32, borderRadius: 24,
-            border: `1.5px solid ${P.ink}`, position: 'sticky', top: 120,
+            border: `1.5px solid ${P.ink}`, position: narrow ? 'static' : 'sticky', top: 120,
           }}>
             <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', color: P.ink, opacity: 0.7, textTransform: 'uppercase', marginBottom: 8 }}>
               À partir de
@@ -95,13 +96,13 @@ function ServiceDetail() {
             }}>
               Devis instantané →
             </a>
-            <a href="../index.html#reserver" style={{
+            <a href="../pro/" style={{
               display: 'block', background: 'transparent', color: P.ink,
               padding: '14px 22px', borderRadius: 999, textAlign: 'center',
               fontFamily: P.sans, fontSize: 14, fontWeight: 500, textDecoration: 'none',
               border: `1.5px solid ${P.ink}`,
             }}>
-              Réserver une visite
+              Réserver un plateau
             </a>
           </div>
         </div>
@@ -111,14 +112,14 @@ function ServiceDetail() {
       <section style={{ background: P.ink, color: P.bg, padding: '100px 40px' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', opacity: 0.5, marginBottom: 24, textTransform: 'uppercase' }}>
-            ¶ Ce qui est inclus
+            ¶ Sur place
           </div>
           <h2 style={{
             fontFamily: P.display, fontSize: 'clamp(40px, 5.5vw, 76px)',
             fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 0.96, margin: 0,
           }}>
-            Tout l'équipement,<br />
-            <span style={{ fontFamily: P.hand, color: P.lime }}>toute l'équipe.</span>
+            Une cuisine équipée,<br />
+            <span style={{ fontFamily: P.hand, color: P.lime }}>prête à tourner.</span>
           </h2>
           <div style={{
             marginTop: 64, display: 'grid',
@@ -151,7 +152,7 @@ function ServiceDetail() {
             fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1, margin: '0 0 48px',
           }}>
             Vos questions,<br />
-            <span style={{ fontFamily: P.hand, color: P.lime }}>nos réponses.</span>
+            <span style={{ ...window.HIVING_HAND_ON_LIGHT }}>nos réponses.</span>
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {service.faq.map((f, i) => (
@@ -165,7 +166,7 @@ function ServiceDetail() {
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 }}>
                   <span>{f.q}</span>
-                  <span style={{ fontSize: 28, color: P.lime, marginLeft: 16 }}>+</span>
+                  <span aria-hidden="true" style={{ fontSize: 28, color: P.ink, marginLeft: 16 }}>+</span>
                 </summary>
                 <p style={{ fontFamily: P.serif, fontSize: 18, lineHeight: 1.6, color: P.inkSoft, marginTop: 16, marginBottom: 0 }}>
                   {f.a}

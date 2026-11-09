@@ -4,6 +4,7 @@ const P = window.HIVING_PALETTE;
 const fmt = (n) => Math.round(n).toLocaleString('fr-FR');
 
 function DevisPage() {
+  const narrow = window.useHivingNarrow(900);
   const plateaux = window.HIVING_PLATEAUX;
   const addons = window.HIVING_ADDONS_FULL.filter(a => a.price > 0);
   const [pIdx, setPIdx] = React.useState(0);
@@ -71,11 +72,11 @@ function DevisPage() {
       <section style={{ padding: '60px 40px 40px', maxWidth: 1400, margin: '0 auto' }}>
         <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>¶ Configurateur · 2 minutes</div>
         <h1 style={{ fontFamily: P.display, fontSize: 'clamp(50px, 8vw, 120px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 0.92, margin: 0 }}>
-          Votre devis,<br /><span style={{ fontFamily: P.hand, color: P.lime, transform: 'rotate(-2deg)', display: 'inline-block' }}>en direct.</span>
+          Votre devis,<br /><span style={{ ...window.HIVING_HAND_ON_LIGHT, transform: 'rotate(-2deg)', display: 'inline-block' }}>en direct.</span>
         </h1>
       </section>
 
-      <section style={{ padding: '20px 40px 120px', maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: 32 }}>
+      <section style={{ padding: narrow ? '20px 16px 80px' : '20px 40px 120px', maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: narrow ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 380px', gap: 32 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* Plateau */}
           <div style={{ background: P.paper, padding: 28, borderRadius: 20, border: `1px solid ${P.ink}10` }}>
@@ -140,7 +141,7 @@ function DevisPage() {
                         <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: 12, background: q > 0 ? P.cream : 'transparent', border: `1px solid ${q > 0 ? P.ink : 'transparent'}` }}>
                           <div style={{ minWidth: 0, flex: 1 }}>
                             <div style={{ fontFamily: P.serif, fontSize: 17, fontWeight: 600 }}>{a.name}</div>
-                            <div style={{ fontFamily: P.sans, fontSize: 12, color: P.inkSoft }}>{a.desc} · {a.price}&nbsp;€/{a.unit}</div>
+                            <div style={{ fontFamily: P.sans, fontSize: 12, color: P.inkSoft }}>{a.desc} · {a.price}&nbsp;€ HT/{a.unit}</div>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <button onClick={() => setAx({ ...ax, [a.id]: Math.max(0, q - 1) })} style={{ width: 28, height: 28, borderRadius: '50%', border: `1px solid ${P.ink}30`, background: 'transparent', cursor: 'pointer' }}>−</button>
@@ -176,26 +177,26 @@ function DevisPage() {
         </div>
 
         {/* Sticky summary */}
-        <aside style={{ position: 'sticky', top: 100, alignSelf: 'start', background: P.ink, color: P.bg, padding: 28, borderRadius: 24 }}>
+        <aside style={{ position: narrow ? 'static' : 'sticky', top: 100, alignSelf: 'start', background: P.ink, color: P.bg, padding: 28, borderRadius: 24 }}>
           <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.5, marginBottom: 16, textTransform: 'uppercase' }}>Récapitulatif</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 16, borderBottom: `1px solid ${P.bg}25`, fontFamily: P.serif, fontSize: 15 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ opacity: 0.7 }}>{plateau.name} · {duration === 'half' ? '½ jour' : `${days} j`}</span>
-              <span>{fmt(platTotal)}&nbsp;€</span>
+              <span>{fmt(platTotal)}&nbsp;€ HT</span>
             </div>
             {Object.entries(ax).filter(([_, q]) => q > 0).map(([id, q]) => {
               const a = addons.find(x => x.id === id);
               return (
                 <div key={id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, opacity: 0.85 }}>
                   <span>{a.name} ×{q}</span>
-                  <span>{fmt(a.price * q)}&nbsp;€</span>
+                  <span>{fmt(a.price * q)}&nbsp;€ HT</span>
                 </div>
               );
             })}
             {discount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', color: P.lime }}>
                 <span>Fidélité −10 %</span>
-                <span>−{fmt(discount)}&nbsp;€</span>
+                <span>−{fmt(discount)}&nbsp;€ HT</span>
               </div>
             )}
           </div>

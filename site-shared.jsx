@@ -21,6 +21,28 @@
   };
   window.HIVING_PALETTE = PALETTE;
 
+  // Écriture manuscrite (Caveat) posée sur un fond clair : le lime seul n'atteint pas
+  // le contraste AA (1,2:1 sur la crème). Texte encre + surligneur lime, mêmes variables.
+  window.HIVING_HAND_ON_LIGHT = {
+    fontFamily: PALETTE.hand, color: PALETTE.ink,
+    backgroundImage: `linear-gradient(transparent 58%, ${PALETTE.lime} 58%, ${PALETTE.lime} 92%, transparent 92%)`,
+  };
+
+  // Largeur d'écran étroite (mobile) : les styles en ligne ne connaissent pas les media queries.
+  function useNarrow(max = 760) {
+    const q = '(max-width: ' + max + 'px)';
+    const [narrow, setNarrow] = React.useState(() => window.matchMedia(q).matches);
+    React.useEffect(() => {
+      const m = window.matchMedia(q);
+      const h = () => setNarrow(m.matches);
+      if (m.addEventListener) m.addEventListener('change', h); else m.addListener(h);
+      h();
+      return () => { if (m.removeEventListener) m.removeEventListener('change', h); else m.removeListener(h); };
+    }, [q]);
+    return narrow;
+  }
+  window.useHivingNarrow = useNarrow;
+
   // Si pages relatives, base = "" sur la home, "../" depuis /pages/*
   function basePath() {
     const p = window.location.pathname;
@@ -94,11 +116,10 @@
       { id: 'plateaux', label: t('nav.plateaux'), href: base + 'pages/plateaux.html' },
       { id: 'services', label: t('nav.services'), href: base + 'pages/services.html' },
       { id: 'tarifs', label: t('nav.tarifs'), href: base + 'pages/tarifs.html' },
-      { id: 'travaux', label: t('nav.travaux'), href: base + 'pages/travaux.html' },
+      { id: 'faq', label: t('nav.faq'), href: base + 'pages/faq.html' },
       { id: 'carnet', label: t('nav.carnet'), href: base + 'pages/carnet.html' },
-      { id: 'equipe', label: t('nav.equipe'), href: base + 'pages/equipe.html' },
-      { id: 'presse', label: t('nav.presse'), href: base + 'pages/presse.html' },
     ];
+    const narrow = useNarrow();
 
     return (
       <nav style={{
@@ -106,23 +127,31 @@
         background: scrolled ? `${PALETTE.bg}f5` : PALETTE.bg,
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
         borderBottom: scrolled ? `1px solid ${PALETTE.ink}10` : '1px solid transparent',
-        padding: scrolled ? '12px 32px' : '20px 32px',
-        display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 32,
+        padding: narrow ? '10px 16px' : (scrolled ? '12px 32px' : '20px 32px'),
+        display: 'grid', gridTemplateColumns: narrow ? 'auto 1fr' : 'auto 1fr auto', alignItems: 'center',
+        gap: narrow ? '8px 12px' : 32,
         transition: 'padding 0.3s, background 0.3s',
       }}>
-        <HivingLogo size={scrolled ? 48 : 64} />
+        <HivingLogo size={narrow ? 40 : (scrolled ? 48 : 64)} />
 
         <div style={{
-          display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'center',
-          fontFamily: PALETTE.sans, fontSize: 14, fontWeight: 500, flexWrap: 'wrap',
+          display: 'flex', gap: 2, alignItems: 'center',
+          justifyContent: narrow ? 'flex-start' : 'center',
+          fontFamily: PALETTE.sans, fontSize: narrow ? 13 : 14, fontWeight: 500,
+          flexWrap: narrow ? 'nowrap' : 'wrap',
+          // mobile : menu sur sa propre ligne, défilable horizontalement, sans élargir la page
+          gridColumn: narrow ? '1 / -1' : 'auto', gridRow: narrow ? 2 : 'auto',
+          overflowX: narrow ? 'auto' : 'visible', minWidth: 0,
+          margin: narrow ? '0 -16px' : 0, padding: narrow ? '0 10px' : 0,
         }}>
           {items.map((it) => (
             <a key={it.id} href={it.href} data-cursor=""
+              aria-current={active === it.id ? 'page' : undefined}
               style={{
                 color: active === it.id ? PALETTE.ink : PALETTE.inkSoft,
                 fontWeight: active === it.id ? 600 : 500,
                 textDecoration: 'none', cursor: 'pointer',
-                padding: '8px 12px', borderRadius: 999,
+                padding: narrow ? '6px 10px' : '8px 12px', borderRadius: 999,
                 background: active === it.id ? PALETTE.cream : 'transparent',
                 whiteSpace: 'nowrap',
               }}>
@@ -131,17 +160,17 @@
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: narrow ? 8 : 12, alignItems: 'center', justifySelf: 'end', minWidth: 0 }}>
           <LangSwitcher />
           <a href={base + 'pages/devis.html'} data-cursor=""
             style={{
-              background: PALETTE.lime, color: PALETTE.ink, padding: '10px 18px',
+              background: PALETTE.lime, color: PALETTE.ink, padding: narrow ? '8px 12px' : '10px 18px',
               borderRadius: 999, textDecoration: 'none', fontFamily: PALETTE.sans,
-              fontSize: 13, fontWeight: 600, letterSpacing: '0.02em',
-              display: 'inline-flex', alignItems: 'center', gap: 6,
+              fontSize: narrow ? 12 : 13, fontWeight: 600, letterSpacing: '0.02em',
+              display: 'inline-flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
               border: `1px solid ${PALETTE.ink}`,
             }}>
-            {t('cta.devis')} <span>→</span>
+            {t('cta.devis')} <span aria-hidden="true">→</span>
           </a>
         </div>
       </nav>
@@ -189,6 +218,7 @@
               <li><a href={base + 'pages/services.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>{t('nav.services')}</a></li>
               <li><a href={base + 'pages/tarifs.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>{t('nav.tarifs')}</a></li>
               <li><a href={base + 'pages/devis.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>{t('nav.devis')}</a></li>
+              <li><a href={base + 'pages/faq.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>{t('nav.faq')}</a></li>
               <li><a href={base + 'pages/carnet.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>{t('nav.carnet')}</a></li>
             </ul>
           </div>
@@ -196,10 +226,9 @@
           <div>
             <div style={{ fontFamily: PALETTE.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.5, marginBottom: 16, textTransform: 'uppercase' }}>Studio</div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontFamily: PALETTE.sans, fontSize: 14, lineHeight: 2 }}>
-              <li><a href={base + 'pages/equipe.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>{t('nav.equipe')}</a></li>
-              <li><a href={base + 'pages/presse.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>{t('nav.presse')}</a></li>
-              <li><a href={base + 'pages/case-picard.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>Case study Picard</a></li>
-              <li><a href={base + 'admin.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.4 }}>Admin ↗</a></li>
+              <li><a href={base + 'pages/location-studio-cuisine-paris.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>Location studio cuisine Paris</a></li>
+              <li><a href={base + 'pages/studio-tournage-recette.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>Studio tournage recette</a></li>
+              <li><a href={base + 'pages/studio-cuisine-createurs.html'} style={{ color: PALETTE.bg, textDecoration: 'none', opacity: 0.8 }}>Studio cuisine créateurs</a></li>
             </ul>
           </div>
         </div>
@@ -239,7 +268,7 @@
           <span>{title}</span>
           {hand && (
             <span style={{
-              fontFamily: PALETTE.hand, color: PALETTE.lime,
+              ...(light ? { fontFamily: PALETTE.hand, color: PALETTE.lime } : window.HIVING_HAND_ON_LIGHT),
               transform: 'rotate(-2deg)', display: 'inline-block',
               fontSize: '1.1em', lineHeight: 0.85,
             }}>
