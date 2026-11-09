@@ -1,0 +1,12 @@
+.DS_Store
+._*
+.env
+.env.*
+!.env.example
+.vercel
+node_modules/
+*.mp4
+*.mov
+*.webm
+*.glb
+*.zip

@@ -1,0 +1,36 @@
+# robots.txt — Hiving Studio
+# https://hiving.food
+
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin/
+Disallow: /*.jsx$
+
+# AI crawlers — autorisés (visibilité IA = trafic qualifié 2026)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Bloquer les scrapers agressifs
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+Sitemap: https://hiving.food/sitemap.xml

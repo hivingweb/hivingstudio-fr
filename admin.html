@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hiving Food — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #fafaf5; font-family: 'Familjen Grotesk', system-ui, sans-serif; color: #0a0908; }
+  *, *::before, *::after { box-sizing: border-box; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #0a090830; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #0a090860; }
+  button { font-family: inherit; }
+  input, textarea, select { font-family: inherit; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="shared.jsx"></script>
+<script type="text/babel" src="admin-data.jsx"></script>
+<script type="text/babel" src="admin-shell.jsx"></script>
+<script type="text/babel" src="admin-views-1.jsx"></script>
+<script type="text/babel" src="admin-views-2.jsx"></script>
+<script type="text/babel" src="admin-views-3.jsx"></script>
+
+<script type="text/babel">
+const PALETTE = {
+  bg: '#fafaf5', ink: '#0a0908', inkSoft: '#3a3a35',
+  cream: '#f0ecdf', warm: '#e8dcc4',
+  lime: '#d4e85a', limeDeep: '#b5d039',
+  accent: '#d4e85a', butter: '#d4e85a',
+  display: "'Familjen Grotesk', sans-serif",
+  hand: "'Caveat', cursive",
+  serif: "'Fraunces', serif",
+  mono: "'JetBrains Mono', monospace",
+};
+
+function AdminApp() {
+  const [route, setRoute] = React.useState(() => (window.location.hash.replace('#', '') || 'login'));
+  React.useEffect(() => {
+    const onHash = () => setRoute(window.location.hash.replace('#', '') || 'login');
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  const goto = (r) => { window.location.hash = r; };
+
+  if (route === 'login' || route === '') return <AdminLogin P={PALETTE} goto={goto} />;
+
+  const views = {
+    'home':     () => <AdminHome     P={PALETTE} goto={goto} />,
+    'planning': () => <AdminPlanning P={PALETTE} goto={goto} />,
+    'requests': () => <AdminRequests P={PALETTE} goto={goto} />,
+    'request':  () => <AdminRequestDetail P={PALETTE} goto={goto} />,
+    'booking':  () => <AdminBookingDetail P={PALETTE} goto={goto} />,
+    'runsheet': () => <AdminRunsheet  P={PALETTE} goto={goto} />,
+    'clients':  () => <AdminClients   P={PALETTE} goto={goto} />,
+    'client':   () => <AdminClient    P={PALETTE} goto={goto} />,
+    'invoices': () => <AdminInvoices  P={PALETTE} goto={goto} />,
+    'settings': () => <AdminSettings  P={PALETTE} goto={goto} />,
+  };
+  const View = views[route] || views['home'];
+
+  return (
+    <AdminShell P={PALETTE} route={route} goto={goto}>
+      {View()}
+    </AdminShell>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<AdminApp />);
+</script>
+</body>
+</html>
