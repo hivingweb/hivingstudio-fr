@@ -184,7 +184,7 @@ function DevisPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: info.name.trim(), email, company: info.company.trim(),
-        subject: 'Réservation studio : devis Pennylane à envoyer', source: 'devis', message: lignes.join('\n'), website: piege,
+        subject: `Réservation ${plateau.name} · ${info.company.trim()} · ${libelleDates(date, days)} · ${fmt(ht)} € HT`, source: 'devis', message: lignes.join('\n'), website: piege,
       }),
     })
       .then(lireReponse, horsLigne)

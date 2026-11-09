@@ -73,7 +73,13 @@ function indisponible(res) {
   });
 }
 
-async function envoyerEmail({ sujet, corps, replyTo }) {
+// Adresse(s) de copie vers la boîte que le CRM analyse (variable Vercel CRM_COPIE_TO,
+// séparées par des virgules). Vide par défaut : rien ne change tant qu'elle n'est pas réglée.
+function copieCrm() {
+  return String(process.env.CRM_COPIE_TO || '').split(',').map((a) => a.trim()).filter((a) => EMAIL_RE.test(a));
+}
+
+async function envoyerEmail({ sujet, corps, replyTo, copieCachee = [] }) {
   const cle = process.env.RESEND_API_KEY;
   if (!cle) {
     console.error('[formulaire] RESEND_API_KEY absente : e-mail non envoyé');
@@ -87,6 +93,7 @@ async function envoyerEmail({ sujet, corps, replyTo }) {
       body: JSON.stringify({
         from: process.env.MAIL_FROM || SITE.expediteur,
         to: [adresseContact()],
+        bcc: copieCachee.length ? copieCachee : undefined,
         reply_to: replyTo || undefined,
         subject: ligne(sujet, 200),
         text: corps,
@@ -108,6 +115,7 @@ function dateParis() {
 }
 
 module.exports = {
+  copieCrm,
   SITE, origineAutorisee, enTetes, controlesDeBase, lireCorps, EMAIL_RE, texte, ligne,
   adresseContact, indisponible, envoyerEmail, dateParis,
 };

@@ -2,7 +2,7 @@
 // Corps JSON : { name, email, company?, message, subject?, source?, website? (piège à robots, doit rester vide) }
 // Envoie la demande par e-mail à l'adresse de contact (« répondre » va directement au visiteur).
 
-const { SITE, controlesDeBase, lireCorps, EMAIL_RE, texte, ligne, indisponible, envoyerEmail, dateParis } = require('./_mail');
+const { SITE, copieCrm, controlesDeBase, lireCorps, EMAIL_RE, texte, ligne, indisponible, envoyerEmail, dateParis } = require('./_mail');
 
 module.exports = async (req, res) => {
   if (controlesDeBase(req, res)) return;
@@ -30,6 +30,9 @@ module.exports = async (req, res) => {
     sujet: `${subject || `Nouveau contact ${SITE.nom}`} : ${name}`,
     corps,
     replyTo: email,
+    // Demande de réservation (page devis) : copie cachée vers la boîte lue par le CRM,
+    // seulement si CRM_COPIE_TO est réglée sur Vercel (sinon contact@ seul, comme aujourd'hui).
+    copieCachee: source === 'devis' ? copieCrm() : [],
   });
   if (!envoi.ok) return indisponible(res);
   return res.status(200).json({ success: true, message: 'Message envoyé. On revient vers vous très vite.' });
