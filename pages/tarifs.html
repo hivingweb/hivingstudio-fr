@@ -94,7 +94,7 @@ function TarifsPage() {
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', opacity: 0.5, marginBottom: 24, textTransform: 'uppercase' }}>¶ Options & add-ons</div>
           <h2 style={{ fontFamily: P.display, fontSize: 'clamp(40px, 5.5vw, 76px)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 0.96, margin: '0 0 56px' }}>
-            Tu bookes,<br /><span style={{ fontFamily: P.hand, color: P.lime }}>tu choisis.</span>
+            Vous réservez,<br /><span style={{ fontFamily: P.hand, color: P.lime }}>vous choisissez.</span>
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 56 }}>
             {cats.map(cat => (
@@ -132,7 +132,7 @@ function TarifsPage() {
             { l: 'Annulation', v: 'Gratuite jusqu\'à J-14. 50% J-7. 100% J-3.' },
             { l: 'Hold', v: 'Date bloquée gratuitement 48h pendant qu\'on cale le brief.' },
             { l: 'Fidélité', v: '-10 % à partir du 3e tournage dans l\'année.' },
-            { l: 'Pack matériel', v: '-15 % sur tout le matos quand tu bookes le plateau.' },
+            { l: 'Pack matériel', v: '-15 % sur tout le matos quand vous réservez le plateau.' },
             { l: 'Paiement', v: 'Virement, CB, Stripe. Net 30 sur dossier.' },
           ].map((it, i) => (
             <div key={i} style={{ paddingTop: 16, borderTop: `1px solid ${P.ink}15` }}>
@@ -143,7 +143,7 @@ function TarifsPage() {
         </div>
       </section>
 
-      <window.BigCTA eyebrow="Estimation immédiate" title="Calcule ton" hand="devis." ctaLabel="Devis instantané" ctaHref="devis.html" ctaSecondaryLabel="Comparer →" ctaSecondaryHref="comparateur.html" />
+      <window.BigCTA eyebrow="Estimation immédiate" title="Calculez votre" hand="devis." ctaLabel="Devis instantané" ctaHref="devis.html" ctaSecondaryLabel="Comparer →" ctaSecondaryHref="comparateur.html" />
     </window.PageShell>
   );
 }
