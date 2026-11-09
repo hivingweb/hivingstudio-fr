@@ -727,20 +727,39 @@ async function submit(){
     billing_address: { line1: $('f-address').value.trim(), zip: $('f-zip').value.trim(), city: $('f-city').value.trim(), country: 'FR' },
   };
   const amount = total();
+  const reservation = {
+    source: 'hivingstudio.fr/pro', idempotency_key: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+    studio_id: S.studio.id, start_date: S.date, days: S.days,
+    options: opts.map(o => ({ catalog: 'st_options', id: o.id, label: o.label, qty: 1, unit: o.unit, unit_price_ht: Number(o.price) })),
+    customer, message: $('f-needs').value.trim() || null,
+    client_total_ht: amount, accept_conditions: true, website: '',
+  };
   try {
-    if (CONFIG.CRM_RESERVATION_URL){
-      // Nouveau circuit : le CRM crée le devis Pennylane, bloque la date 48 h et suit le paiement.
+    // 1. Réservation directe : /api/reservation crée le devis Pennylane et bloque la date 48 h.
+    //    Si elle ne répond pas 200 (non activée : 501, absente, panne) : repli sur le circuit précédent.
+    let r0, d0 = {};
+    try {
+      r0 = await fetch('/api/reservation', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(reservation) });
+      d0 = await r0.json().catch(() => ({}));
+    } catch (e){ r0 = { ok: false, status: 0 }; }
+    if (r0.status === 200 && d0.ok){
+      const fin = d0.holdUntil ? new Date(d0.holdUntil).toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : null;
+      showSuccess({
+        title: `Votre date est <span class="it">bloquée.</span>`, amount: d0.totalHt ?? amount,
+        note: `${S.studio.name} · ${periodLabel()}. `
+          + (d0.quoteSent ? `Votre devis Pennylane${d0.quoteNumber ? ' (N° ' + d0.quoteNumber + ')' : ''} vient de partir par e-mail.`
+                          : `Votre devis Pennylane${d0.quoteNumber ? ' (N° ' + d0.quoteNumber + ')' : ''} part par e-mail dans quelques minutes.`)
+          + ` Votre date est bloquée 48 h${fin ? ', jusqu\'au ' + fin : ''}. Elle est confirmée à réception du paiement.`,
+      });
+    } else if (r0.status === 409){ slotTaken(); }
+    else if ([400, 413, 422, 429].includes(r0.status) && d0.error){ toast(esc(d0.error)); }
+    else if (CONFIG.CRM_RESERVATION_URL){
+      // 2. Circuit CRM : le CRM crée le devis Pennylane, bloque la date 48 h et suit le paiement.
       let r, d = {};
       try {
         r = await fetch(CONFIG.CRM_RESERVATION_URL, {
           method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            source: 'hivingstudio.fr/pro', idempotency_key: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-            studio_id: S.studio.id, start_date: S.date, days: S.days,
-            options: opts.map(o => ({ catalog: 'st_options', id: o.id, label: o.label, qty: 1, unit: o.unit, unit_price_ht: Number(o.price) })),
-            customer, message: $('f-needs').value.trim() || null,
-            client_total_ht: amount, accept_conditions: true, website: '',
-          }),
+          body: JSON.stringify(reservation),
         });
         d = await r.json().catch(() => ({}));
       } catch (e){ r = { ok: false, status: 0 }; }
@@ -754,7 +773,7 @@ async function submit(){
       else if ((r.status === 400 || r.status === 422) && d.error){ toast(esc(d.error)); }
       else { toast('Réservation en ligne momentanément indisponible, écrivez-nous à ' + CONFIG.CONTACT_EMAIL + '.'); }
     } else {
-      // Circuit actuel (tant que le CRM n'est pas branché) : demande enregistrée dans la base du CRM.
+      // 3. Circuit précédent : demande enregistrée dans la base du CRM, devis Pennylane fait par l'équipe.
       const r = await api.createBrandRequest({
         studio_id: S.studio.id, date: S.date, days: S.days, duration: 'full', hours: null,
         keep_set: 'asis', production: 'self', custom: false,

@@ -3,6 +3,8 @@
 Pour : l'équipe du CRM Hiving (Joseph, Milan). Rédigée le 9 novembre 2026, à la demande de Maxime.
 Brief court à coller dans Claude Code : `docs/brief-crm-reservation.md`.
 
+> **Mise à jour du 9 novembre 2026 (décision de Maxime)** : en attendant le CRM, le site parle **directement** à Pennylane via ses propres fonctions Vercel (`api/reservation.js`, `api/cron-paiements.js`). Voir la section **« Version autonome site »** en fin de document. La spécification CRM ci-dessous reste la cible à terme.
+
 ## 0. En une phrase
 
 Le site hivingstudio.fr n'envoie plus qu'**une demande** (plateau, dates, options, coordonnées de facturation). Le **CRM** s'occupe du reste : il crée le client et le devis dans Pennylane, bloque la date 48 h, transforme le devis signé en facture avec lien de paiement, confirme la réservation au paiement et libère la date sinon. Le CRM est le seul à détenir la clé API Pennylane.
@@ -260,3 +262,129 @@ Les e-mails du devis et de la facture eux-mêmes sont ceux de Pennylane (`send_b
 2. Deux demandes simultanées sur la même date : une `201`, une `409`.
 3. Preview Vercel du site avec `CRM_RESERVATION_URL` rempli et `connect-src` mis à jour : réservation depuis `/pro/` et `/pages/devis.html`, sur mobile.
 4. Validation de Maxime, puis mise en ligne.
+
+---
+
+## Version autonome site (sans CRM)
+
+Décision de Maxime (9 novembre 2026) : le site hivingstudio.fr parle **directement** à Pennylane, sans attendre le CRM. Branche `modif/reservation-pennylane-v2`.
+
+### En bref
+
+| Étape | Qui | Quoi |
+|---|---|---|
+| 1. Le client clique « Réserver » (`/pro/` ou `/pages/devis.html`) | page → `POST /api/reservation` | contrôles, **prix recalculé par le serveur**, disponibilité, client + devis Pennylane, date bloquée dans la base, devis envoyé par e-mail Pennylane, récapitulatif par e-mail (client + contact@hivingfood.fr) |
+| 2. Le client signe le devis (lien de l'e-mail Pennylane) | `GET /api/cron-paiements` (toutes les 15 min) | facture **finalisée** créée depuis le devis et envoyée par e-mail Pennylane (bouton de paiement si le paiement en ligne est activé) |
+| 3. Le client paie | tâche planifiée | e-mail « Réservation confirmée » au client + alerte « réservation payée : à confirmer dans l'admin » à contact@hivingfood.fr |
+| 3 bis. Rien dans les 48 h | tâche planifiée | devis passé « expiré » dans Pennylane, e-mail « option expirée » au client, alerte « date à libérer dans l'admin » |
+| 4. Confirmer ou libérer la date | **l'équipe, dans l'admin** | bouton « Confirmer » (`st_confirm_brand`) ou « Libérer » : le site n'a pas le droit d'écrire autrement dans la base du CRM |
+
+Message affiché au client : « Votre devis Pennylane vient de partir par e-mail. Votre date est bloquée 48 h. Elle est confirmée à réception du paiement. »
+
+### Fichiers
+
+| Fichier | Rôle |
+|---|---|
+| `api/reservation.js` | la réservation (réponse `{ ok, quoteNumber, holdUntil, quoteSent, totalHt, totalTtc }`) |
+| `api/cron-paiements.js` | la tâche planifiée (signé → facture, payé → confirmation, 48 h → expiré) |
+| `api/_studio.js` | **grille de prix serveur** (Studio Pro 850 €, Studio Famille 1 000 € HT/jour, copie du catalogue `HIVING_ADDONS_FULL` de `site-data.jsx`), heure de Paris, règle des 48 h |
+| `api/_pennylane.js` | appels à l'API Pennylane v2 (mode `DRY_RUN` compris) |
+| `api/_base.js` | base du CRM avec la clé **publique** : lecture `st_options`, RPC `st_all_busy`, RPC `st_create_brand_request` (déjà utilisées par `/pro/`) |
+| `tests/reservation.test.js` | tests avec Pennylane, base et Resend simulés : `node tests/reservation.test.js` |
+
+**Si un prix change** sur le site (plateau ou option de `site-data.jsx`), le changer **aussi** dans `api/_studio.js` : sinon le serveur répond « Le prix a changé : nouveau total … » et le client ne peut pas réserver. Les options de `/pro/` (`st_options`) sont lues dans la base au moment de la demande : rien à faire.
+
+### Ce que fait `POST /api/reservation`, dans l'ordre
+
+1. Origine limitée à hivingstudio.fr, www et aux prévisualisations `hivingstudio-fr-….vercel.app` (CORS, `403` sinon) ; champ piège `website` (rempli → `200` factice, rien créé) ; corps ≤ 20 Ko (`413`) ; 5 demandes par IP et par heure (`429`).
+2. Validation : plateau `pro`/`famille`, date `AAAA-MM-JJ` pas passée, 1 à 10 jours, société, nom, e-mail, adresse, code postal, ville, SIREN facultatif (9 chiffres, ou SIRET 14 → 9 premiers), conditions acceptées (`400` avec message en français).
+3. Option : 48 h, ou jusqu'à 2 h avant le tournage si c'est plus tôt ; moins de 4 h → `422` « écrivez-nous ».
+4. **Prix** : recalculé depuis la grille serveur ; les prix envoyés par le navigateur sont ignorés ; si `client_total_ht` diffère de plus de 1 € → `422` « Le prix a changé : nouveau total X € HT ». Option inconnue, incluse ou à 0 € (sur devis) → `422`.
+5. Disponibilité : lecture `st_all_busy` (8 h-22 h, heure de Paris, sur toute la période) → `409 SLOT_TAKEN` si un jour est pris.
+6. Pennylane : client retrouvé par `external_reference` (`HS-SIREN-<siren>` ou `HS-EMAIL-<e-mail>`), sinon créé (`POST /company_customers`) ; devis créé (`POST /quotes`) : une ligne plateau × jours, une ligne par option, TVA `FR_200`, objet « Location Hiving Studio · Studio Pro · du … au … », texte libre avec la règle des 48 h et l'heure limite, date de validité = jour de fin de l'option, `external_reference = HS-RES-<fin d'option AAAAMMJJHHMM UTC>-<6 caractères>`.
+7. Base : `st_create_brand_request` (exactement comme `/pro/`, aucune colonne inventée). La **référence du devis Pennylane** (numéro, id, `HS-RES-…`), l'heure limite, le total HT et les options du catalogue site sont écrits dans le champ libre `p_needs` (« Un mot sur votre projet »), visible dans l'admin. Si la base répond `SLOT_TAKEN` (deux clients en même temps) : le devis est passé « refusé » dans Pennylane et le client reçoit `409`.
+8. Envoi du devis : `POST /quotes/:id/send_by_email` (réessayé 5 fois toutes les 4 s si le PDF n'est pas prêt, `409`).
+9. E-mails Resend : récapitulatif au client (vouvoiement, HT puis TTC, règle des 48 h) et à contact@hivingfood.fr (avec « À FAIRE » si le devis n'a pas pu être créé ou envoyé).
+
+Pennylane en panne : la date est **quand même** bloquée (étape 7), `quoteNumber` vaut `null`, l'équipe reçoit « À FAIRE : devis Pennylane non créé, le faire à la main ». Base en panne avant l'étape 7 : `503`, la page reprend l'ancien circuit.
+
+### Modes
+
+| Réglage Vercel | Comportement |
+|---|---|
+| pas de `PENNYLANE_API_KEY` (aujourd'hui) | `/api/reservation` répond `501 { fallback: true }` sans rien faire ; les pages reprennent **l'ancien circuit** : `/pro/` → `st_create_brand_request`, `/pages/devis.html` → `/api/contact` (ou `CRM_RESERVATION_URL` s'il est rempli). La tâche planifiée ne fait rien. |
+| `PENNYLANE_DRY_RUN=1` | **aucun appel à Pennylane et rien d'écrit dans la base** : chaque requête Pennylane et l'appel `st_create_brand_request` sont seulement **journalisés** (Vercel → *Logs*) ; les deux e-mails Resend partent avec « [TEST] » dans l'objet ; numéro de devis factice `DRY-RUN-…`. La tâche planifiée ne fait rien. |
+| `PENNYLANE_API_KEY` sans `DRY_RUN` | circuit complet. |
+
+Sur la page, `/api/reservation` est essayée **en premier** ; tout autre résultat que `200`, `409`, `400/413/422/429` (avec message) déclenche l'ancien circuit, donc rien ne casse tant que la clé n'est pas posée.
+
+### Tâche planifiée `GET /api/cron-paiements`
+
+Déclarée dans `vercel.json` (`"crons"`, `*/15 * * * *`), protégée par `CRON_SECRET` (Vercel envoie `Authorization: Bearer <CRON_SECRET>` ; sans la bonne valeur : `401`). Elle lit les devis des 21 derniers jours dont la référence commence par `HS-RES-` :
+
+| Statut du devis Pennylane | Action | Ce qui empêche de la refaire |
+|---|---|---|
+| `pending` et option échue | `PUT /quotes/:id/update_status` `expired` ; e-mail « Votre option a expiré » ; alerte équipe « date à libérer dans l'admin » | le devis n'est plus `pending` |
+| `accepted`, pas de facture `HS-FAC-<id du devis>` | `POST /customer_invoices/create_from_quote` (`draft: false`, `external_reference: HS-FAC-<id>`) puis `send_by_email` ; alerte équipe « devis signé » | la facture est retrouvée par sa référence avant toute création |
+| `accepted`, facture payée | e-mail « Réservation confirmée » (8 h-22 h, 4 rue Mozart, 92110 Clichy) ; alerte « Réservation payée : à confirmer dans l'admin » ; devis passé `invoiced` | le devis est `invoiced` |
+| `accepted`, facture impayée à l'échéance | alerte équipe « option échue, facture impayée » (attendre le virement ou annuler par avoir) | envoyée par le seul passage dont le créneau de 15 min contient l'échéance |
+| `invoiced`, `denied`, `expired` | rien | — |
+
+Convention du site : **`invoiced` = payé et client prévenu**. Si Pennylane passe tout seul le devis en `invoiced` à la création de la facture, la tâche le remet en `accepted` jusqu'au paiement. Tous les e-mails portent en plus une clé d'idempotence Resend (`Idempotency-Key`, 24 h) contre un double passage.
+
+### Limites connues (à lever avec le CRM ou en recette)
+
+- **Pas de base à nous** : l'état vit dans les statuts Pennylane. Si Pennylane refuse de remettre un devis `invoiced` en `accepted` (non documenté), le paiement de ce devis ne sera pas détecté : l'équipe le verra dans Pennylane. À vérifier en recette.
+- **Envoi du devis ou de la facture** : s'il échoue encore après 5 essais (PDF pas prêt), il **n'est pas réessayé** automatiquement (rien pour s'en souvenir) : l'équipe reçoit « À FAIRE : cliquer Envoyer dans Pennylane ». Si cela arrive souvent en recette, prévoir un champ d'état côté CRM.
+- **Date libérée à la main** : la tâche ne peut pas annuler le créneau dans la base (pas de droit d'écriture) ; elle prévient l'équipe, qui libère dans l'admin. Idem pour la confirmation (`st_confirm_brand`).
+- **Devis refusé par le client** (`denied`) : pas d'alerte automatique (rien pour s'en souvenir) ; la date reste bloquée jusqu'à libération dans l'admin.
+- **Limite par IP et double clic** : mémoire de l'instance Vercel (meilleur effort) ; le blocage en base (`SLOT_TAKEN`) reste la vraie protection contre la double réservation.
+- **Facture impayée à l'échéance** : l'alerte unique suppose que la tâche tourne bien toutes les 15 min ; un passage manqué = pas d'alerte (la facture reste visible dans Pennylane).
+- **Remise fidélité −10 %** : non appliquée automatiquement (à ajouter à la main sur le devis si besoin).
+- **Plan Vercel** : une tâche toutes les 15 min demande l'offre **Pro** de Vercel. En offre Hobby, Vercel refuse le déploiement d'une tâche plus fréquente qu'une fois par jour : vérifier l'offre de l'équipe « Hiving » avant de fusionner (sinon passer `schedule` à `0 7 * * *` et accepter un suivi quotidien).
+
+### Vérification contre la documentation officielle Pennylane (9 novembre 2026)
+
+Certaines pages de référence n'ont pas pu être lues (accès bloqué depuis l'outil, ou schéma de réponse non affiché) : elles sont marquées « non confirmé ». **À valider en recette avant de passer en réel.**
+
+| Appel / champ | Statut | Source |
+|---|---|---|
+| Base `https://app.pennylane.com/api/external/v2`, `Authorization: Bearer` | confirmé | [cas d'usage facture client](https://pennylane.readme.io/docs/create-a-customer-invoice-use-case) |
+| `GET /customers?filter=[{"field":"external_reference","operator":"eq","value":…}]` | confirmé | idem |
+| `POST /company_customers` : `name`, `emails`, `external_reference`, `billing_address.address / postal_code / city / country` | confirmé | idem |
+| `reg_no`, `recipient`, `billing_language` sur le client | confirmé dans la spec CRM (§6), non relu ici | §6 ci-dessus |
+| Lignes : `label`, `quantity`, `unit`, `raw_currency_unit_price` (chaîne), `vat_rate: "FR_200"` | confirmé (factures) ; supposé identique pour les devis | cas d'usage facture client |
+| `POST /quotes` existe (scope `quotes:all`) | confirmé | [changelog devis v2](https://pennylane.readme.io/changelog/v2-quotes-and-commercial-documents-endpoints) |
+| Corps de `POST /quotes` : `customer_id`, `date`, `deadline`, `invoice_lines`, `pdf_invoice_subject`, `pdf_invoice_free_text`, `currency`, `language` | **confirmé par la page « Update a quote »** (mêmes champs) ; page « Create a quote » non lue | [update a quote](https://pennylane.readme.io/reference/updatequote) |
+| `external_reference` à la création du devis | **non confirmé** (indispensable : la tâche retrouve les devis par cette référence) | — |
+| Réponse du devis : `id`, `quote_number`, `status`, `customer.id` | **non confirmé** (schéma non affiché) ; repli sur `label` puis `id` pour le numéro | [retrieve a quote](https://pennylane.readme.io/reference/getquote) |
+| `GET /quotes` avec filtre `date gteq`, pagination `items / has_more / next_cursor` | **non confirmé** (page non lue) | — |
+| `POST /quotes/:id/send_by_email` : `204`, `409` si PDF pas prêt | confirmé | [send a quote by email](https://pennylane.readme.io/reference/sendbyemailquote) |
+| `PUT /quotes/:id/update_status` : `pending`, `accepted`, `denied`, `invoiced`, `expired` | confirmé | [update status of a quote](https://pennylane.readme.io/reference/updatestatusquote) |
+| `POST /customer_invoices/create_from_quote` : `quote_id`, `draft` (obligatoires), `external_reference`, scope `customer_invoices:all`, réponse `201` | confirmé (schéma de réponse non affiché) | [create from quote](https://pennylane.readme.io/reference/createcustomerinvoicefromquote) |
+| `GET /customer_invoices?filter=[external_reference eq …]` | **non confirmé** (filtre) ; en cas d'erreur la tâche **ne crée pas** de facture | — |
+| `POST /customer_invoices/:id/send_by_email` | confirmé (spec CRM §6) | §6 ci-dessus |
+| Facture payée : booléen `paid` sur `GET /customer_invoices/:id` | **non confirmé par Pennylane** (schéma non affiché) ; utilisé par le connecteur Kestra ; repli sur `status: "paid"` puis `remaining_amount <= 0` | [Kestra, facture payée](https://kestra.io/plugins/plugin-pennylane/customer-invoices/io.kestra.plugin.pennylane.customerinvoices.customerinvoicepaidtrigger) |
+| Signature en ligne du devis → statut `accepted` | non confirmé (voir §6 point 2) | — |
+| Bouton de paiement dans l'e-mail de facture | non confirmé par l'API ; dépend du réglage Pennylane (voir plus bas) | — |
+
+### À faire par Maxime
+
+**1. Créer la clé Pennylane** : Pennylane → **Paramètres → Connectivité → Développeurs** → « Générer un jeton API » (API v2). Droits : **`customers:all`**, **`quotes:all`**, **`customer_invoices:all`** (lecture et écriture). Copier le jeton une seule fois, ne jamais l'envoyer par e-mail ni dans une conversation.
+
+**2. Activer le paiement en ligne des factures** : Pennylane → **Paramètres → Facturation** (rubrique paiement en ligne / « Encaissement ») : activer le paiement par carte ou prélèvement (GoCardless, Stripe ou l'offre Pennylane selon le compte HIVING FOOD). Une fois activé, l'e-mail Pennylane de chaque facture contient un bouton « Payer ». Sinon la facture porte l'IBAN et le client paie par virement (1 à 2 jours ouvrés : voir le point « tolérance » du §3).
+
+**3. Variables Vercel** (projet `hivingstudio-fr` → *Settings* → *Environment Variables*, cocher *Production* et *Preview*) :
+
+| Variable | Valeur |
+|---|---|
+| `PENNYLANE_API_KEY` | le jeton du point 1 (secret) |
+| `CRON_SECRET` | une longue chaîne aléatoire (au moins 32 caractères), inventée une fois (secret) |
+| `RESEND_API_KEY` | déjà prévue pour `/api/contact` |
+| `PENNYLANE_DRY_RUN` | `1` pour la phase de test, puis **supprimer** la variable |
+
+Puis *Deployments* → *Redeploy*.
+
+**4. Tester en `DRY_RUN`** (rien n'est créé) : poser `PENNYLANE_DRY_RUN=1` (Preview seulement), ouvrir l'URL de prévisualisation `/pro/`, réserver une date avec votre e-mail. Attendu : message « Votre devis Pennylane (N° DRY-RUN-…) vient de partir par e-mail… », deux e-mails « [TEST] » (vous et contact@hivingfood.fr), et dans Vercel → *Logs* les lignes `[pennylane DRY_RUN] POST /quotes …` avec les lignes du devis et le total. Rien dans Pennylane, rien dans l'admin.
+
+**5. Tester en réel avec une réservation d'un jour** : retirer `PENNYLANE_DRY_RUN`, redéployer, réserver **1 jour** sur une date lointaine avec la société HIVING et votre e-mail. Vérifier : client et devis dans Pennylane (référence `HS-RES-…`), e-mail Pennylane du devis, demande dans l'admin avec la référence du devis dans le message. Signer le devis depuis l'e-mail ; au plus 15 min après : facture créée et reçue. La marquer payée dans Pennylane (« Marquer comme payée ») ; au plus 15 min après : « Réservation confirmée » et alerte « à confirmer dans l'admin ». Faire un second essai sans signer pour voir l'expiration (ou attendre 48 h). Enfin, annuler la facture de test par un avoir et libérer la date dans l'admin.

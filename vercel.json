@@ -202,5 +202,12 @@
         }
       ]
     }
+  ],
+  "functions": {
+    "api/reservation.js": { "maxDuration": 30 },
+    "api/cron-paiements.js": { "maxDuration": 60 }
+  },
+  "crons": [
+    { "path": "/api/cron-paiements", "schedule": "*/15 * * * *" }
   ]
 }

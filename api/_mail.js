@@ -73,20 +73,24 @@ function indisponible(res) {
   });
 }
 
-async function envoyerEmail({ sujet, corps, replyTo }) {
+// to : destinataires (par défaut l'adresse de contact) ; cle : clé d'idempotence Resend
+// (même clé dans les 24 h = un seul e-mail, utile si une tâche planifiée passe deux fois).
+async function envoyerEmail({ sujet, corps, replyTo, to, cle: cleIdem }) {
   const cle = process.env.RESEND_API_KEY;
   if (!cle) {
     console.error('[formulaire] RESEND_API_KEY absente : e-mail non envoyé');
     return { ok: false, raison: 'config' };
   }
+  const headers = { Authorization: `Bearer ${cle}`, 'Content-Type': 'application/json' };
+  if (cleIdem) headers['Idempotency-Key'] = String(cleIdem).slice(0, 256);
   let r;
   try {
     r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${cle}`, 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         from: process.env.MAIL_FROM || SITE.expediteur,
-        to: [adresseContact()],
+        to: to && to.length ? to : [adresseContact()],
         reply_to: replyTo || undefined,
         subject: ligne(sujet, 200),
         text: corps,
