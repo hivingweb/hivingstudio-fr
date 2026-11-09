@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace membres · Hiving Studio</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.svg?v=hf" type="image/svg+xml">
+<link rel="stylesheet" href="../shared/ui.css">
+<style>
+  .section-nav{display:flex; gap:8px; flex-wrap:wrap; margin:2px 0 26px}
+  .section-nav .pill{cursor:pointer}
+  #tbl-options .ci{padding:6px 8px; font-size:13px; margin:0}
+  #tbl-options input[type=number].ci{max-width:82px}
+  #tbl-options input[type=checkbox].ci{width:auto; margin:0}
+  .studio-tabs{display:flex; gap:8px; flex-wrap:wrap; margin:18px 0 14px}
+  .week-nav{display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap}
+  .week-nav .label{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-dim)}
+  .legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:11.5px; color:var(--ink-faint)}
+  .legend i{display:inline-block; width:12px; height:12px; border-radius:4px; border:1px solid var(--ink); vertical-align:-2px; margin-right:5px}
+  .review-stars{display:flex; gap:6px; font-size:26px; cursor:pointer; user-select:none}
+  .review-stars span{color:rgba(17,16,9,.18); transition:color .15s}
+  .review-stars span.on{color:var(--lime-deep)}
+  .login-hero{min-height:calc(100vh - 60px); display:flex; align-items:center; justify-content:center; padding:20px}
+  .login-box{width:min(430px,100%)}
+  .booking-row{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid rgba(17,16,9,.07); flex-wrap:wrap}
+  .booking-row:last-child{border-bottom:none}
+  .scroll{overflow-x:auto}
+  tr.rowAlert{background:var(--red-bg)}
+  tr.hist-off{opacity:.6}
+  tr.hist-off td:not(:last-child){text-decoration:line-through; color:var(--ink-faint)}
+  .note-cell{max-width:280px}
+  .add-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:6px}
+  .add-row input{flex:1 1 200px; width:auto}
+  .kpi .n{font-size:clamp(30px,4vw,42px); font-weight:700; letter-spacing:-.03em; line-height:1}
+  .kpi .n.red{color:var(--red)}
+  .kpi .l{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); margin-top:6px}
+  .allstate-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin-top:8px}
+  .allstate-card{border:1px solid rgba(17,16,9,.12); border-radius:14px; padding:14px}
+  .allstate-card h5{margin:0 0 6px; font-size:15px}
+  .badge-alert{background:var(--red); color:#fff; border-radius:999px; font-size:10px; font-family:var(--mono); padding:2px 7px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="logo" href="../">hiving <em>studio</em><span class="dot">.</span><small id="nav-tag">espace membres</small></a>
+  <div class="nav-right" id="nav-right"></div>
+</nav>
+
+<!-- ================= LOGIN ================= -->
+<div id="view-login" class="login-hero" style="display:none">
+  <div class="login-box">
+    <div class="kick">( espace <b>membres</b> )</div>
+    <h1 class="title">On tourne <span class="it">quand ?</span></h1>
+    <p class="sub">Espace réservé aux <b>membres de la maison Hiving</b> (calendrier partagé, créneaux gratuits). Première connexion : entrez votre email, on vous envoie un lien de validation. Ensuite, email + code, mémorisé sur votre appareil.</p>
+    <form class="panel" style="margin-top:18px" id="login-panel" autocomplete="on">
+      <label class="f" for="login-email">Votre email de membre</label>
+      <input type="email" id="login-email" name="email" placeholder="vous@exemple.fr" autocomplete="username">
+      <div id="pw-wrap">
+        <label class="f" for="login-pw" id="pw-label">Votre code</label>
+        <input type="password" id="login-pw" name="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div id="pw2-wrap" style="display:none">
+        <label class="f" for="login-pw2">Confirmez le code</label>
+        <input type="password" id="login-pw2" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="hint" id="login-hint"></div>
+      <div class="modal-actions" style="justify-content:flex-start">
+        <button class="btn" id="login-btn" type="submit">Se connecter →</button>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:18px; flex-wrap:wrap; font-size:13px">
+        <a href="#" id="to-signup">Première connexion ?</a>
+        <a href="#" id="to-reset" style="color:var(--ink-faint)">Code oublié ?</a>
+      </div>
+    </form>
+    <div class="panel" style="margin-top:14px; background:var(--cream)">
+      <p style="font-size:14px; line-height:1.6"><b>Vous venez louer un plateau ponctuellement ?</b><br>Pas besoin de compte : réservez votre créneau et recevez un devis en 2 minutes.</p>
+      <div style="margin-top:12px"><a class="btn" href="../pro/">Réserver un plateau →</a></div>
+    </div>
+    <p class="hint" style="margin-top:14px">Pas encore dans la liste ? Écrivez-nous : <a href="mailto:contact@hivingfood.fr">contact@hivingfood.fr</a></p>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="view-app" class="wrap" style="display:none">
+
+  <div class="section-nav" id="section-nav" style="display:none"></div>
+
+  <!-- ---------- PLANNING ---------- -->
+  <section id="sec-planning">
+    <div class="kick">( 01 · <b>le calendrier</b> )</div>
+    <h1 class="title">Réserver un <span class="it">plateau.</span></h1>
+    <p class="sub">Choisissez un studio, repérez un trou dans la semaine, posez votre créneau. Un projet urgent sur un créneau déjà pris ? Demandez-le à son détenteur, ça se règle entre vous.</p>
+
+    <div class="studio-tabs" id="studio-tabs"></div>
+    <div class="week-nav">
+      <button class="btn ghost sm" id="wk-prev">← sem. préc.</button>
+      <span class="label" id="wk-label"></span>
+      <button class="btn ghost sm" id="wk-next">sem. suiv. →</button>
+      <span style="flex:1"></span>
+      <button class="btn ghost sm admin-only" id="btn-broadcast" style="display:none">Message à tous</button>
+      <button class="btn ghost sm admin-only" id="btn-admin-book" style="display:none">Bloquer / ajouter</button>
+      <button class="btn" id="btn-new">+ Réserver un créneau</button>
+    </div>
+    <div class="cal" id="cal"></div>
+    <div class="legend">
+      <span><i style="background:var(--lime)"></i>créateurs</span>
+      <span><i style="background:var(--cream)"></i>mes créneaux</span>
+      <span><i style="background:var(--ink)"></i>réservé (marque / indispo)</span>
+    </div>
+
+    <div style="height:34px"></div>
+
+    <!-- vue d'ensemble tous studios (autonomie créateurs) -->
+    <div class="panel" id="allstate-panel">
+      <h3 style="margin:0 0 4px">Tous les plateaux <span class="it">en un coup d'œil.</span></h3>
+      <p class="hint" style="margin:0 0 6px">Ce qu'il manque partout, pour vous en occuper sans attendre.</p>
+      <div class="allstate-grid" id="allstate-grid"></div>
+    </div>
+
+    <div style="height:20px"></div>
+
+    <!-- mur des membres : notes partagées (chat léger, temps réel) -->
+    <div class="panel" id="notes-panel">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px">
+        <h3 style="margin:0">Le mur des <span class="it">membres.</span></h3>
+        <span class="pill on" id="notes-live" style="display:none">en direct</span>
+      </div>
+      <p class="hint" style="margin:0 0 10px">Un mot à partager, un manque repéré, une info sur un plateau ? Écrivez ici, tous les membres le voient.</p>
+      <form id="note-form" style="display:flex; flex-direction:column; gap:8px">
+        <textarea id="note-body" placeholder="Ex. Il manque des sacs poubelle au Studio Pro, je passe en racheter demain." maxlength="500"></textarea>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center">
+          <select id="note-studio" style="max-width:240px"><option value="">Studio concerné ? (facultatif)</option></select>
+          <span style="flex:1"></span>
+          <button class="btn sm" type="submit">Publier</button>
+        </div>
+      </form>
+      <div id="notes-list" style="margin-top:14px"></div>
+    </div>
+
+    <div style="height:20px"></div>
+    <div class="panel" id="state-panel">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px">
+        <h3 style="margin:0">État du <span class="it">plateau.</span></h3>
+        <span class="pill on" id="state-studio"></span>
+      </div>
+      <div id="last-note" style="margin:6px 0 18px"></div>
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap">
+        <h4 style="font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint)">Consommables à racheter</h4>
+        <span class="hint" style="margin:0">cochez « remis » une fois racheté</span>
+      </div>
+      <div id="supplies-list" style="margin-top:8px"></div>
+      <form id="supply-form" style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap">
+        <input type="text" id="supply-input" placeholder="Ajouter un manque (ex. sopalin, sel, sacs poubelle…)" maxlength="80" style="flex:1; min-width:200px">
+        <button class="btn sm" type="submit">Ajouter</button>
+      </form>
+    </div>
+
+    <div style="height:20px"></div>
+    <div class="grid2">
+      <div class="panel">
+        <h3>Mes <span class="it">créneaux.</span></h3>
+        <div id="my-bookings"></div>
+      </div>
+      <div class="panel">
+        <h3>Demandes <span class="it">urgentes.</span> <span class="pill alert" id="urgent-count" style="display:none"></span></h3>
+        <div id="urgent-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- GESTION (admin) ---------- -->
+  <section id="sec-gestion" style="display:none">
+    <div class="kick">( admin · <b>gestion</b> )</div>
+    <h1 class="title">Marques &amp; <span class="it">membres.</span></h1>
+    <p class="sub">Confirmez ou déclinez les demandes des marques (la confirmation libère les créneaux créateurs en conflit), et gérez qui a accès à l'espace.</p>
+
+    <div style="height:16px"></div>
+    <div class="panel">
+      <h3>Demandes <span class="it">marques.</span></h3>
+      <div class="scroll" id="tbl-marques"></div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="panel">
+      <h3>Demandes de <span class="it">libération.</span></h3>
+      <p class="hint">Une marque a demandé un créneau déjà pris. Contactez la personne qui l'occupe pour voir si elle peut bouger — on n'annule jamais son créneau de force.</p>
+      <div style="height:10px"></div>
+      <div class="scroll" id="tbl-releases"></div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="panel">
+      <h3>La liste des <span class="it">membres.</span></h3>
+      <div class="add-row" style="margin-top:12px">
+        <input type="email" id="add-email" placeholder="email@exemple.fr" autocomplete="off">
+        <input type="text" id="add-name" placeholder="Prénom" autocomplete="off">
+        <select id="add-role" style="max-width:140px">
+          <option value="creator">Créateur</option>
+          <option value="admin">Admin</option>
+        </select>
+        <select id="add-house" style="max-width:180px">
+          <option value="food">Créateur Hiving Food</option>
+          <option value="hiving">Créateur Hiving</option>
+        </select>
+        <button class="btn sm" id="add-go">Ajouter</button>
+      </div>
+      <p class="hint">Un membre reçoit un lien de validation à sa première connexion, puis choisit son code. Un <b>admin</b> aura les mêmes pouvoirs que vous.</p>
+      <div style="height:10px"></div>
+      <div class="scroll" id="tbl-createurs"></div>
+    </div>
+  </section>
+
+  <!-- ---------- OPTIONS / CATALOGUE (admin) ---------- -->
+  <section id="sec-catalogue" style="display:none">
+    <div class="kick">( admin · <b>options</b> )</div>
+    <h1 class="title">Catalogue &amp; <span class="it">tarifs.</span></h1>
+    <p class="sub">Votre inventaire matériel et ses tarifs. <b>Rien n'est visible côté marque pour l'instant</b> : le wizard ne propose que le tarif du plateau. Ces lignes servent à chiffrer un sur mesure à la main, en attendant le document tarifaire complet.</p>
+    <div style="height:16px"></div>
+    <div class="panel">
+      <h3>Ajouter une <span class="it">option.</span></h3>
+      <div class="add-row" style="margin-top:12px">
+        <input type="text" id="opt-label" placeholder="Nom de l'option" autocomplete="off">
+        <input type="number" id="opt-price" placeholder="Prix €" min="0" step="5" style="max-width:110px">
+        <select id="opt-unit" style="max-width:120px">
+          <option value="day">/ jour</option>
+          <option value="flat">forfait</option>
+        </select>
+        <select id="opt-cat" style="max-width:150px">
+          <option value="lumiere">Lumière</option>
+          <option value="camera">Caméra</option>
+          <option value="optique">Optique</option>
+          <option value="accessoire">Accessoire</option>
+          <option value="materiel">Matériel</option>
+        </select>
+        <button class="btn sm" id="opt-add">Ajouter</button>
+      </div>
+      <p class="hint">Prix en € HT. « Inclus » = compris dans le tarif du plateau. « Actif » = la ligne compte, si vous la décochez elle reste ici sans être utilisée.</p>
+      <div style="height:10px"></div>
+      <div class="scroll" id="tbl-options"></div>
+    </div>
+  </section>
+
+  <!-- ---------- TABLEAU DE BORD (admin) ---------- -->
+  <section id="sec-dashboard" style="display:none">
+    <div class="kick">( admin · <b>tableau de bord</b> )</div>
+    <h1 class="title">Revenus des <span class="it">studios.</span></h1>
+    <p class="sub">Le solde du mois : ventes moins dépenses. Ajoutez à la main une vente ou une dépense pour tout équilibrer, même les échanges faits en dehors de la plateforme.</p>
+    <div style="height:20px"></div>
+    <div class="grid3" id="dash-kpis"></div>
+    <div style="height:16px"></div>
+    <div class="panel">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px">
+        <h3 style="margin:0">Mouvements du <span class="it">mois.</span></h3>
+        <span style="flex:1"></span>
+        <button class="btn sm" id="led-income">+ Vente</button>
+        <button class="btn ghost sm" id="led-expense">+ Dépense</button>
+      </div>
+      <div class="scroll" id="dash-ledger"></div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="panel">
+      <h3>Occupation par <span class="it">studio.</span></h3>
+      <div class="scroll" id="dash-studios"></div>
+    </div>
+  </section>
+
+  <!-- ---------- HISTORIQUE (admin) ---------- -->
+  <section id="sec-history" style="display:none">
+    <div class="kick">( admin · <b>historique</b> )</div>
+    <h1 class="title">Toutes les <span class="it">réservations.</span></h1>
+    <p class="sub">L'historique complet, créateurs et marques, du plus récent au plus ancien.</p>
+    <div style="height:16px"></div>
+    <div id="hist-tabs" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px"></div>
+    <div class="panel">
+      <div class="scroll" id="tbl-history"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= MODALES ================= -->
+<div class="modal-bg" id="m-book">
+  <div class="modal">
+    <button class="x" data-close>×</button>
+    <h3>Poser un <span class="it">créneau.</span></h3>
+    <label class="f">Studio</label>
+    <select id="bk-studio"></select>
+    <label class="f">Date</label>
+    <input type="date" id="bk-date">
+    <div class="grid2">
+      <div><label class="f">Début</label><select id="bk-start"></select></div>
+      <div><label class="f">Fin</label><select id="bk-end"></select></div>
+    </div>
+    <label class="f">Projet (visible par les autres créateurs)</label>
+    <input type="text" id="bk-title" placeholder="Ex. Tournage recettes d'été" maxlength="80">
+    <div class="hint" id="bk-hint"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" data-close>Annuler</button>
+      <button class="btn" id="bk-go">Réserver</button>
+    </div>
+  </div>
+</div>
+
+<!-- admin : ajouter une résa marque / bloquer -->
+<div class="modal-bg" id="m-admin-book">
+  <div class="modal">
+    <button class="x" data-close>×</button>
+    <h3 id="ab-h">Ajouter au <span class="it">calendrier.</span></h3>
+    <p class="sub" id="ab-sub" style="margin-top:6px">Poser une réservation marque manuelle, ou bloquer un créneau (ménage, maintenance, tournage privé).</p>
+    <label class="f" id="ab-kind-label">Type</label>
+    <select id="ab-kind">
+      <option value="brand">Réservation marque</option>
+      <option value="block">Bloquer (indisponible)</option>
+    </select>
+    <label class="f">Studio</label>
+    <select id="ab-studio"></select>
+    <label class="f">Date</label>
+    <input type="date" id="ab-date">
+    <div class="grid2">
+      <div><label class="f">Début</label><select id="ab-start"></select></div>
+      <div><label class="f">Fin</label><select id="ab-end"></select></div>
+    </div>
+    <label class="f" id="ab-title-label">Libellé (nom de la marque)</label>
+    <input type="text" id="ab-title" placeholder="Ex. Nespresso · ou « ménage »" maxlength="80">
+    <div class="hint" id="ab-hint"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" data-close>Annuler</button>
+      <button class="btn" id="ab-go">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- admin : ajouter une vente / dépense au livre de comptes -->
+<div class="modal-bg" id="m-ledger">
+  <div class="modal">
+    <button class="x" data-close>×</button>
+    <h3 id="led-title">Ajouter une <span class="it">vente.</span></h3>
+    <label class="f">Libellé</label>
+    <input type="text" id="led-label" placeholder="Ex. location Studio Pro · achat Nespresso" maxlength="80">
+    <div class="grid2">
+      <div><label class="f">Montant (€ TTC)</label><input type="number" id="led-amount" min="0" step="1" placeholder="0"></div>
+      <div><label class="f">Date</label><input type="date" id="led-date"></div>
+    </div>
+    <label class="f">Studio concerné (facultatif)</label>
+    <select id="led-studio"><option value="">— aucun —</option></select>
+    <div class="hint" id="led-hint"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" data-close>Annuler</button>
+      <button class="btn" id="led-go">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- admin : message à tous les créateurs -->
+<div class="modal-bg" id="m-broadcast">
+  <div class="modal">
+    <button class="x" data-close>×</button>
+    <h3>Message aux <span class="it">créateurs.</span></h3>
+    <p class="sub" style="margin-top:6px">Un email part vers les créateurs choisis (via le webhook de notification).</p>
+    <label class="f">Destinataires</label>
+    <select id="bc-audience">
+      <option value="all">Tous les créateurs</option>
+      <option value="food">Créateurs Hiving Food</option>
+      <option value="hiving">Créateurs Hiving</option>
+    </select>
+    <label class="f">Objet</label>
+    <input type="text" id="bc-subject" placeholder="Ex. Studio Pro fermé lundi" maxlength="120">
+    <label class="f">Message</label>
+    <textarea id="bc-message" placeholder="Votre message…"></textarea>
+    <div class="hint" id="bc-hint"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" data-close>Annuler</button>
+      <button class="btn" id="bc-go">Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-evt">
+  <div class="modal">
+    <button class="x" data-close>×</button>
+    <h3 id="evt-title"></h3>
+    <p class="sub" id="evt-sub" style="margin-top:6px"></p>
+    <div id="evt-body"></div>
+    <div class="modal-actions" id="evt-actions"></div>
+  </div>
+</div>
+
+<!-- aperçu du devis (iframe) -->
+<div class="modal-bg" id="m-preview">
+  <div class="modal" style="max-width:900px; width:96%; padding:12px; overflow:hidden">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
+      <h3 style="margin:0">Aperçu du <span class="it">devis.</span></h3>
+      <span style="flex:1"></span>
+      <a class="btn ghost sm" id="preview-open" target="_blank" rel="noopener">Ouvrir en grand ↗</a>
+      <button class="btn ghost sm" data-close>Fermer</button>
+    </div>
+    <iframe id="preview-frame" title="Aperçu du devis" style="width:100%; height:76vh; border:1px solid var(--line); border-radius:14px; background:#fff"></iframe>
+  </div>
+</div>
+
+<!-- créateurs évincés (après confirmation marque) -->
+<div class="modal-bg" id="m-bumped">
+  <div class="modal">
+    <button class="x" data-close>×</button>
+    <h3>Créateurs à <span class="it">prévenir.</span></h3>
+    <p class="sub" style="margin-top:6px">Leur créneau a été libéré pour la marque. Un mail est déjà écrit pour chacun · un clic et c'est parti.</p>
+    <div id="bumped-list" style="margin-top:10px"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" data-close>Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- review bloquante : pas de fermeture possible -->
+<div class="modal-bg" id="m-review">
+  <div class="modal">
+    <span class="hand">2 minutes, promis ↓</span>
+    <h3>Votre retour sur le <span class="it">dernier créneau.</span></h3>
+    <p class="sub" id="rv-which" style="margin:6px 0 4px"></p>
+    <p class="hint">Obligatoire avant toute nouvelle réservation : c'est ce qui nous permet de garder les plateaux impeccables pour tout le monde.</p>
+    <label class="f">Propreté du plateau à votre arrivée</label>
+    <div class="review-stars" id="rv-clean"></div>
+    <label class="f">État du matériel / ustensiles</label>
+    <div class="review-stars" id="rv-equip"></div>
+    <label class="f">De la casse pendant votre créneau ?</label>
+    <div class="radio-row">
+      <input type="radio" name="rv-break" id="rv-break-no" value="no" checked><label for="rv-break-no">Non</label>
+      <input type="radio" name="rv-break" id="rv-break-yes" value="yes"><label for="rv-break-yes">Oui</label>
+    </div>
+    <label class="f">Il manque quelque chose ? (consommables, ustensiles…)</label>
+    <input type="text" id="rv-missing" placeholder="Ex. sel, sacs poubelle, essuie-tout… (laisser vide si rien)">
+    <label class="f">Votre note (obligatoire)</label>
+    <textarea id="rv-note" placeholder="« Tout était parfait » · ou dites-nous ce qui n'allait pas."></textarea>
+    <div class="hint" id="rv-hint"></div>
+    <div class="modal-actions">
+      <button class="btn" id="rv-go">Envoyer mon retour</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { CONFIG } from '../shared/config.js';
+import { api, fmt, toast, mockBanner } from '../shared/sb.js';
+
+mockBanner();
+const $ = id => document.getElementById(id);
+const OPEN = CONFIG.OPEN_HOUR, CLOSE = CONFIG.CLOSE_HOUR;
+
+let me = null, studios = [], curStudio = 'pro', weekStart = startOfWeek(new Date());
+let cacheBookings = [];
+
+function startOfWeek(d){ const x = new Date(d); const day = (x.getDay() + 6) % 7; x.setDate(x.getDate() - day); x.setHours(0,0,0,0); return x; }
+function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function iso(d){ return d.toISOString(); }
+// date du jour au format YYYY-MM-DD en heure LOCALE (toISOString décale d'un jour selon le fuseau)
+function ymd(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+const studioName = id => studios.find(s => s.id === id)?.name || id || '·';
+const isAdmin = () => me && me.role === 'admin';
+
+/* ---------- boot ---------- */
+async function boot(){
+  try { await bootFlow(); }
+  catch (e) {
+    // jamais d'écran blanc : on retombe sur le login avec un message + réessai
+    $('view-app').style.display = 'none';
+    $('view-login').style.display = '';
+    renderNav();
+    $('login-hint').innerHTML = `Connexion au serveur impossible pour le moment. <a href="#" id="retry-boot">Réessayer</a>`;
+    const rb = $('retry-boot'); if (rb) rb.onclick = ev => { ev.preventDefault(); location.reload(); };
+  }
+}
+async function bootFlow(){
+  if (location.hash.includes('type=recovery')){ openSetCode('recover'); return; }   // lien « code oublié »
+  studios = await api.studios();
+  me = await api.getSession();
+  if (me && me.notAllowed){
+    $('view-login').style.display = '';
+    $('login-hint').innerHTML = `L'email <b>${esc(me.email)}</b> n'est pas dans la liste des membres. Contactez-nous pour être ajouté.`;
+    await api.signOut();
+    me = null;
+    return;
+  }
+  if (!me){ $('view-login').style.display = ''; $('view-app').style.display = 'none'; renderNav(); return; }
+  if (me.needsCode){ openSetCode('first'); return; }   // 1re connexion : choisir son code
+  $('view-login').style.display = 'none';
+  $('view-app').style.display = '';
+  renderNav();
+  renderSectionNav();
+  renderTabs();
+  // pouvoirs admin dans le planning
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin() ? '' : 'none');
+  fillNoteStudios();
+  await refresh();
+  subscribeNotes();
+  await checkPendingReview();
+}
+
+function renderNav(){
+  $('nav-tag').textContent = isAdmin() ? 'espace équipe' : 'espace membres';
+  $('nav-right').innerHTML = me
+    ? `<span class="pill">${esc(me.name || me.email)}${isAdmin() ? ' · admin' : ''}</span>
+       <button class="btn ghost sm" id="btn-out">Déconnexion</button>`
+    : `<a class="btn ghost sm" href="../">← le site</a>`;
+  const out = $('btn-out');
+  if (out) out.onclick = async () => { await api.signOut(); location.reload(); };
+}
+
+/* ---------- sections (admin) ---------- */
+let section = 'planning';
+const SECTIONS = [
+  ['planning', 'Planning'],
+  ['gestion', 'Gestion'],
+  ['catalogue', 'Options'],
+  ['dashboard', 'Tableau de bord'],
+  ['history', 'Historique'],
+];
+function renderSectionNav(){
+  if (!isAdmin()){ $('section-nav').style.display = 'none'; return; }
+  $('section-nav').style.display = '';
+  $('section-nav').innerHTML = SECTIONS.map(([id, label]) =>
+    `<button class="pill ${id === section ? 'on' : ''}" data-sec="${id}">${label}</button>`).join('');
+  $('section-nav').querySelectorAll('[data-sec]').forEach(b => b.onclick = () => showSection(b.dataset.sec));
+}
+function showSection(name){
+  section = name;
+  ['planning', 'gestion', 'catalogue', 'dashboard', 'history'].forEach(s => { const el = $('sec-' + s); if (el) el.style.display = s === name ? '' : 'none'; });
+  renderSectionNav();
+  if (name === 'gestion') renderGestion();
+  if (name === 'catalogue') renderCatalogue();
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'history') renderHistory();
+}
+
+/* ---------- login : email + code + invitation ---------- */
+let loginMode = 'in';   // 'in' | 'invite' | 'reset' | 'recover'
+function setLoginMode(m){
+  loginMode = m;
+  const showEmail = m === 'in' || m === 'invite' || m === 'reset';
+  const showPw = m === 'in' || m === 'recover';       // « recover » = 1re connexion / code oublié : on montre les DEUX champs
+  const showPw2 = m === 'recover';
+  $('login-email').closest('form').querySelector('label[for=login-email]').style.display = showEmail ? '' : 'none';
+  $('login-email').style.display = showEmail ? '' : 'none';
+  $('pw-wrap').style.display = showPw ? '' : 'none';
+  $('pw2-wrap').style.display = showPw2 ? '' : 'none';
+  $('pw-label').textContent = m === 'recover' ? 'Choisissez votre code' : 'Votre code';
+  $('login-pw').autocomplete = m === 'recover' ? 'new-password' : 'current-password';
+  $('login-btn').textContent = m === 'invite' ? 'Recevoir mon lien →' : m === 'reset' ? 'Réinitialiser mon code →' : m === 'recover' ? 'Enregistrer mon code →' : 'Se connecter →';
+  $('to-signup').textContent = m === 'in' ? 'Première connexion ?' : "J'ai déjà un accès";
+  $('to-signup').style.display = m === 'recover' ? 'none' : '';
+  $('to-reset').style.display = (m === 'reset' || m === 'recover') ? 'none' : '';
+  $('login-hint').textContent = '';
+}
+$('to-signup').onclick = e => { e.preventDefault(); setLoginMode(loginMode === 'invite' ? 'in' : 'invite'); };
+$('to-reset').onclick   = e => { e.preventDefault(); setLoginMode('reset'); };
+
+const NOT_ALLOWED = "Cet email n'est pas dans la liste des membres de la maison. Écrivez à contact@hivingfood.fr pour être ajouté.";
+$('login-panel').onsubmit = async e => {
+  e.preventDefault();
+  const email = $('login-email').value.trim();
+  const pw = $('login-pw').value, pw2 = $('login-pw2').value;
+  if (loginMode !== 'recover' && !email.includes('@')){ $('login-hint').textContent = 'Entrez un email valide.'; return; }
+  $('login-btn').disabled = true;
+  try {
+    if (loginMode === 'invite'){
+      const r = await api.sendInvite(email);
+      if (r.mockInvite){ location.reload(); return; }   // démo : simule le clic sur le lien reçu
+      $('login-hint').innerHTML = `Un lien de validation vient de partir vers <b>${esc(email)}</b>. Cliquez dessus depuis cet appareil, puis choisissez votre code.`;
+    } else if (loginMode === 'reset'){
+      await api.resetPassword(email);
+      $('login-hint').innerHTML = 'Si un compte existe, un lien de réinitialisation vient de partir par mail.';
+    } else if (loginMode === 'recover'){
+      if (pw.length < 6){ $('login-hint').textContent = 'Choisissez un code un peu plus long.'; $('login-btn').disabled = false; return; }
+      if (pw !== pw2){ $('login-hint').textContent = 'Les deux codes ne correspondent pas.'; $('login-btn').disabled = false; return; }
+      await api.updatePassword(pw);
+      location.replace(location.pathname); return;   // enlève le #type=recovery et recharge
+    } else {
+      await api.signInPassword(email, pw);
+      location.reload(); return;
+    }
+  } catch (err) {
+    const m = err.message;
+    if (m === 'EMAIL_NOT_ALLOWED') $('login-hint').textContent = NOT_ALLOWED;
+    else if (m === 'BAD_CREDENTIALS') $('login-hint').innerHTML = 'Email ou code incorrect. <a href="#" id="hint-signup">Première connexion ?</a>';
+    else $('login-hint').textContent = esc(m);
+    const hs = $('hint-signup'); if (hs) hs.onclick = ev => { ev.preventDefault(); setLoginMode('invite'); };
+  }
+  $('login-btn').disabled = false;
+};
+api.onAuthChange(ev => { if (ev === 'PASSWORD_RECOVERY') openSetCode('recover'); });
+// écran « choisir son code » : 1re connexion (depuis le lien) ou code oublié
+function openSetCode(kind){
+  $('view-app').style.display = 'none';
+  $('view-login').style.display = '';
+  renderNav();
+  setLoginMode('recover');
+  $('login-hint').innerHTML = kind === 'first'
+    ? '<b>Bienvenue dans la maison !</b> Choisissez le code qui vous servira à vous connecter la prochaine fois.'
+    : '<b>Choisissez votre nouveau code</b>, il remplacera l\'ancien.';
+}
+
+/* ---------- tabs + calendrier ---------- */
+function renderTabs(){
+  $('studio-tabs').innerHTML = studios.map(s =>
+    `<button class="pill ${s.id === curStudio ? 'on' : ''}" data-s="${s.id}">${esc(s.name)}</button>`).join('');
+  $('studio-tabs').querySelectorAll('button').forEach(b =>
+    b.onclick = () => { curStudio = b.dataset.s; renderTabs(); renderCal(); });
+}
+
+let refreshEpoch = 0;
+async function refresh(){
+  const myEpoch = ++refreshEpoch;
+  const from = iso(weekStart), to = iso(addDays(weekStart, 7));
+  const bk = await api.bookings(from, to);
+  if (myEpoch !== refreshEpoch) return;   // une navigation plus récente a pris la main
+  cacheBookings = bk;
+  renderCal();
+  await renderAllState();
+  await renderNotes();
+  await renderMine();
+  await renderUrgent();
+}
+
+function renderCal(){
+  const days = [...Array(7)].map((_, i) => addDays(weekStart, i));
+  const today = new Date(); today.setHours(0,0,0,0);
+  $('wk-label').textContent = `${days[0].toLocaleDateString('fr-FR',{day:'numeric',month:'short'})} · ${days[6].toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}`;
+  const H = CLOSE - OPEN;
+  let head = '<div></div>' + days.map(d => {
+    const cls = d.getTime() === today.getTime() ? 'today' : d.getTime() < today.getTime() ? 'past' : '';
+    return `<div class="${cls}">${d.toLocaleDateString('fr-FR',{weekday:'short'})}<b>${d.getDate()}</b></div>`;
+  }).join('');
+  let hours = '<div class="cal-hours">' + [...Array(H)].map((_, i) => `<div>${OPEN + i}h</div>`).join('') + '</div>';
+  let cols = days.map(d => {
+    const d0 = new Date(d); d0.setHours(OPEN, 0, 0, 0);
+    const d1 = new Date(d); d1.setHours(CLOSE, 0, 0, 0);
+    const evts = cacheBookings.filter(b => b.studio_id === curStudio && b.status !== 'cancelled'
+      && new Date(b.starts_at) < d1 && new Date(b.ends_at) > d0);
+    const blocks = evts.map(b => {
+      const s = Math.max(new Date(b.starts_at).getTime(), d0.getTime());
+      const e = Math.min(new Date(b.ends_at).getTime(), d1.getTime());
+      const top = (s - d0.getTime()) / 3600000 * 34;
+      const h = Math.max(20, (e - s) / 3600000 * 34 - 2);
+      const mine = me && b.user_id === me.id;
+      const past = new Date(b.ends_at) < new Date();
+      const occupied = b.kind === 'brand' || b.kind === 'block';
+      const cls = occupied ? 'brand' : (mine ? 'mine' : '');
+      // les admins voient le détail ; les créateurs voient « réservé / indispo »
+      const who = b.kind === 'brand' ? (isAdmin() ? esc(b.title || 'Marque') : 'Réservé')
+        : b.kind === 'block' ? (isAdmin() ? esc(b.title || 'Bloqué') : 'Indispo')
+        : esc(b.profile?.name || 'Créateur');
+      const label = occupied ? '' : esc(b.title || '');
+      return `<div class="evt ${cls} ${past ? 'past' : ''}" data-id="${b.id}" style="top:${top}px;height:${h}px">
+        <small>${who}</small>${label}</div>`;
+    }).join('');
+    const past = new Date(d1) < new Date();
+    const dayPast = d.getTime() < today.getTime();
+    return `<div class="cal-day ${dayPast ? 'pastday' : ''}" data-day="${ymd(d)}" data-past="${past}" title="${past ? '' : 'Cliquez pour réserver ce créneau'}">${[...Array(H)].map(() => '<div class="hline"></div>').join('')}${blocks}</div>`;
+  }).join('');
+  $('cal').innerHTML = `<div class="cal-head">${head}</div><div class="cal-body">${hours}${cols}</div>`;
+  $('cal').querySelectorAll('.evt[data-id]').forEach(el => el.onclick = e => { e.stopPropagation(); openEvt(el.dataset.id); });
+  $('cal').querySelectorAll('.cal-day').forEach(col => col.onclick = e => {
+    if (e.target.closest('.evt') || col.dataset.past === 'true') return;
+    const hour = OPEN + Math.floor((e.clientY - col.getBoundingClientRect().top) / 34);
+    const clicked = new Date(col.dataset.day + 'T' + String(Math.max(OPEN, Math.min(CLOSE - 1, hour))).padStart(2,'0') + ':00:00');
+    const busy = cacheBookings.some(b => b.studio_id === curStudio && b.status !== 'cancelled'
+      && new Date(b.starts_at) <= clicked && new Date(b.ends_at) > clicked);
+    if (busy){ toast('Ce créneau est déjà pris · cliquez sur un trou libre.'); return; }
+    openBookAt(curStudio, col.dataset.day, hour);
+  });
+  renderState();
+}
+
+$('wk-prev').onclick = () => { weekStart = addDays(weekStart, -7); refresh(); };
+$('wk-next').onclick = () => { weekStart = addDays(weekStart, 7); refresh(); };
+
+/* ---------- vue d'ensemble tous studios ---------- */
+function relTime(isoStr){
+  const s = Math.floor((Date.now() - new Date(isoStr)) / 1000);
+  if (s < 3600) return 'il y a ' + Math.max(1, Math.floor(s / 60)) + ' min';
+  if (s < 86400) return 'il y a ' + Math.floor(s / 3600) + ' h';
+  const d = Math.floor(s / 86400);
+  return d === 1 ? 'hier' : 'il y a ' + d + ' jours';
+}
+async function renderAllState(){
+  const [open, last] = await Promise.all([ api.openSupplies().catch(() => []), api.allLastState().catch(() => []) ]);
+  const lastById = {}; last.forEach(l => lastById[l.studio_id] = l);
+  $('allstate-grid').innerHTML = studios.map(s => {
+    const items = open.filter(o => o.studio_id === s.id);
+    const l = lastById[s.id];
+    const alert = l && (l.stars_clean <= 2 || l.breakage || (l.missing && String(l.missing).trim()));
+    return `<div class="allstate-card">
+      <h5>${esc(s.name)} ${items.length ? `<span class="badge-alert">${items.length} manque${items.length > 1 ? 's' : ''}</span>` : ''}</h5>
+      ${items.length ? `<div class="hint" style="margin-bottom:6px">${items.slice(0, 5).map(i => esc(i.item)).join(' · ')}${items.length > 5 ? '…' : ''}</div>` : '<div class="hint" style="margin-bottom:6px">Rien à racheter 👌</div>'}
+      ${l ? `<div style="font-size:12.5px; line-height:1.45; border-left:3px solid ${alert ? 'var(--red)' : 'var(--lime-deep)'}; padding-left:9px">« ${esc(String(l.note).slice(0, 90))}${String(l.note).length > 90 ? '…' : ''} »<br><span class="hint">${esc(l.author)} · ${relTime(l.created_at)}</span></div>` : '<div class="hint">Aucun retour encore.</div>'}
+    </div>`;
+  }).join('');
+}
+
+/* ---------- mur des membres : notes partagées (temps réel) ---------- */
+function fillNoteStudios(){
+  $('note-studio').innerHTML = '<option value="">Studio concerné ? (facultatif)</option>'
+    + studios.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
+}
+let notesEpoch = 0;
+async function renderNotes(){
+  const myEpoch = ++notesEpoch;
+  let list;
+  try { list = await api.notesList(); }
+  catch (e) { return; }                              // erreur transitoire : on garde l'affichage actuel
+  if (myEpoch !== notesEpoch) return;                // un rendu plus récent a pris la main
+  $('notes-list').innerHTML = list.length ? list.map(n => `
+    <div class="booking-row" style="align-items:flex-start">
+      <div>
+        ${n.studio_name ? `<span class="pill">${esc(n.studio_name)}</span> ` : ''}<b>${esc(n.author)}</b> <span class="hint">· ${relTime(n.created_at)}</span>
+        <div style="margin-top:4px; font-size:14.5px; line-height:1.5; white-space:pre-wrap">${esc(n.body)}</div>
+      </div>
+      ${(me && (n.author_id === me.id || isAdmin())) ? `<button class="btn ghost sm" data-notedel="${esc(n.id)}" title="Supprimer">×</button>` : ''}
+    </div>`).join('') : '<div class="empty"><span class="hand">rien encore…</span>Lancez la discussion ↑</div>';
+  $('notes-list').querySelectorAll('[data-notedel]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try { await api.noteDelete(b.dataset.notedel); renderNotes(); }
+    catch (e) { toast(esc(e.message)); b.disabled = false; }
+  });
+}
+$('note-form').onsubmit = async e => {
+  e.preventDefault();
+  const body = $('note-body').value.trim();
+  if (body.length < 2) return;
+  const btn = $('note-form').querySelector('button[type=submit]');
+  btn.disabled = true;
+  try { await api.noteAdd(body, $('note-studio').value); $('note-body').value = ''; $('note-studio').value = ''; await renderNotes(); }
+  catch (err) { toast(esc(err.message)); }
+  btn.disabled = false;
+};
+let notesUnsub = null;
+async function subscribeNotes(){
+  if (notesUnsub) return;
+  notesUnsub = await api.onNotesChange(() => renderNotes()).catch(() => null);
+  if (notesUnsub && !CONFIG.MOCK) $('notes-live').style.display = '';
+}
+
+/* ---------- état du plateau sélectionné + consommables ---------- */
+async function renderState(){
+  const studio = curStudio;   // fige la cible : évite qu'un changement d'onglet pendant l'await mélange les données
+  const name = studios.find(s => s.id === studio)?.name || '';
+  $('state-studio').textContent = name;
+
+  const last = await api.lastState(studio).catch(() => null);
+  if (studio !== curStudio) return;
+  if (last){
+    const alert = last.stars_clean <= 2 || last.breakage || (last.missing && last.missing.trim());
+    $('last-note').innerHTML = `
+      <div style="border-left:3px solid ${alert ? 'var(--red)' : 'var(--lime-deep)'}; padding:2px 0 2px 12px">
+        <div style="font-size:14.5px; line-height:1.5">« ${esc(last.note)} »</div>
+        <div class="hint" style="margin-top:4px">${esc(last.author)} · ${relTime(last.created_at)} · propreté ${last.stars_clean}/5${last.breakage ? ' · <b style="color:var(--red)">casse signalée</b>' : ''}</div>
+      </div>`;
+  } else {
+    $('last-note').innerHTML = '<div class="hint">Aucun retour pour l\'instant sur ce plateau.</div>';
+  }
+
+  const sup = await api.supplies(studio).catch(() => []);
+  if (studio !== curStudio) return;
+  const open = sup.filter(s => s.status === 'open');
+  const done = sup.filter(s => s.status === 'done').slice(0, 5);
+  $('supplies-list').innerHTML = (open.length || done.length) ? `
+    ${open.map(s => `<div class="booking-row">
+      <div><b>${esc(s.item)}</b><br><span class="hint">signalé par ${esc(s.author)} · ${relTime(s.created_at)}${s.source === 'review' ? ' (fin de créneau)' : ''}</span></div>
+      <button class="btn ghost sm" data-done="${s.id}">Remis ✓</button>
+    </div>`).join('')}
+    ${done.map(s => `<div class="booking-row" style="opacity:.55">
+      <div><s>${esc(s.item)}</s><br><span class="hint">remis${s.resolver ? ' par ' + esc(s.resolver) : ''}</span></div>
+      <button class="btn ghost sm" data-open="${s.id}">rouvrir</button>
+    </div>`).join('')}` : '<div class="hint">Rien à racheter, le plateau est complet 👌</div>';
+  $('supplies-list').querySelectorAll('[data-done]').forEach(b => b.onclick = async () => {
+    try { await api.resolveSupply(b.dataset.done, true); renderState(); renderAllState(); } catch (e) { toast(esc(e.message)); }
+  });
+  $('supplies-list').querySelectorAll('[data-open]').forEach(b => b.onclick = async () => {
+    try { await api.resolveSupply(b.dataset.open, false); renderState(); renderAllState(); } catch (e) { toast(esc(e.message)); }
+  });
+}
+$('supply-form').onsubmit = async e => {
+  e.preventDefault();
+  const item = $('supply-input').value.trim();
+  if (item.length < 2) return;
+  try { await api.addSupply(curStudio, item); $('supply-input').value = ''; renderState(); renderAllState(); }
+  catch (err) { toast(esc(err.message)); }
+};
+
+/* ---------- détail créneau ---------- */
+function openEvt(id){
+  const b = cacheBookings.find(x => x.id === id);
+  if (!b) return;
+  const occupied = b.kind === 'brand' || b.kind === 'block';
+  // créateurs : pas de détail sur les créneaux marques/bloqués
+  if (occupied && !isAdmin()) return;
+  const mine = me && b.user_id === me.id;
+  const past = new Date(b.ends_at) < new Date();
+  $('evt-title').innerHTML = occupied ? (b.kind === 'brand' ? esc(b.title || 'Réservation marque') : esc(b.title || 'Créneau bloqué')) : esc(b.title || 'Tournage');
+  $('evt-sub').textContent = `${studioName(b.studio_id)} · ${fmt.range(b.starts_at, b.ends_at)} · ${occupied ? (b.kind === 'brand' ? 'marque' : 'indisponible') : (mine ? 'votre créneau' : (b.profile?.name || 'créateur'))}`;
+  let body = '', actions = '<button class="btn ghost" data-close>Fermer</button>';
+  if (isAdmin()){
+    if (!past) actions += `<button class="btn ghost" id="evt-adminedit">Éditer / déplacer</button>`;
+    actions += `<button class="btn danger" id="evt-admincancel">Retirer ce créneau</button>`;
+  } else if (mine && !past){
+    actions += '<button class="btn danger" id="evt-cancel">Annuler ce créneau</button>';
+  } else if (!mine && !past){
+    body = `<label class="f">Projet urgent ? Expliquez en une phrase :</label>
+      <textarea id="evt-msg" placeholder="Ex. collab avec X, deadline vendredi · possible d'échanger ?"></textarea>
+      <p class="hint">${esc(b.profile?.name || 'Le créateur')} recevra votre demande ici même et pourra accepter (le créneau devient le vôtre) ou refuser. Vous pouvez aussi le contacter en direct : <a href="mailto:${esc(b.profile?.email || '')}">${esc(b.profile?.email || '')}</a></p>`;
+    actions += '<button class="btn" id="evt-urgent">Envoyer la demande urgente</button>';
+  }
+  $('evt-body').innerHTML = body;
+  $('evt-actions').innerHTML = actions;
+  openModal('m-evt');
+  const ac = $('evt-admincancel');
+  if (ac) ac.onclick = async () => {
+    try { await api.adminCancel(b.id); closeModal('m-evt'); toast('Créneau retiré.'); refresh(); }
+    catch (e) { toast(esc(e.message)); }
+  };
+  const ae = $('evt-adminedit');
+  if (ae) ae.onclick = () => { closeModal('m-evt'); openAdminEdit(b); };
+  const c = $('evt-cancel');
+  if (c) c.onclick = async () => {
+    try { await api.cancelBooking(b.id); closeModal('m-evt'); toast('Créneau annulé.'); refresh(); }
+    catch (e) { toast(esc(e.message)); }
+  };
+  const u = $('evt-urgent');
+  if (u) u.onclick = async () => {
+    const msg = $('evt-msg').value.trim();
+    if (msg.length < 3){ toast('Expliquez votre besoin en une phrase.'); return; }
+    try { await api.createUrgent(b.id, msg); closeModal('m-evt'); toast('Demande envoyée à <b>' + esc(b.profile?.name || 'son détenteur') + '</b>.'); }
+    catch (e) { toast(esc(e.message)); }
+  };
+  $('m-evt').querySelectorAll('[data-close]').forEach(x => x.onclick = () => closeModal('m-evt'));
+}
+
+/* ---------- réservation créateur ---------- */
+function hourOptions(sel, defOffset){
+  const hours = [...Array(CLOSE - OPEN + 1)].map((_, i) => OPEN + i);
+  $(sel + '-start').innerHTML = hours.slice(0, -1).map(h => `<option value="${h}">${h}h00</option>`).join('');
+  $(sel + '-end').innerHTML = hours.slice(1).map(h => `<option value="${h}" ${h === OPEN + defOffset ? 'selected' : ''}>${h}h00</option>`).join('');
+}
+function fillBookModal(){
+  $('bk-studio').innerHTML = studios.map(s => `<option value="${s.id}" ${s.id === curStudio ? 'selected' : ''}>${esc(s.name)}</option>`).join('');
+  hourOptions('bk', 4);
+  const t = new Date(); t.setDate(t.getDate() + 1);
+  $('bk-date').value = ymd(t);
+  $('bk-date').min = ymd(new Date());
+  $('bk-hint').textContent = '';
+}
+$('btn-new').onclick = () => { fillBookModal(); openModal('m-book'); };
+function openBookAt(studioId, dateStr, hour){
+  fillBookModal();
+  $('bk-studio').value = studioId;
+  $('bk-date').value = dateStr;
+  const h0 = Math.max(OPEN, Math.min(CLOSE - 1, hour));
+  const h1 = Math.min(CLOSE, h0 + 4);
+  $('bk-start').value = h0; $('bk-end').value = h1;
+  openModal('m-book');
+}
+$('bk-go').onclick = async () => {
+  const d = $('bk-date').value;
+  const h0 = +$('bk-start').value, h1 = +$('bk-end').value;
+  if (!d){ $('bk-hint').textContent = 'Choisissez une date.'; return; }
+  if (h1 <= h0){ $('bk-hint').textContent = 'L\'heure de fin doit être après le début.'; return; }
+  const starts = new Date(d + 'T' + String(h0).padStart(2, '0') + ':00:00');
+  const ends = new Date(d + 'T' + String(h1).padStart(2, '0') + ':00:00');
+  if (starts < new Date()){ $('bk-hint').textContent = 'Ce créneau est déjà passé.'; return; }
+  $('bk-go').disabled = true;
+  try {
+    await api.createBooking({ studio_id: $('bk-studio').value, starts_at: iso(starts), ends_at: iso(ends), title: $('bk-title').value.trim() });
+    closeModal('m-book');
+    toast('Créneau réservé. <b>Bon tournage !</b>');
+    weekStart = startOfWeek(starts);
+    await refresh();
+  } catch (e) {
+    if (e.message === 'REVIEW_PENDING'){ closeModal('m-book'); await checkPendingReview(true); }
+    else $('bk-hint').textContent = e.message;
+  }
+  $('bk-go').disabled = false;
+};
+
+/* ---------- admin : ajouter / bloquer / déplacer ---------- */
+let abMode = 'create', abEditId = null;
+function abModeUI(){
+  const edit = abMode === 'edit';
+  $('ab-kind-label').style.display = edit ? 'none' : '';
+  $('ab-kind').style.display = edit ? 'none' : '';
+  $('ab-h').innerHTML = edit ? 'Déplacer / <span class="it">éditer.</span>' : 'Ajouter au <span class="it">calendrier.</span>';
+  $('ab-sub').textContent = edit
+    ? 'Changez le studio, la date, les horaires ou le libellé de ce créneau.'
+    : 'Poser une réservation marque manuelle, ou bloquer un créneau (ménage, maintenance, tournage privé).';
+  $('ab-go').textContent = edit ? 'Enregistrer' : 'Ajouter';
+}
+$('btn-admin-book').onclick = () => {
+  abMode = 'create'; abEditId = null;
+  $('ab-studio').innerHTML = studios.map(s => `<option value="${s.id}" ${s.id === curStudio ? 'selected' : ''}>${esc(s.name)}</option>`).join('');
+  hourOptions('ab', 4);
+  const t = new Date(); t.setDate(t.getDate() + 1);
+  $('ab-date').value = ymd(t);
+  $('ab-date').min = ymd(new Date());
+  $('ab-kind').value = 'brand'; abKindUI(); $('ab-title').value = ''; $('ab-hint').textContent = '';
+  abModeUI();
+  openModal('m-admin-book');
+};
+// éditer / déplacer un créneau existant (Google-Agenda-like)
+function openAdminEdit(b){
+  abMode = 'edit'; abEditId = b.id;
+  $('ab-studio').innerHTML = studios.map(s => `<option value="${s.id}" ${s.id === b.studio_id ? 'selected' : ''}>${esc(s.name)}</option>`).join('');
+  hourOptions('ab', 4);
+  const s = new Date(b.starts_at), e = new Date(b.ends_at);
+  $('ab-date').value = ymd(s);
+  $('ab-date').min = ymd(new Date());
+  $('ab-start').value = s.getHours();
+  $('ab-end').value = e.getHours();
+  $('ab-title').value = b.title || '';
+  $('ab-title-label').textContent = b.kind === 'block' ? 'Raison (facultatif)' : b.kind === 'creator' ? 'Créateur' : 'Libellé (nom de la marque)';
+  $('ab-hint').textContent = '';
+  abModeUI();
+  openModal('m-admin-book');
+}
+function abKindUI(){
+  const isBlock = $('ab-kind').value === 'block';
+  $('ab-title-label').textContent = isBlock ? 'Raison (facultatif)' : 'Libellé (nom de la marque)';
+  $('ab-title').placeholder = isBlock ? 'Ex. ménage, maintenance…' : 'Ex. Nespresso';
+}
+$('ab-kind').onchange = abKindUI;
+$('ab-go').onclick = async () => {
+  const d = $('ab-date').value;
+  const h0 = +$('ab-start').value, h1 = +$('ab-end').value;
+  if (!d){ $('ab-hint').textContent = 'Choisissez une date.'; return; }
+  if (h1 <= h0){ $('ab-hint').textContent = 'L\'heure de fin doit être après le début.'; return; }
+  const starts = new Date(d + 'T' + String(h0).padStart(2, '0') + ':00:00');
+  const ends = new Date(d + 'T' + String(h1).padStart(2, '0') + ':00:00');
+  const studio_id = $('ab-studio').value, title = $('ab-title').value.trim();
+  $('ab-go').disabled = true;
+  try {
+    if (abMode === 'edit'){
+      await api.adminMove({ id: abEditId, studio_id, starts_at: iso(starts), ends_at: iso(ends), title });
+      closeModal('m-admin-book');
+      toast('Créneau déplacé.');
+    } else {
+      const kind = $('ab-kind').value;
+      await api.adminBook({ studio_id, starts_at: iso(starts), ends_at: iso(ends), kind, title });
+      closeModal('m-admin-book');
+      toast(kind === 'block' ? 'Créneau bloqué.' : 'Réservation marque ajoutée.');
+    }
+    weekStart = startOfWeek(starts); curStudio = studio_id; renderTabs();
+    await refresh();
+  } catch (e) {
+    $('ab-hint').textContent = e.message === 'OVERLAP' ? 'Ce créneau chevauche une réservation existante.' : e.message;
+  }
+  $('ab-go').disabled = false;
+};
+
+/* ---------- admin : message à tous ---------- */
+$('btn-broadcast').onclick = () => { $('bc-subject').value = ''; $('bc-message').value = ''; $('bc-audience').value = 'all'; $('bc-hint').textContent = ''; openModal('m-broadcast'); };
+$('bc-go').onclick = async () => {
+  const subject = $('bc-subject').value.trim(), message = $('bc-message').value.trim(), audience = $('bc-audience').value;
+  if (subject.length < 2 || message.length < 3){ $('bc-hint').textContent = 'Ajoutez un objet et un message.'; return; }
+  $('bc-go').disabled = true;
+  try {
+    const n = await api.broadcast(subject, message, audience);
+    closeModal('m-broadcast');
+    toast(n ? `Message envoyé à <b>${n} créateur${n > 1 ? 's' : ''}</b>.` : 'Aucun créateur dans cette catégorie.');
+  } catch (e) { $('bc-hint').textContent = e.message; }
+  $('bc-go').disabled = false;
+};
+
+/* ---------- mes créneaux ---------- */
+async function renderMine(){
+  const list = await api.myBookings();
+  $('my-bookings').innerHTML = list.length ? list.slice(0, 8).map(b => {
+    const past = new Date(b.ends_at) < new Date();
+    const st = studios.find(s => s.id === b.studio_id)?.name || b.studio_id;
+    let badge = '';
+    if (b.status === 'bumped') badge = '<span class="pill alert">créneau repris (marque)</span>';
+    else if (past && !b.reviewed && b.status === 'active') badge = '<span class="pill alert">review à faire</span>';
+    else if (past) badge = '<span class="pill">terminé</span>';
+    return `<div class="booking-row">
+      <div><b>${esc(st)}</b> · ${fmt.range(b.starts_at, b.ends_at)}<br><span class="hint">${esc(b.title || '')}</span></div>
+      <div>${badge}</div></div>`;
+  }).join('') : '<div class="empty"><span class="hand">rien de prévu…</span>Réservez votre premier créneau ↑</div>';
+}
+
+/* ---------- urgences reçues / envoyées ---------- */
+async function renderUrgent(){
+  const inbox = (await api.urgentInbox()).filter(u => u.status === 'pending');
+  const sent = await api.urgentSent();
+  const cnt = $('urgent-count');
+  if (inbox.length){ cnt.style.display = ''; cnt.textContent = inbox.length + ' en attente'; } else cnt.style.display = 'none';
+  let html = '';
+  const bDate = u => u.booking ? fmt.date(u.booking.starts_at) : '·';
+  if (inbox.length){
+    html += inbox.map(u => `<div class="booking-row">
+      <div><b>${esc(u.requester?.name || 'Créateur')}</b> veut votre créneau du <b>${bDate(u)}</b><br>
+        <span class="hint">« ${esc(u.message)} »</span></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn sm" data-acc="${u.id}">Céder</button>
+        <button class="btn ghost sm" data-dec="${u.id}">Refuser</button>
+      </div></div>`).join('');
+  }
+  const sentPending = sent.filter(u => u.status === 'pending');
+  const sentDone = sent.filter(u => u.status !== 'pending').slice(0, 3);
+  if (sentPending.length) html += sentPending.map(u =>
+    `<div class="booking-row"><div>Votre demande sur le créneau du <b>${bDate(u)}</b><br><span class="hint">en attente de réponse…</span></div><span class="pill">envoyée</span></div>`).join('');
+  if (sentDone.length) html += sentDone.map(u =>
+    `<div class="booking-row"><div>Demande du ${bDate(u)}</div><span class="pill ${u.status === 'accepted' ? 'on' : ''}">${u.status === 'accepted' ? 'acceptée ✓' : u.status === 'declined' ? 'refusée' : 'annulée'}</span></div>`).join('');
+  $('urgent-list').innerHTML = html || '<div class="empty"><span class="hand">tout roule</span>Aucune demande en cours.</div>';
+  $('urgent-list').querySelectorAll('[data-acc]').forEach(b => b.onclick = async () => {
+    try { await api.respondUrgent(b.dataset.acc, true); toast('Créneau cédé · <b>merci pour lui !</b>'); refresh(); } catch (e) { toast(esc(e.message)); }
+  });
+  $('urgent-list').querySelectorAll('[data-dec]').forEach(b => b.onclick = async () => {
+    try { await api.respondUrgent(b.dataset.dec, false); toast('Demande refusée.'); refresh(); } catch (e) { toast(esc(e.message)); }
+  });
+}
+
+/* ═══════════════ SECTIONS ADMIN ═══════════════ */
+const BRAND_ST = { new: ['à traiter', 'pill alert'], confirmed: ['confirmée', 'pill on'], declined: ['déclinée', 'pill'] };
+const REL_ST = { pending: ['à traiter', 'pill alert'], resolved: ['résolue', 'pill on'], declined: ['déclinée', 'pill'] };
+const stPill = (map, s) => { const [t, c] = map[s] || [s, 'pill']; return `<span class="${c}">${esc(t)}</span>`; };
+const durLabel = r => r.duration === 'half' || r.duration === 'half-am' ? 'matin (8h à 14h)'
+  : r.duration === 'half-pm' ? 'après-midi (14h à 22h)'
+  : r.duration === 'custom' ? ('horaires : ' + (r.hours || 'à préciser'))
+  : (r.days > 1 ? `${r.days} jours` : 'journée complète');
+const KEEP = { asis: 'décor tel quel', modify: 'décor à modifier', unknown: 'décor ?' };
+const PROD = { hiving: 'prod hiving', self: 'prod en autonomie', unknown: 'prod ?' };
+const empty = (hand, msg) => `<div class="empty"><span class="hand">${hand}</span>${msg}</div>`;
+// email pré-rempli vers le client d'une demande marque
+function clientMailto(r){
+  const subj = encodeURIComponent(`Hiving Studio · ${studioName(r.studio_id)} — ${fmt.date(r.date)}`);
+  const body = encodeURIComponent(
+    `Bonjour ${r.contact_name || ''},\n\n` +
+    `Au sujet de votre demande de location du ${studioName(r.studio_id)} le ${fmt.dateFull(r.date)} (${durLabel(r)})` +
+    `${r.quote_number ? ', devis ' + r.quote_number : ''} :\n\n\n\n` +
+    `À très vite,\nL'équipe Hiving Studio`);
+  return `mailto:${esc(r.email)}?subject=${subj}&body=${body}`;
+}
+function openPreview(id){
+  const url = '../devis/?id=' + encodeURIComponent(id) + '&preview=1';
+  $('preview-frame').src = url;
+  $('preview-open').href = url;
+  openModal('m-preview');
+}
+
+/* ---------- gestion : marques + membres ---------- */
+async function renderGestion(){
+  const [brands, allowed, releases] = await Promise.all([ api.adminBrandRequests(), api.allowedList(), api.releaseList().catch(() => []) ]);
+  // marques
+  if (!brands.length){ $('tbl-marques').innerHTML = empty('rien à traiter…', 'Aucune demande de marque pour l\'instant.'); }
+  else $('tbl-marques').innerHTML = `<table class="tbl">
+    <thead><tr><th>Créée</th><th>Société</th><th>Plateau</th><th>Devis</th><th>Brief</th><th>Statut</th><th></th></tr></thead>
+    <tbody>${brands.map(r => `<tr>
+      <td>${fmt.date(r.created_at)}</td>
+      <td><b>${esc(r.company)}</b><br><span class="hint">${esc(r.contact_name)} · <a href="mailto:${esc(r.email)}">${esc(r.email)}</a>${r.phone ? ' · ' + esc(r.phone) : ''}</span></td>
+      <td><b>${esc(studioName(r.studio_id))}</b><br><span class="hint">${fmt.date(r.date)} · ${esc(durLabel(r))}</span></td>
+      <td><a href="../devis/?id=${esc(encodeURIComponent(r.id))}" target="_blank" rel="noopener">${esc(r.quote_number || '·')}</a><br><b>${r.quote_total == null ? 'Sur devis' : fmt.euro(r.quote_total)}</b></td>
+      <td><span class="pill">${esc(KEEP[r.keep_set] || r.keep_set)}</span> <span class="pill">${esc(PROD[r.production] || r.production)}</span>${r.needs && r.needs.trim() ? `<div class="hint" style="margin-top:6px">${esc(r.needs)}</div>` : ''}</td>
+      <td>${stPill(BRAND_ST, r.status)}</td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+        <button class="btn ghost sm" data-preview="${esc(r.id)}">Aperçu</button>
+        <a class="btn ghost sm" href="${clientMailto(r)}">Contacter</a>
+        ${r.status === 'new' ? `<button class="btn sm" data-confirm="${esc(r.id)}">Confirmer</button>
+          <button class="btn ghost sm" data-decline="${esc(r.id)}">Décliner</button>` : ''}
+        ${r.status === 'confirmed' ? `<button class="btn ghost sm" data-cancelbrand="${esc(r.id)}">Annuler la confirmation</button>` : ''}
+      </div></td>
+    </tr>`).join('')}</tbody></table>`;
+  $('tbl-marques').querySelectorAll('[data-preview]').forEach(b => b.onclick = () => openPreview(b.dataset.preview));
+  $('tbl-marques').querySelectorAll('[data-confirm]').forEach(b => b.onclick = async () => {
+    b.closest('td').querySelectorAll('button').forEach(x => x.disabled = true);
+    try {
+      const bumped = await api.adminConfirmBrand(b.dataset.confirm);
+      if (!bumped.length) toast('Confirmé · aucun créateur impacté.');
+      else { openBumped(bumped); toast(`Confirmé · ${bumped.length} créateur(s) à prévenir.`); }
+      renderGestion(); refresh();
+    } catch (e) { toast(esc(e.message)); b.closest('td').querySelectorAll('button').forEach(x => x.disabled = false); }
+  });
+  $('tbl-marques').querySelectorAll('[data-decline]').forEach(b => b.onclick = async () => {
+    b.closest('td').querySelectorAll('button').forEach(x => x.disabled = true);
+    try { await api.adminDeclineBrand(b.dataset.decline); toast('Demande déclinée.'); renderGestion(); }
+    catch (e) { toast(esc(e.message)); b.closest('td').querySelectorAll('button').forEach(x => x.disabled = false); }
+  });
+  $('tbl-marques').querySelectorAll('[data-cancelbrand]').forEach(b => b.onclick = async () => {
+    if (!window.confirm('Annuler la confirmation ? Le créneau sera libéré et la demande repassera « à traiter » (à re-confirmer ou décliner).')) return;
+    b.closest('td').querySelectorAll('button').forEach(x => x.disabled = true);
+    try { await api.adminCancelBrand(b.dataset.cancelbrand); toast('Confirmation annulée · demande de nouveau à traiter.'); renderGestion(); refresh(); }
+    catch (e) { toast(esc(e.message)); b.closest('td').querySelectorAll('button').forEach(x => x.disabled = false); }
+  });
+  // demandes de libération
+  if (!releases.length){ $('tbl-releases').innerHTML = empty('rien ici', 'Aucune demande de libération.'); }
+  else $('tbl-releases').innerHTML = `<table class="tbl">
+    <thead><tr><th>Reçue</th><th>Créneau demandé</th><th>Marque</th><th>Occupé par</th><th>Statut</th><th></th></tr></thead>
+    <tbody>${releases.map(r => `<tr class="${r.status !== 'pending' ? 'hist-off' : ''}">
+      <td>${fmt.date(r.created_at)}</td>
+      <td><b>${esc(r.studio_name || studioName(r.studio_id))}</b><br><span class="hint">${fmt.date(r.date)}</span></td>
+      <td>${esc(r.requester_company || '—')}<br><span class="hint"><a href="mailto:${esc(r.requester_email)}">${esc(r.requester_email)}</a></span>${r.message ? `<div class="hint" style="margin-top:6px">« ${esc(r.message)} »</div>` : ''}</td>
+      <td>${r.holder_kind === 'creator'
+        ? `<b>${esc(r.holder_name || 'Créateur')}</b>${r.holder_email ? `<br><span class="hint"><a href="mailto:${esc(r.holder_email)}">${esc(r.holder_email)}</a></span>` : ''}`
+        : `<span class="pill">${r.holder_kind === 'brand' ? 'Marque' : r.holder_kind === 'block' ? 'Blocage' : 'Inconnu'}</span>`}</td>
+      <td>${stPill(REL_ST, r.status)}</td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+        ${r.holder_kind === 'creator' && r.holder_email ? `<a class="btn ghost sm" href="mailto:${esc(r.holder_email)}?subject=${encodeURIComponent('Créneau ' + (r.studio_name || '') + ' du ' + fmt.date(r.date))}">Écrire au talent</a>` : ''}
+        ${r.status === 'pending' ? `<button class="btn sm" data-relok="${esc(r.id)}">Résolu</button>
+          <button class="btn ghost sm" data-reldecl="${esc(r.id)}">Décliner</button>` : ''}
+      </div></td>
+    </tr>`).join('')}</tbody></table>`;
+  $('tbl-releases').querySelectorAll('[data-relok]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try { await api.releaseResolve(b.dataset.relok, 'resolved'); toast('Demande marquée résolue.'); renderGestion(); }
+    catch (e) { toast(esc(e.message)); b.disabled = false; }
+  });
+  $('tbl-releases').querySelectorAll('[data-reldecl]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try { await api.releaseResolve(b.dataset.reldecl, 'declined'); toast('Demande déclinée.'); renderGestion(); }
+    catch (e) { toast(esc(e.message)); b.disabled = false; }
+  });
+  // membres
+  if (!allowed.length){ $('tbl-createurs').innerHTML = empty('personne ?', 'Ajoutez votre premier membre ci-dessus.'); }
+  else $('tbl-createurs').innerHTML = `<table class="tbl">
+    <thead><tr><th>Email</th><th>Nom</th><th>Rôle</th><th>Catégorie</th><th></th></tr></thead>
+    <tbody>${allowed.map(a => `<tr>
+      <td><a href="mailto:${esc(a.email)}">${esc(a.email)}</a></td>
+      <td>${esc(a.name || '·')}</td>
+      <td>${a.role === 'admin' ? '<span class="pill num">admin</span>' : '<span class="pill">créateur</span>'}</td>
+      <td>${a.role === 'admin' ? '<span class="hint">·</span>' : (a.house === 'hiving' ? '<span class="pill">Hiving</span>' : a.house === 'food' ? '<span class="pill on">Hiving Food</span>' : '<span class="hint">—</span>')}</td>
+      <td style="text-align:right">${a.role === 'admin' ? '' : `<button class="btn ghost sm" data-rm="${esc(a.email)}">Retirer</button>`}</td>
+    </tr>`).join('')}</tbody></table>`;
+  $('tbl-createurs').querySelectorAll('[data-rm]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try { await api.allowedRemove(b.dataset.rm); toast('Retiré de la liste.'); renderGestion(); }
+    catch (e) { toast(esc(e.message)); b.disabled = false; }
+  });
+}
+// la maison n'a de sens que pour un créateur
+$('add-role').onchange = () => { $('add-house').style.display = $('add-role').value === 'admin' ? 'none' : ''; };
+$('add-go').onclick = async () => {
+  const email = $('add-email').value.trim(), name = $('add-name').value.trim();
+  const role = $('add-role').value, house = $('add-house').value;
+  if (!email.includes('@')){ toast('Entrez un email valide.'); return; }
+  $('add-go').disabled = true;
+  try {
+    await api.allowedAdd(email, name, role, house);
+    const label = role === 'admin' ? 'admin' : (house === 'hiving' ? 'créateur Hiving' : 'créateur Hiving Food');
+    toast(`<b>${esc(name || email)}</b> ajouté (${label}) · il peut se connecter.`);
+    $('add-email').value = ''; $('add-name').value = '';
+    renderGestion();
+  } catch (e) { toast(esc(e.message)); }
+  $('add-go').disabled = false;
+};
+
+/* ---------- catalogue d'options (admin) ---------- */
+const OPT_CATS = { lumiere: 'Lumière', camera: 'Caméra', optique: 'Optique', accessoire: 'Accessoire', materiel: 'Matériel' };
+async function renderCatalogue(){
+  let list;
+  try { list = await api.options(); }
+  catch (e) { $('tbl-options').innerHTML = empty('catalogue indisponible', esc(e.message)); return; }
+  if (!list.length){ $('tbl-options').innerHTML = empty('catalogue vide', 'Ajoutez votre première option ci-dessus. (Sinon, appliquez upgrade-10.sql dans Supabase.)'); return; }
+  const catOpts = o => Object.entries(OPT_CATS).map(([v, l]) => `<option value="${v}"${o.category === v ? ' selected' : ''}>${l}</option>`).join('');
+  $('tbl-options').innerHTML = `<table class="tbl">
+    <thead><tr><th>Option</th><th>Prix €</th><th>Unité</th><th>Catégorie</th><th>Inclus</th><th>Actif</th><th></th></tr></thead>
+    <tbody>${list.map(o => `<tr data-id="${esc(o.id)}" data-sort="${o.sort || 0}">
+      <td><input class="ci" data-f="label" value="${esc(o.label)}" style="min-width:170px"></td>
+      <td><input class="ci" data-f="price" type="number" min="0" step="5" value="${o.price}"></td>
+      <td><select class="ci" data-f="unit"><option value="day"${o.unit !== 'flat' ? ' selected' : ''}>/ jour</option><option value="flat"${o.unit === 'flat' ? ' selected' : ''}>forfait</option></select></td>
+      <td><select class="ci" data-f="category">${catOpts(o)}</select></td>
+      <td style="text-align:center"><input class="ci" data-f="included" type="checkbox"${o.included ? ' checked' : ''}></td>
+      <td style="text-align:center"><input class="ci" data-f="active" type="checkbox"${o.active !== false ? ' checked' : ''}></td>
+      <td style="text-align:right; white-space:nowrap"><button class="btn sm" data-save>Enregistrer</button> <button class="btn ghost sm" data-del title="Retirer">×</button></td>
+    </tr>`).join('')}</tbody></table>`;
+  $('tbl-options').querySelectorAll('[data-save]').forEach(b => b.onclick = async () => {
+    const tr = b.closest('tr'); const g = f => tr.querySelector(`[data-f="${f}"]`);
+    const o = { id: tr.dataset.id, sort: +tr.dataset.sort || 0,
+      label: g('label').value, price: g('price').value, unit: g('unit').value, category: g('category').value,
+      included: g('included').checked, active: g('active').checked };
+    if (!o.label.trim()){ toast('Un nom est requis.'); return; }
+    b.disabled = true;
+    try { await api.optionSave(o); toast('Option enregistrée.'); renderCatalogue(); }
+    catch (e) { toast(esc(e.message)); b.disabled = false; }
+  });
+  $('tbl-options').querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+    const tr = b.closest('tr');
+    if (!window.confirm('Retirer cette option du catalogue ?')) return;
+    b.disabled = true;
+    try { await api.optionRemove(tr.dataset.id); toast('Option retirée.'); renderCatalogue(); }
+    catch (e) { toast(esc(e.message)); b.disabled = false; }
+  });
+}
+$('opt-add').onclick = async () => {
+  const label = $('opt-label').value.trim();
+  if (!label){ toast('Donnez un nom à l\'option.'); return; }
+  $('opt-add').disabled = true;
+  try {
+    await api.optionSave({ label, price: $('opt-price').value, unit: $('opt-unit').value, category: $('opt-cat').value, included: false, active: true, sort: 99 });
+    toast(`<b>${esc(label)}</b> ajouté au catalogue.`);
+    $('opt-label').value = ''; $('opt-price').value = '';
+    renderCatalogue();
+  } catch (e) { toast(esc(e.message)); }
+  $('opt-add').disabled = false;
+};
+
+function openBumped(list){
+  $('bumped-list').innerHTML = list.map(x => {
+    const name = x.bumped_name || x.bumped_email || 'Créateur';
+    const date = fmt.dateFull(x.bumped_start);
+    const subject = encodeURIComponent(`Hiving Studio · votre créneau du ${date}`);
+    const body = encodeURIComponent(`Bonjour ${name}, une marque a réservé le studio sur ton créneau du ${date}. Il a été libéré · tu peux te repositionner sur un autre créneau ici : https://hivingstudio.com/app/. Merci pour ta souplesse !`);
+    return `<div class="booking-row">
+      <div><b>${esc(name)}</b><br><span class="hint">créneau du ${esc(date)}</span></div>
+      <a class="btn sm" href="mailto:${esc(x.bumped_email || '')}?subject=${subject}&amp;body=${body}">Prévenir par mail</a>
+    </div>`;
+  }).join('');
+  openModal('m-bumped');
+}
+
+/* ---------- tableau de bord : revenus des studios ---------- */
+async function renderDashboard(){
+  const d = await api.dashboard().catch(() => null);
+  if (!d){ $('dash-kpis').innerHTML = ''; $('dash-studios').innerHTML = empty('rien à afficher', 'Tableau de bord indisponible.'); return; }
+  const income = Number(d.income_month || 0), expense = Number(d.expense_month || 0), net = income - expense;
+  $('dash-kpis').innerHTML = `
+    <div class="panel kpi"><div class="n ${net < 0 ? 'red' : ''}">${fmt.euro(net)}</div><div class="l">Solde du mois (ventes − dépenses)</div></div>
+    <div class="panel kpi"><div class="n">${fmt.euro(income)}</div><div class="l">Ventes du mois</div></div>
+    <div class="panel kpi"><div class="n">${fmt.euro(expense)}</div><div class="l">Dépenses du mois</div></div>`;
+  const per = d.per_studio || [];
+  $('dash-studios').innerHTML = per.length ? `<table class="tbl">
+    <thead><tr><th>Studio</th><th>Créneaux ce mois</th><th>dont créateurs</th></tr></thead>
+    <tbody>${per.map(s => `<tr><td><b>${esc(s.name)}</b></td><td>${s.bookings_month}</td><td>${s.creator_month}</td></tr>`).join('')}</tbody></table>` : '';
+  await renderLedger();
+}
+async function renderLedger(){
+  // borné au mois courant pour coller au « Solde du mois »
+  const now = new Date();
+  const from = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+  const to = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const toStr = `${to.getFullYear()}-${String(to.getMonth() + 1).padStart(2, '0')}-${String(to.getDate()).padStart(2, '0')}`;
+  const list = await api.ledgerList(from, toStr).catch(() => []);
+  if (!list.length){ $('dash-ledger').innerHTML = empty('rien encore…', 'Aucun mouvement ce mois-ci. Ajoutez une vente ou une dépense ci-dessus.'); return; }
+  $('dash-ledger').innerHTML = `<table class="tbl">
+    <thead><tr><th>Date</th><th>Libellé</th><th>Studio</th><th>Type</th><th style="text-align:right">Montant</th><th></th></tr></thead>
+    <tbody>${list.map(l => `<tr>
+      <td>${new Date(l.entry_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+      <td><b>${esc(l.label)}</b></td>
+      <td>${esc(l.studio_name && l.studio_name !== '—' ? l.studio_name : '·')}</td>
+      <td>${l.kind === 'income' ? '<span class="pill on">vente</span>' : '<span class="pill alert">dépense</span>'}</td>
+      <td style="text-align:right"><b>${l.kind === 'expense' ? '−' : '+'}${fmt.euro(l.amount)}</b></td>
+      <td style="text-align:right"><button class="btn ghost sm" data-del="${esc(l.id)}" title="Supprimer">×</button></td>
+    </tr>`).join('')}</tbody></table>`;
+  $('dash-ledger').querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try { await api.ledgerDelete(b.dataset.del); renderDashboard(); }
+    catch (e) { toast(esc(e.message)); b.disabled = false; }
+  });
+}
+let ledKind = 'income';
+function openLedger(kind){
+  ledKind = kind;
+  $('led-title').innerHTML = kind === 'income' ? 'Ajouter une <span class="it">vente.</span>' : 'Ajouter une <span class="it">dépense.</span>';
+  $('led-label').value = ''; $('led-amount').value = ''; $('led-hint').textContent = '';
+  $('led-date').value = ymd(new Date());
+  $('led-studio').innerHTML = '<option value="">— aucun —</option>' + studios.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  openModal('m-ledger');
+}
+$('led-income').onclick = () => openLedger('income');
+$('led-expense').onclick = () => openLedger('expense');
+$('led-go').onclick = async () => {
+  const label = $('led-label').value.trim(), amount = parseFloat($('led-amount').value);
+  if (!label){ $('led-hint').textContent = 'Ajoutez un libellé.'; return; }
+  if (!(amount >= 0)){ $('led-hint').textContent = 'Entrez un montant.'; return; }
+  $('led-go').disabled = true;
+  try {
+    await api.ledgerAdd({ kind: ledKind, amount, label, studio_id: $('led-studio').value, entry_date: $('led-date').value });
+    closeModal('m-ledger');
+    toast(ledKind === 'income' ? 'Vente ajoutée.' : 'Dépense ajoutée.');
+    renderDashboard();
+  } catch (e) { $('led-hint').textContent = e.message; }
+  $('led-go').disabled = false;
+};
+
+/* ---------- historique ---------- */
+let histStudio = null;
+const HIST_ST = { active: ['actif', 'pill'], cancelled: ['annulé', 'pill'], bumped: ['libéré', 'pill alert'] };
+const HIST_KIND = { creator: 'créateur', brand: 'marque', block: 'bloqué' };
+async function renderHistory(){
+  $('hist-tabs').innerHTML = [['', 'Tous'], ...studios.map(s => [s.id, s.name])].map(([id, label]) =>
+    `<button class="pill ${(histStudio || '') === id ? 'on' : ''}" data-h="${id}">${esc(label)}</button>`).join('');
+  $('hist-tabs').querySelectorAll('[data-h]').forEach(b => b.onclick = () => { histStudio = b.dataset.h || null; renderHistory(); });
+  const list = await api.history(histStudio, 200).catch(() => []);
+  if (!list.length){ $('tbl-history').innerHTML = empty('vide…', 'Aucune réservation dans l\'historique.'); return; }
+  $('tbl-history').innerHTML = `<table class="tbl">
+    <thead><tr><th>Quand</th><th>Studio</th><th>Type</th><th>Qui</th><th>Statut</th></tr></thead>
+    <tbody>${list.map(b => `<tr class="${(b.status === 'cancelled' || b.status === 'bumped') ? 'hist-off' : ''}">
+      <td>${fmt.range(b.starts_at, b.ends_at)}</td>
+      <td>${esc(b.studio_name || studioName(b.studio_id))}</td>
+      <td>${esc(HIST_KIND[b.kind] || b.kind)}</td>
+      <td>${esc(b.who || '·')}</td>
+      <td>${stPill(HIST_ST, b.status)}</td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+/* ---------- review bloquante ---------- */
+let pendingList = [], stars = { clean: 0, equip: 0 };
+function starWidget(el, key){
+  el.innerHTML = [1,2,3,4,5].map(i => `<span data-v="${i}">★</span>`).join('');
+  el.querySelectorAll('span').forEach(s => s.onclick = () => {
+    stars[key] = +s.dataset.v;
+    el.querySelectorAll('span').forEach(x => x.classList.toggle('on', +x.dataset.v <= stars[key]));
+  });
+}
+async function checkPendingReview(forceOpen){
+  pendingList = await api.pendingReviews();
+  if (!pendingList.length){ closeModal('m-review'); return; }
+  const b = pendingList[0];
+  const st = studios.find(s => s.id === b.studio_id)?.name || b.studio_id;
+  $('rv-which').innerHTML = `<b>${esc(st)}</b> · ${fmt.range(b.starts_at, b.ends_at)}${pendingList.length > 1 ? ` <span class="pill alert">+${pendingList.length - 1} autre(s) ensuite</span>` : ''}`;
+  stars = { clean: 0, equip: 0 };
+  starWidget($('rv-clean'), 'clean');
+  starWidget($('rv-equip'), 'equip');
+  $('rv-missing').value = ''; $('rv-note').value = ''; $('rv-hint').textContent = '';
+  openModal('m-review');
+}
+$('rv-go').onclick = async () => {
+  if (!stars.clean || !stars.equip){ $('rv-hint').textContent = 'Notez la propreté et le matériel (étoiles).'; return; }
+  const note = $('rv-note').value.trim();
+  if (note.length < 3){ $('rv-hint').textContent = 'La note est obligatoire · « Tout était parfait » suffit.'; return; }
+  $('rv-go').disabled = true;
+  try {
+    await api.submitReview({
+      booking_id: pendingList[0].id,
+      stars_clean: stars.clean, stars_equipment: stars.equip,
+      breakage: $('rv-break-yes').checked, missing: $('rv-missing').value.trim(), note,
+    });
+    toast('Merci ! <b>Retour bien reçu.</b>');
+    await checkPendingReview();
+    renderMine();
+    renderState();
+    renderAllState();
+  } catch (e) { $('rv-hint').textContent = e.message; }
+  $('rv-go').disabled = false;
+};
+
+/* ---------- modales ---------- */
+function openModal(id){ $(id).classList.add('on'); }
+function closeModal(id){ $(id).classList.remove('on'); }
+document.querySelectorAll('#m-book [data-close], #m-admin-book [data-close], #m-ledger [data-close], #m-broadcast [data-close], #m-bumped [data-close], #m-preview [data-close]').forEach(x =>
+  x.onclick = () => x.closest('.modal-bg').classList.remove('on'));
+document.querySelectorAll('.modal-bg').forEach(bg => bg.addEventListener('click', e => {
+  if (e.target === bg && bg.id !== 'm-review') bg.classList.remove('on');
+}));
+
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+/* Hiving Studio — design system plateforme (DA maison, côté lumière) */
+@import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Caveat:wght@500;600&display=swap');
+
+:root{
+  --paper:#faf9f4; --cream:#f1ecdf; --ink:#111009; --ink-dim:rgba(17,16,9,.66); --ink-faint:rgba(17,16,9,.42);
+  --lime:#d4e85a; --lime-deep:#b5d039; --line:rgba(17,16,9,.14);
+  --red:#c04e2f; --red-bg:#f7e5df;
+  --display:'Familjen Grotesk',sans-serif; --serif:'Fraunces',serif; --mono:'Familjen Grotesk',sans-serif; --hand:'Caveat',cursive;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --squig-a:18px 7px 20px 9px / 9px 20px 7px 18px;
+  --squig-b:8px 19px 9px 21px / 20px 8px 22px 9px;
+  --squig-btn:22px 10px 24px 13px / 13px 22px 10px 24px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper); color:var(--ink); font-family:var(--display); min-height:100vh}
+::selection{background:var(--lime)}
+img{display:block} a{color:inherit}
+button{font:inherit; cursor:pointer}
+
+/* nav */
+.nav{position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:14px clamp(16px,3vw,40px); background:rgba(250,249,244,.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.logo{font-weight:700; font-size:18px; letter-spacing:-.02em; text-decoration:none; white-space:nowrap}
+.logo em{font-family:var(--serif); font-style:italic; font-weight:500}
+.logo .dot{color:var(--lime-deep)}
+.logo small{font-family:var(--mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-top:-2px}
+.nav-right{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+
+/* boutons */
+.btn{display:inline-flex; align-items:center; gap:8px; background:var(--lime); color:var(--ink); border:1.5px solid var(--ink);
+  border-radius:var(--squig-btn); padding:10px 18px; font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  text-decoration:none; box-shadow:2px 2px 0 var(--ink); transition:transform .2s, box-shadow .2s}
+.btn:hover{transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--ink)}
+.btn.ghost{background:transparent; box-shadow:none; border-color:var(--line); color:var(--ink-dim)}
+.btn.ghost:hover{transform:none; border-color:var(--ink); color:var(--ink)}
+.btn.danger{background:var(--red-bg); border-color:var(--red); color:var(--red); box-shadow:2px 2px 0 var(--red)}
+.btn:disabled{opacity:.45; pointer-events:none}
+.btn.sm{padding:7px 13px; font-size:10px}
+
+/* structure */
+.wrap{max-width:1240px; margin:0 auto; padding:clamp(22px,4vh,44px) clamp(16px,3vw,40px)}
+.kick{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:12px}
+.kick::before{content:''; width:30px; height:1px; background:var(--ink-faint)}
+.kick b{color:var(--lime-deep); font-weight:500}
+h1.title{font-size:clamp(30px,4.4vw,52px); letter-spacing:-.03em; line-height:1.02; font-weight:700; margin-bottom:10px}
+h1.title .it{font-family:var(--serif); font-style:italic; font-weight:400}
+h1.title .hl{background:linear-gradient(transparent 60%, var(--lime) 60%, var(--lime) 94%, transparent 94%)}
+.sub{color:var(--ink-dim); font-size:15px; line-height:1.6; max-width:60ch}
+.hand{font-family:var(--hand); font-size:21px; color:var(--lime-deep); transform:rotate(-2deg); display:inline-block}
+
+/* cartes & panneaux */
+.panel{border:1px solid var(--line); border-radius:18px; background:#fff8; padding:22px}
+.panel + .panel{margin-top:14px}
+.panel h3{font-size:19px; letter-spacing:-.01em; margin-bottom:6px}
+.panel h3 .it{font-family:var(--serif); font-style:italic; font-weight:400}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+@media (max-width:900px){ .grid2,.grid3{grid-template-columns:1fr} }
+
+/* pills / chips / badges */
+.pill{font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; border:1px solid var(--ink-faint); border-radius:var(--squig-a); padding:6px 12px; color:var(--ink-dim); background:#fff6; display:inline-block}
+.pill.on{background:var(--lime); color:var(--ink); border-color:var(--ink)}
+.pill.num{background:var(--ink); color:var(--lime); border-color:var(--ink)}
+.pill.alert{background:var(--red-bg); color:var(--red); border-color:var(--red)}
+.stars{color:var(--lime-deep); letter-spacing:2px}
+
+/* formulaires */
+label.f{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); margin:14px 0 6px}
+input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select,textarea{
+  width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff;
+  font-family:var(--display); font-size:15px; color:var(--ink); outline:none; transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--lime-deep)}
+textarea{min-height:88px; resize:vertical}
+.radio-row{display:flex; gap:8px; flex-wrap:wrap}
+.radio-row label:nth-of-type(2n){border-radius:var(--squig-a); transform:rotate(.5deg)}
+.radio-row label:nth-of-type(2n+1){transform:rotate(-.4deg)}
+.radio-row input{display:none}
+.radio-row label{cursor:pointer; font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+  border:1px solid var(--line); border-radius:var(--squig-b); padding:9px 15px; color:var(--ink-dim); background:#fff6; transition:all .2s}
+.radio-row input:checked + label{background:var(--lime); color:var(--ink); border-color:var(--ink)}
+.hint{font-size:12.5px; color:var(--ink-faint); margin-top:6px}
+
+/* calendrier hebdo */
+.cal{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff}
+.cal-head{display:grid; grid-template-columns:52px repeat(7,1fr); border-bottom:1px solid var(--line); background:var(--cream)}
+.cal-head div{padding:9px 4px; text-align:center; font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-dim)}
+.cal-head div b{display:block; font-size:13px; color:var(--ink); font-family:var(--display); letter-spacing:0}
+.cal-head div.today b{color:var(--lime-deep)}
+.cal-head div.past{opacity:.5}
+.cal-head div.past b{text-decoration:line-through; color:var(--ink-faint)}
+.cal-body{display:grid; grid-template-columns:52px repeat(7,1fr); position:relative}
+.cal-hours{display:flex; flex-direction:column}
+.cal-hours div{height:34px; font-family:var(--mono); font-size:9px; color:var(--ink-faint); text-align:right; padding:2px 6px 0 0; border-top:1px solid rgba(17,16,9,.05)}
+.cal-day{position:relative; border-left:1px solid rgba(17,16,9,.07); cursor:pointer}
+.cal-day[data-past="true"]{cursor:default}
+.cal-day.pastday{background:rgba(17,16,9,.04)}
+.cal-day .hline{height:34px; border-top:1px solid rgba(17,16,9,.05); transition:background .12s}
+/* survol façon agenda : l'heure pointée s'allume pour montrer qu'on peut cliquer pour poser un créneau */
+.cal-day:not([data-past="true"]) .hline:hover{background:rgba(212,232,90,.5)}
+.evt{position:absolute; left:3px; right:3px; border-radius:8px; padding:5px 7px; font-size:11px; line-height:1.25; overflow:hidden;
+  background:var(--lime); border:1px solid var(--ink); cursor:pointer}
+.evt small{display:block; font-family:var(--mono); font-size:8.5px; letter-spacing:.05em; color:rgba(17,16,9,.65); text-transform:uppercase}
+.evt.mine{background:var(--cream)}
+.evt.brand{background:var(--ink); color:var(--paper); cursor:default}
+.evt.brand small{color:rgba(250,249,244,.6)}
+.evt.past{opacity:.45; cursor:default}
+
+/* modal */
+.modal-bg{position:fixed; inset:0; background:rgba(17,16,9,.5); backdrop-filter:blur(4px); z-index:100; display:none; align-items:center; justify-content:center; padding:16px}
+.modal-bg.on{display:flex}
+.modal{background:var(--paper); border-radius:20px; padding:26px; width:min(560px, 100%); max-height:88vh; overflow:auto; box-shadow:0 40px 90px -30px rgba(17,16,9,.6)}
+.modal h3{font-size:22px; letter-spacing:-.02em; margin-bottom:4px}
+.modal h3 .it{font-family:var(--serif); font-style:italic; font-weight:400}
+.modal .x{float:right; background:none; border:none; font-size:22px; color:var(--ink-faint); cursor:pointer}
+.modal-actions{display:flex; gap:10px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap}
+
+/* divers */
+.toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper);
+  border-radius:var(--squig-btn); padding:12px 22px; font-family:var(--mono); font-size:11px; letter-spacing:.08em; z-index:200;
+  opacity:0; transition:opacity .3s; pointer-events:none; max-width:90vw; text-align:center}
+.toast.on{opacity:1}
+.toast b{color:var(--lime)}
+.empty{padding:34px; text-align:center; color:var(--ink-faint); font-size:14px}
+.empty .hand{font-size:24px; display:block; margin-bottom:6px}
+table.tbl{width:100%; border-collapse:collapse; font-size:13.5px}
+table.tbl th{font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); text-align:left; padding:8px 10px; border-bottom:1px solid var(--line)}
+table.tbl td{padding:10px; border-bottom:1px solid rgba(17,16,9,.07); vertical-align:top}
+.mock-banner{background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; text-align:center; padding:7px}
+.mock-banner b{color:var(--lime)}

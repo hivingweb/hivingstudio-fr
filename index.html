@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Studio cuisine Paris · 2 plateaux food à louer · Hiving Studio Clichy</title>
+<meta name="description" content="Visitez les 2 plateaux food & photo de Hiving Studio à Clichy comme si vous y étiez, puis réservez en ligne : devis instantané pour les marques, calendrier dédié pour les créateurs. Dès 800 € / jour.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://hivingstudio.com/">
+<link rel="icon" href="favicon.svg?v=hf" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hiving Studio">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://hivingstudio.com/">
+<meta property="og:title" content="Hiving Studio · visitez les 2 plateaux, réservez en ligne">
+<meta property="og:description" content="Studio Pro, Studio Famille : une visite immersive, une réservation en ligne. À 8 minutes de Saint-Lazare. 7j/7 · dès 800 € / jour.">
+<meta property="og:image" content="https://hivingstudio.com/img/ph/pro-1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Hiving Studio",
+  "description": "2 plateaux food & photo à louer à Clichy : Studio Pro, Studio Famille. Réservation en ligne.",
+  "url": "https://hivingstudio.com/",
+  "email": "contact@hivingfood.fr",
+  "image": "https://hivingstudio.com/img/ph/pro-1.jpg",
+  "priceRange": "800€-1000€ / jour",
+  "openingHours": "Mo-Su 08:00-22:00",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "4-10 rue Mozart",
+    "postalCode": "92110",
+    "addressLocality": "Clichy",
+    "addressCountry": "FR"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf9f4; --cream:#f1ecdf; --ink:#111009; --ink-dim:rgba(17,16,9,.66); --ink-faint:rgba(17,16,9,.42);
+    --lime:#d4e85a; --lime-deep:#b5d039; --line:rgba(17,16,9,.14);
+    --display:'Familjen Grotesk',sans-serif; --serif:'Fraunces',serif; --mono:'Familjen Grotesk',sans-serif; --hand:'Caveat',cursive;
+    --ease:cubic-bezier(.22,1,.36,1);
+    /* bulles gribouillis : rayons irréguliers, comme tracé au feutre */
+    --squig-a:18px 7px 20px 9px / 9px 20px 7px 18px;
+    --squig-b:8px 19px 9px 21px / 20px 8px 22px 9px;
+    --squig-btn:22px 10px 24px 13px / 13px 22px 10px 24px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:var(--display); overflow-x:hidden}
+  ::selection{background:var(--lime)}
+  img,video{display:block} a{color:inherit}
+  button{font:inherit; cursor:pointer}
+
+  /* ---------- STRIP + NAV ---------- */
+  .strip{background:var(--ink); color:var(--paper); overflow:hidden; padding:8px 0; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase}
+  .strip__in{display:flex; gap:48px; white-space:nowrap; animation:mq 28s linear infinite; width:max-content}
+  .strip b{color:var(--lime); font-weight:500}
+  @keyframes mq{to{transform:translateX(-50%)}}
+  nav.bar{position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px clamp(20px,4vw,54px); background:rgba(250,249,244,.88); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+  .logo{font-weight:700; font-size:19px; letter-spacing:-.02em; text-decoration:none; white-space:nowrap}
+  .logo em{font-family:var(--serif); font-style:italic; font-weight:500}
+  .logo .dot{color:var(--lime-deep)}
+  .nav-l{display:flex; gap:26px; font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase}
+  .nav-l a{text-decoration:none; color:var(--ink-dim); transition:color .25s}
+  .nav-l a:hover{color:var(--ink)}
+  .nav-r{display:flex; gap:10px; align-items:center}
+  .cta{display:inline-flex; align-items:center; gap:9px; background:var(--lime); color:var(--ink); border:1.5px solid var(--ink); border-radius:var(--squig-btn); padding:11px 20px; font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; box-shadow:2px 2px 0 var(--ink); transition:transform .2s, box-shadow .2s; white-space:nowrap}
+  .cta:hover{transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--ink)}
+  .cta.ghost{background:transparent; box-shadow:none; border-color:var(--line); color:var(--ink-dim)}
+  .cta.ghost:hover{transform:none; border-color:var(--ink); color:var(--ink)}
+
+  /* ---------- HERO éditorial : galerie photo déroulante ---------- */
+  .hero{position:relative; display:grid; grid-template-columns:1.04fr .96fr; gap:clamp(26px,4vw,58px); align-items:center; max-width:1400px; margin:0 auto; padding:clamp(42px,6.5vh,84px) clamp(20px,4vw,54px) clamp(44px,7vh,80px)}
+  .kick{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:22px}
+  .kick::before{content:''; width:34px; height:1px; background:var(--ink-faint)}
+  h1{font-size:clamp(44px,6.3vw,86px); line-height:.98; letter-spacing:-.035em; font-weight:700}
+  h1 .it{font-family:var(--serif); font-style:italic; font-weight:400; letter-spacing:-.02em}
+  .hero .sub{font-size:17.5px; line-height:1.6; color:var(--ink-dim); max-width:46ch; margin:26px 0 30px}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:34px}
+  .badge{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; border:1px solid var(--ink-faint); border-radius:var(--squig-a); padding:8px 14px; color:var(--ink-dim); background:#fff6}
+  .badge:nth-child(1){transform:rotate(-.8deg)}
+  .badge:nth-child(2){border-radius:var(--squig-b); transform:rotate(.7deg)}
+  .badge:nth-child(3){transform:rotate(-.5deg)}
+  .hero-cta{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+  .hero-scroll{font-family:var(--hand); font-size:22px; color:var(--ink-dim); transform:rotate(-3deg); margin-top:20px}
+  .hero-scroll b{color:var(--lime-deep)}
+  .hand{font-family:var(--hand); font-size:22px; color:var(--ink-dim); transform:rotate(-3deg)}
+  .hand b{color:var(--lime-deep)}
+
+  /* galerie : petites photos qui glissent doucement (2 colonnes, sens opposés) */
+  .hero-gallery{position:relative; height:min(560px,74vh); display:flex; gap:14px; overflow:hidden;
+    -webkit-mask-image:linear-gradient(to bottom, transparent, #000 11%, #000 89%, transparent);
+    mask-image:linear-gradient(to bottom, transparent, #000 11%, #000 89%, transparent)}
+  .hg-col{flex:1; display:flex; flex-direction:column; gap:14px; will-change:transform; animation:hgUp 22s linear infinite}
+  .hg-col.down{animation-name:hgDown; animation-duration:26s}
+  .hero-gallery:hover .hg-col{animation-play-state:paused}
+  .hg-ph{flex:0 0 auto; position:relative; border-radius:16px; overflow:hidden; border:6px solid #fff; box-shadow:0 22px 44px -26px rgba(17,16,9,.42); background:#fff}
+  .hg-ph img{width:100%; aspect-ratio:4/5; object-fit:cover; display:block; transition:transform .6s var(--ease)}
+  .hg-ph:hover img{transform:scale(1.05)}
+  .hg-ph b{position:absolute; left:9px; bottom:9px; font-family:var(--mono); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); background:rgba(250,249,244,.92); border-radius:var(--squig-b); padding:5px 9px; font-weight:500}
+  @keyframes hgUp{from{transform:translateY(0)} to{transform:translateY(-50%)}}
+  @keyframes hgDown{from{transform:translateY(-50%)} to{transform:translateY(0)}}
+  /* titre : révélation mot à mot + surligneur qui se dessine */
+  .hero h1 .w{display:inline-block; overflow:hidden; vertical-align:bottom}
+  .hero h1 .w > span{display:inline-block; transform:translateY(112%); transition:transform .85s var(--ease)}
+  .hero.in h1 .w > span{transform:none}
+  h1 .hl{background:linear-gradient(var(--lime), var(--lime)) no-repeat 0 62%; background-size:0% 32%; transition:background-size .65s var(--ease) 1s}
+  .hero.in h1 .hl{background-size:100% 32%}
+  .hero .rise{opacity:0; transform:translateY(20px); transition:opacity .7s var(--ease), transform .7s var(--ease)}
+  .hero.in .rise{opacity:1; transform:none}
+
+  /* ---------- VISITE (chapitres vidéo scrubbés) ---------- */
+  #visite{position:relative; background:var(--ink)}
+  .seg{position:relative}
+  .seg .stick{position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden; background:var(--ink)}
+  .seg video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+  .seg .veil{position:absolute; inset:0; background:var(--ink); opacity:0; pointer-events:none}
+  .seg .grain{position:absolute; inset:-8px; pointer-events:none; opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .seg .vig{position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 50% 46%, transparent 55%, rgba(17,16,9,.35) 100%)}
+
+  .ch-open{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; text-align:center; pointer-events:none; opacity:0}
+  .ch-open .k{font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--lime)}
+  .ch-open .t{font-size:clamp(46px,7.5vw,104px); font-weight:700; letter-spacing:-.035em; color:var(--paper); line-height:1; text-shadow:0 6px 60px rgba(17,16,9,.6)}
+  .ch-open .t em{font-family:var(--serif); font-style:italic; font-weight:400}
+  .ch-open .h{font-family:var(--hand); font-size:clamp(20px,2.4vw,28px); color:var(--lime); transform:rotate(-2deg)}
+
+  .cap{position:absolute; left:clamp(20px,5vw,72px); bottom:clamp(64px,12vh,120px); max-width:min(560px, 80vw); pointer-events:none; opacity:0; transform:translateY(24px)}
+  .cap .txt{font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(28px,3.6vw,46px); line-height:1.15; letter-spacing:-.01em; color:var(--paper); text-shadow:0 3px 30px rgba(17,16,9,.65)}
+  .cap .txt b{color:var(--lime); font-weight:400}
+  .cap .sub2{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:rgba(250,249,244,.75); margin-top:12px}
+
+  .scard{position:absolute; right:clamp(16px,3vw,40px); bottom:clamp(16px,4vh,40px); width:min(330px, calc(100vw - 32px)); background:rgba(250,249,244,.96); backdrop-filter:blur(10px); border-radius:16px; padding:20px 22px 18px; box-shadow:0 30px 70px -25px rgba(17,16,9,.55); opacity:0; transform:translateY(26px); pointer-events:none}
+  .scard.on{pointer-events:auto}
+  .scard .num{display:inline-block; font-family:var(--mono); font-size:10px; background:var(--ink); color:var(--lime); border-radius:999px; padding:5px 11px; letter-spacing:.12em; margin-bottom:10px}
+  .scard h3{font-size:25px; font-weight:700; letter-spacing:-.03em; line-height:1}
+  .scard h3 .it{font-family:var(--serif); font-style:italic; font-weight:400}
+  .scard .tag{font-family:var(--hand); font-size:20px; color:var(--lime-deep); margin:3px 0 10px}
+  .scard .specs{display:flex; gap:18px; margin-bottom:11px}
+  .scard .spec .v{font-weight:700; font-size:15px}
+  .scard .spec .k{font-family:var(--mono); font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px}
+  .scard .row{display:flex; align-items:center; justify-content:space-between; gap:12px; border-top:1px solid var(--line); padding-top:12px}
+  .scard .price{font-size:20px; font-weight:700}
+  .scard .price small{font-family:var(--mono); font-size:9.5px; color:var(--ink-faint); font-weight:400}
+  .scard .go{font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; background:var(--lime); border:1.5px solid var(--ink); border-radius:var(--squig-b); padding:8px 13px; box-shadow:2px 2px 0 var(--ink); transition:transform .2s, box-shadow .2s; white-space:nowrap}
+  .scard .go:hover{transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--ink)}
+
+  .skip{position:fixed; bottom:18px; left:50%; transform:translateX(-50%) rotate(-.5deg); z-index:99; font-family:var(--mono); font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; background:rgba(17,16,9,.66); color:rgba(250,249,244,.9); border:1px solid rgba(250,249,244,.25); backdrop-filter:blur(8px); border-radius:var(--squig-a); padding:9px 16px; text-decoration:none; opacity:0; pointer-events:none; transition:opacity .4s}
+  .skip.on{opacity:1; pointer-events:auto}
+  .skip:hover{background:rgba(17,16,9,.85)}
+  .visite-cue{position:absolute; top:-1px; left:0; right:0; z-index:5; display:flex; justify-content:center}
+  .visite-cue span{background:var(--paper); border-radius:0 0 16px 10px / 0 0 10px 18px; transform:rotate(-.3deg); font-family:var(--mono); font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); padding:8px 18px}
+
+  .strip-photos{background:var(--ink); padding:10px 0 8vh}
+  .strip-photos .row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0 clamp(14px,3vw,40px); max-width:1500px; margin:0 auto}
+  .strip-photos img{width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:14px}
+
+  /* ---------- ÉDITORIAL ---------- */
+  main{position:relative; z-index:30; background:var(--paper)}
+  section{padding:clamp(60px,9vh,110px) clamp(20px,4vw,54px)}
+  .wrap{max-width:1400px; margin:0 auto}
+  .sec-kick{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:14px}
+  .sec-kick b{color:var(--lime-deep); font-weight:500}
+  h2{font-size:clamp(32px,4.4vw,58px); letter-spacing:-.03em; line-height:1.02; font-weight:700; margin-bottom:18px}
+  h2 .it{font-family:var(--serif); font-style:italic; font-weight:400}
+  h2 .hl{background:linear-gradient(transparent 60%, var(--lime) 60%, var(--lime) 94%, transparent 94%)}
+  [data-r]{opacity:0; transform:translateY(26px); transition:opacity .7s var(--ease), transform .7s var(--ease)}
+  [data-r].in{opacity:1; transform:none}
+
+  .duo{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:40px}
+  .duo .box{border:1px solid var(--line); border-radius:22px; padding:clamp(26px,3.4vw,44px); background:#fff8; position:relative; overflow:hidden}
+  .duo .box.dark{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+  .duo .box h3{font-size:clamp(24px,2.6vw,34px); letter-spacing:-.02em; margin-bottom:10px}
+  .duo .box h3 .it{font-family:var(--serif); font-style:italic; font-weight:400}
+  .duo .box.dark h3 .it{color:var(--lime)}
+  .duo .box p{font-size:15px; line-height:1.65; color:var(--ink-dim); max-width:46ch; margin-bottom:22px}
+  .duo .box.dark p{color:rgba(250,249,244,.7)}
+  .duo .box ul{list-style:none; margin:0 0 24px; display:flex; flex-direction:column; gap:9px}
+  .duo .box li{font-size:14px; padding-left:22px; position:relative; color:var(--ink-dim)}
+  .duo .box.dark li{color:rgba(250,249,244,.75)}
+  .duo .box li::before{content:'→'; position:absolute; left:0; color:var(--lime-deep)}
+  .duo .box.dark li::before{color:var(--lime)}
+  .duo .hand2{position:absolute; top:20px; right:26px; font-family:var(--hand); font-size:22px; transform:rotate(4deg); color:var(--lime-deep)}
+
+  /* ---------- LES PLATEAUX : plein cadre alterné ---------- */
+
+  .pf-intro{max-width:56ch; font-size:16.5px; line-height:1.65; color:var(--ink-dim); margin-top:2px}
+  .pf-list{margin-top:clamp(36px,5vw,66px)}
+
+  /* la ligne : l'inclinaison au repos vit dans une variable, un seul nombre par palier */
+  .pf-row{display:grid; grid-template-columns:1.06fr .94fr; gap:clamp(26px,4.4vw,72px); align-items:center;
+    --tilt:-1.1deg; --tape-tilt:-2.6deg}
+  /* miroir exact : on inverse AUSSI les pistes, sinon la photo de la 2e ligne
+     tombe dans la colonne étroite et les deux lignes n'ont pas les mêmes proportions */
+  .pf-row.rev{grid-template-columns:.94fr 1.06fr; --tilt:1.1deg; --tape-tilt:2.6deg}
+  .pf-row.rev .pf-media{order:2}
+
+  /* le cadre photo : posé de travers, redressé au survol */
+  .pf-media{position:relative; min-width:0}
+  .pf-frame{position:relative; width:100%; aspect-ratio:5/4; max-height:min(58vh,560px); overflow:hidden;
+    background:var(--cream); border:1.5px solid var(--line); border-radius:var(--squig-a);
+    transform:rotate(var(--tilt));
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease), border-color .3s}
+  .pf-row.rev .pf-frame{border-radius:var(--squig-b)}
+  .pf-frame .rmain{width:100%; height:100%; object-fit:cover; transition:transform .9s var(--ease)}
+
+
+  /* les vignettes : le JS existant cible .rthumbs puis .rmain dans le parent */
+  .rthumbs{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:14px; padding:0}
+  .rthumbs img{width:100%; height:clamp(52px,4.6vw,66px); object-fit:cover; border-radius:10px; cursor:pointer;
+    opacity:.55; border:2px solid transparent; transition:opacity .25s, border-color .25s, transform .25s var(--ease)}
+  .rthumbs img:hover{opacity:.92; transform:translateY(-3px)}
+  .rthumbs img.on{opacity:1; border-color:var(--lime-deep)}
+
+  /* le texte */
+  .pf-body{display:flex; flex-direction:column; align-items:flex-start; gap:12px; min-width:0}
+  .pf-title{font-size:clamp(28px,3.2vw,44px); font-weight:700; letter-spacing:-.03em; line-height:1}
+  .pf-title .it{font-family:var(--serif); font-style:italic; font-weight:400}
+  /* le surligneur lime qui se dessine, le même geste que le h1 du hero */
+  .pf-title .hl{background:linear-gradient(var(--lime),var(--lime)) no-repeat 0 78%; background-size:0% 28%;
+    transition:background-size .6s var(--ease)}
+  .pf-tag{font-family:var(--hand); font-size:clamp(20px,1.8vw,23px); color:var(--lime-deep);
+    transform:rotate(-1.4deg); margin-top:-8px}
+  .pf-desc{font-size:15.5px; line-height:1.7; color:var(--ink-dim); max-width:48ch}
+  .pf-specs{display:flex; flex-wrap:wrap; margin-top:4px}
+  .pf-specs .spec + .spec{margin-left:clamp(20px,2.6vw,38px); padding-left:clamp(20px,2.6vw,38px); border-left:1px solid var(--line)}
+  .pf-specs .v{font-size:clamp(19px,1.9vw,25px); font-weight:700; letter-spacing:-.02em; line-height:1}
+  .pf-specs .k{font-family:var(--mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-top:6px}
+
+  /* la ligne qui vend : prix, bouton, réassurance */
+  .pf-buy{display:flex; align-items:center; gap:16px; flex-wrap:wrap; width:100%;
+    margin-top:10px; padding-top:20px; border-top:1px solid var(--line); transition:border-color .3s}
+  .pf-price{font-size:clamp(26px,2.7vw,36px); font-weight:700; letter-spacing:-.03em; line-height:1; white-space:nowrap}
+  .pf-price small{font-family:var(--mono); font-size:10.5px; font-weight:400; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint)}
+  .pf-cta{margin-left:auto; display:inline-flex; align-items:center; gap:10px; text-decoration:none; white-space:nowrap;
+    background:var(--lime); color:var(--ink); border:1.5px solid var(--ink); border-radius:var(--squig-btn);
+    padding:14px 24px; font-family:var(--mono); font-size:11.5px; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
+    box-shadow:2px 2px 0 var(--ink);
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease), background-color .25s}
+  .pf-cta span{transition:transform .3s var(--ease)}
+  .pf-cta:focus-visible{outline:2px solid var(--ink); outline-offset:4px}
+  .pf-note{flex-basis:100%; display:flex; align-items:center; gap:9px; margin-top:-4px;
+    font-family:var(--mono); font-size:10px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-faint)}
+  .pf-note::before{content:''; flex:0 0 auto; width:6px; height:6px; border-radius:50%; background:var(--lime-deep)}
+
+  /* l'axe entre les deux plateaux : filet pointillé, perluète, note manuscrite */
+  .pf-split{display:flex; align-items:center; gap:clamp(14px,2.4vw,32px); margin:clamp(46px,6.5vw,92px) 0}
+  .pf-split i{flex:1; height:1px; background:repeating-linear-gradient(to right, var(--line) 0 5px, transparent 5px 11px)}
+  .pf-split-in{display:flex; flex-direction:column; align-items:center; gap:2px; text-align:center}
+  .pf-split b{font-family:var(--serif); font-style:italic; font-weight:400; line-height:1;
+    font-size:clamp(26px,3vw,40px); color:var(--lime-deep); transform:rotate(-7deg)}
+  .pf-split p{font-family:var(--hand); font-size:clamp(17px,1.7vw,21px); line-height:1.15;
+    color:var(--ink-faint); transform:rotate(-1.6deg)}
+
+  /* le survol signature : toute la ligne réagit d'un coup.
+     Enfermé dans hover:hover pour qu'un appui sur une vignette ne laisse pas
+     la ligne collée en état survolé sur iOS. */
+  @media (hover:hover){
+    .pf-row:hover .pf-frame{transform:rotate(0deg) translate(-6px,-6px); border-color:var(--ink); box-shadow:12px 12px 0 var(--ink)}
+    .pf-row:hover .rmain{transform:scale(1.045)}
+    .pf-row:hover .pf-title .hl{background-size:100% 28%}
+    .pf-row:hover .pf-buy{border-color:rgba(17,16,9,.34)}
+    .pf-row:hover .pf-cta{transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--ink)}
+    .pf-row:hover .pf-cta span{transform:translateX(4px)}
+    /* le survol direct du bouton doit peser plus que .pf-row:hover .pf-cta, sinon il n'atteint jamais son cran supérieur */
+    .pf-row:hover .pf-cta:hover, .pf-row .pf-cta:hover{background:var(--lime-deep); transform:translate(-4px,-4px); box-shadow:7px 7px 0 var(--ink)}
+  }
+  /* le même rendu au clavier, volontairement hors de la media query ci dessus */
+  .pf-row:focus-within .pf-frame{transform:rotate(0deg) translate(-6px,-6px); border-color:var(--ink); box-shadow:12px 12px 0 var(--ink)}
+  .pf-row:focus-within .rmain{transform:scale(1.045)}
+  .pf-row:focus-within .pf-title .hl{background-size:100% 28%}
+  .pf-row:focus-within .pf-buy{border-color:rgba(17,16,9,.34)}
+  .pf-row:focus-within .pf-cta{transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--ink)}
+  .pf-row:focus-within .pf-cta span{transform:translateX(4px)}
+  .pf-row:focus-within .pf-cta:focus-visible{transform:translate(-4px,-4px); box-shadow:7px 7px 0 var(--ink)}
+
+  .infos{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:40px}
+  .info{border:1px solid var(--line); border-radius:18px; padding:26px 24px 24px; background:#fff;
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .25s}
+  .info:hover{transform:translate(-5px,-5px); border-color:var(--ink); box-shadow:9px 9px 0 var(--ink)}
+  .info h4{font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint)}
+  .info .big{font-size:clamp(21px,1.9vw,28px); font-weight:700; letter-spacing:-.02em; line-height:1.12; margin:12px 0 10px}
+  .info .big .it{font-family:var(--serif); font-style:italic; font-weight:400}
+  .info p{font-size:14px; line-height:1.6; color:var(--ink-dim)}
+  .infos-hand{display:flex; justify-content:flex-end; margin-top:16px}
+  .infos-hand a{font-family:var(--hand); font-size:25px; color:var(--ink-dim); transform:rotate(-2deg); text-decoration:none; display:inline-block}
+  .infos-hand a b{color:var(--lime-deep); font-weight:600}
+  .infos-hand a:hover b{border-bottom:2px solid var(--lime-deep)}
+  .faq{max-width:820px}
+  details{border-top:1px solid var(--line); padding:20px 4px}
+  details:last-child{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:16.5px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:'+'; font-family:var(--mono); font-size:18px; color:var(--lime-deep); transition:transform .3s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{margin-top:12px; font-size:14.5px; line-height:1.65; color:var(--ink-dim); max-width:60ch}
+  .final{background:var(--ink); color:var(--paper); border-radius:26px; padding:clamp(50px,8vh,90px) clamp(24px,4vw,60px); text-align:center; position:relative; overflow:hidden}
+  .final h2{color:var(--paper)}
+  .final .it{color:var(--lime)}
+  .final p{color:rgba(250,249,244,.66); margin:14px auto 34px; max-width:52ch; font-size:16px; line-height:1.6}
+  .final .hand{position:absolute; top:26px; right:36px; color:var(--lime); transform:rotate(5deg)}
+  footer{padding:44px clamp(20px,4vw,54px); display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; border-top:1px solid var(--line); font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); background:var(--paper)}
+  .maison{display:flex; gap:20px}
+  .maison a{text-decoration:none; color:var(--ink-dim); transition:color .25s}
+  .maison a:hover{color:var(--lime-deep)}
+
+  /* visite mobile : carrousel masqué sur desktop (desktop = scrub vidéo) */
+  .v-play{display:none}
+  .mcar{display:none}
+
+  @media (max-width:980px){
+    .nav-l{display:none}
+    .hero{grid-template-columns:1fr; gap:20px; padding:clamp(28px,5vh,54px) clamp(18px,5vw,40px) clamp(34px,6vh,60px)}
+    .hero-gallery{height:300px; margin-top:2px}
+    .duo{grid-template-columns:1fr}
+    /* .pf-row.rev doit être cité explicitement : sa règle du bloc principal
+       pèse plus lourd qu'un .pf-row seul et gagnerait sur les colonnes */
+    .pf-row, .pf-row.rev{grid-template-columns:1fr; gap:24px}
+    .pf-row{--tilt:-.7deg; --tape-tilt:-2deg}
+    .pf-row.rev{--tilt:.7deg; --tape-tilt:2deg}
+    /* la photo repasse toujours au dessus du texte en pile */
+    .pf-row.rev .pf-media{order:0}
+    /* en 5/4 pleine largeur la photo mangerait presque un écran : on passe en 3/2 */
+    .pf-frame{aspect-ratio:3/2; max-height:min(52vh,440px)}
+    .pf-desc{max-width:62ch}
+    .pf-split{margin:44px 0}
+    .infos{grid-template-columns:repeat(2,1fr)}
+    .strip-photos .row{grid-template-columns:1fr}
+
+    /* la visite en version mobile : carrousel de 3 clips — 1er en lecture auto, puis on swipe */
+    #vseg{height:auto !important}
+    .seg .stick{position:relative; height:min(82vh,660px); overflow:hidden; background:var(--ink)}
+    #vvid{display:none !important}                    /* la vidéo scrubbée desktop est masquée sur mobile */
+    .v-play, .ch-open, .cap, .scard, .skip, .visite-cue, .veil, .vig, .grain{display:none !important}
+    .mcar{display:block; position:absolute; inset:0; z-index:2; overflow:hidden; pointer-events:none}
+    .mcar-track{display:flex; height:100%; transition:transform .45s cubic-bezier(.4,.02,.1,1)}
+    .mpanel{position:relative; flex:0 0 100%; height:100%; overflow:hidden; background:var(--ink)}
+    .mpanel .mvid{display:block; position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+    .mpanel::after{content:''; position:absolute; left:0; right:0; bottom:0; height:52%; background:linear-gradient(to top, rgba(17,16,9,.74), transparent); pointer-events:none}
+    .mcap-p{position:absolute; left:0; right:0; bottom:26px; z-index:2; box-sizing:border-box; padding:0 22px; color:var(--paper); text-shadow:0 2px 22px rgba(0,0,0,.7)}
+    .mcap-p b{display:block; font-size:31px; font-weight:700; letter-spacing:-.02em; line-height:1.02}
+    .mcap-p span{font-family:var(--serif); font-style:italic; font-size:18px; color:var(--lime)}
+    .mcar-nav{position:absolute; top:50%; transform:translateY(-50%); z-index:3; pointer-events:auto; width:44px; height:44px; border-radius:50%; border:1px solid rgba(250,249,244,.35); background:rgba(17,16,9,.34); backdrop-filter:blur(6px); color:var(--paper); font-size:24px; line-height:1; display:grid; place-items:center; cursor:pointer; transition:opacity .3s}
+    .mcar-nav.prev{left:12px}
+    .mcar-nav.next{right:12px}
+    .mcar-nav[hidden]{opacity:0; pointer-events:none}
+    .mcar-dots{position:absolute; top:16px; left:0; right:0; z-index:3; display:flex; gap:7px; justify-content:center}
+    .mcar-dots i{width:7px; height:7px; border-radius:50%; background:rgba(250,249,244,.4); pointer-events:auto; cursor:pointer; transition:.3s}
+    .mcar-dots i.on{background:var(--lime); width:20px; border-radius:4px}
+    .mcar-tap{position:absolute; inset:0; margin:auto; z-index:4; width:76px; height:76px; border-radius:50%; border:1px solid rgba(250,249,244,.5); background:rgba(17,16,9,.4); backdrop-filter:blur(6px); color:var(--paper); font-size:26px; display:none; place-items:center; pointer-events:auto; cursor:pointer}
+    .mcar-tap.on{display:grid}
+  }
+  @media (max-width:600px){
+    nav.bar{padding:11px 16px; gap:8px}
+    .nav-r .cta.ghost{display:none}       /* on garde « Réserver » dans la nav */
+    .logo{font-size:17px}
+    h1{font-size:clamp(38px,12.5vw,52px)}
+    h2{font-size:clamp(27px,7.6vw,38px)}
+    section{padding:clamp(40px,6.5vh,64px) 18px}
+    .infos{grid-template-columns:1fr}
+    .hero-gallery{height:250px}
+    .hero .sub{font-size:16px}
+    .badges{gap:6px; margin-bottom:26px}
+    .badge{font-size:9.5px; padding:7px 10px}
+    .pf-intro{font-size:15.5px}
+    .pf-list{margin-top:30px}
+    .pf-row, .pf-row.rev{gap:20px; --tilt:0deg; --tape-tilt:0deg}
+    /* transform:none explicite EN PLUS des variables : sinon le changement de
+       valeur au franchissement du palier serait animé par la transition */
+    .pf-frame, .pf-row.rev .pf-frame{transform:none}
+    .pf-frame{aspect-ratio:4/3; max-height:none}
+    .rthumbs{gap:6px; margin-top:10px}
+    .rthumbs img{height:52px; border-radius:8px}
+    .pf-title{font-size:clamp(28px,8.4vw,38px)}
+    .pf-tag{font-size:20px}
+    .pf-desc{font-size:14.5px}
+    .pf-specs .spec + .spec{margin-left:20px; padding-left:20px}
+    .pf-buy{gap:12px; margin-top:8px}
+    .pf-price{font-size:30px}
+    /* le bouton devient la cible du pouce : pleine largeur, 48px de haut */
+    .pf-cta{margin-left:0; width:100%; justify-content:center; padding:15px 18px}
+    .pf-note{justify-content:center; margin-top:0}
+    .pf-split{margin:34px 0; gap:14px}
+    .pf-split p{font-size:17px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .strip__in{animation:none}
+    .hg-col{animation:none}
+    .mcar-track{transition:none}
+    /* plateaux : rotations, translations et zooms neutralisés.
+       La bordure encre et le surligneur lime restent, sans animation. */
+    .pf-frame, .pf-row.rev .pf-frame{transform:none}
+    .pf-frame, .rmain, .pf-cta, .pf-cta span, .pf-title .hl, .rthumbs img{transition:none}
+    .pf-row:hover .pf-frame, .pf-row:focus-within .pf-frame,
+    .pf-row:hover .rmain, .pf-row:focus-within .rmain{transform:none}
+    .pf-row:hover .pf-cta, .pf-row:focus-within .pf-cta,
+    .pf-row:hover .pf-cta:hover, .pf-row .pf-cta:hover,
+    .pf-row:focus-within .pf-cta:focus-visible{transform:none}
+    .pf-row:hover .pf-cta span, .pf-row:focus-within .pf-cta span{transform:none}
+    .rthumbs img:hover{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="strip"><div class="strip__in">
+  <span>Hiving Studio · Clichy 92</span><b>●</b><span>2 plateaux food & photo</span><b>●</b><span>7j/7 · 8h à 22h</span><b>●</b><span>Métro 13 · RER C · Mairie de Clichy</span><b>●</b>
+  <span>Hiving Studio · Clichy 92</span><b>●</b><span>2 plateaux food & photo</span><b>●</b><span>7j/7 · 8h à 22h</span><b>●</b><span>Métro 13 · RER C · Mairie de Clichy</span><b>●</b>
+</div></div>
+
+<nav class="bar">
+  <a class="logo" href="#top">hiving <em>studio</em><span class="dot">.</span></a>
+  <div class="nav-l">
+    <a href="#visite">La visite</a>
+    <a href="#plateaux">Les plateaux</a>
+    <a href="#infos">Infos pratiques</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="nav-r">
+    <a class="cta ghost" href="app/">Espace membres</a>
+    <a class="cta" href="pro/">Réserver <span>→</span></a>
+  </div>
+</nav>
+<a class="skip" id="skip" href="#plateaux">Passer la visite ↓</a>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <div>
+    <div class="kick rise">Studios de tournage · Clichy, Grand Paris</div>
+    <h1>
+      <span class="w"><span style="transition-delay:.08s">Deux</span></span>
+      <span class="w"><span class="it" style="transition-delay:.18s">plateaux.</span></span><br>
+      <span class="w"><span style="transition-delay:.3s">Une</span></span>
+      <span class="w"><span style="transition-delay:.38s">seule</span></span>
+      <span class="w"><span class="hl" style="transition-delay:.46s">lumière.</span></span>
+    </h1>
+    <p class="sub rise" style="transition-delay:.55s">Cuisine pro inox et cuisine familiale chaleureuse, entièrement équipées. Réservez en ligne : devis instantané pour les marques, calendrier dédié pour les créateurs de la maison.</p>
+    <div class="badges rise" style="transition-delay:.68s">
+      <span class="badge">7j/7 · 8h à 22h</span>
+      <span class="badge">À 8 min de Saint-Lazare</span>
+      <span class="badge">Dès 800 € / jour</span>
+    </div>
+    <div class="hero-cta rise" style="transition-delay:.8s">
+      <a class="cta" href="pro/">Réserver un plateau <span>→</span></a>
+      <a class="cta ghost" href="app/">Espace membres</a>
+    </div>
+    <div class="hero-scroll rise" style="transition-delay:.95s">scrollez, on vous fait <b>visiter</b> ↓</div>
+  </div>
+
+  <div class="hero-gallery rise" aria-hidden="true" style="transition-delay:.5s">
+    <div class="hg-col">
+      <div class="hg-ph"><img src="img/ph/pro-2.jpg" alt=""><b>N°01 · Pro</b></div>
+      <div class="hg-ph"><img src="img/ph/famille-9.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/famille-3.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/pro-3.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/pro-2.jpg" alt=""><b>N°01 · Pro</b></div>
+      <div class="hg-ph"><img src="img/ph/famille-9.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/famille-3.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/pro-3.jpg" alt=""></div>
+    </div>
+    <div class="hg-col down">
+      <div class="hg-ph"><img src="img/ph/famille-8.jpg" alt=""><b>N°02 · Famille</b></div>
+      <div class="hg-ph"><img src="img/ph/pro-5.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/pro-1.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/famille-1.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/famille-8.jpg" alt=""><b>N°02 · Famille</b></div>
+      <div class="hg-ph"><img src="img/ph/pro-5.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/pro-1.jpg" alt=""></div>
+      <div class="hg-ph"><img src="img/ph/famille-1.jpg" alt=""></div>
+    </div>
+  </div>
+
+</header>
+
+<!-- ================= LA VISITE (plan séquence unique) ================= -->
+<div id="visite">
+  <div class="visite-cue"><span>( la visite : scrollez )</span></div>
+
+  <div class="seg" id="vseg">
+    <div class="stick">
+      <video id="vvid" muted playsinline preload="none" poster="img/ph/pro-1.jpg"></video>
+      <div class="vig"></div><div class="grain"></div><div class="veil" id="vveil"></div>
+      <button class="v-play" id="v-play" type="button" aria-label="Lancer la visite">
+        <span class="ic">▶</span>
+        <span class="tx">Lancer la visite <b>· 33 s</b></span>
+      </button>
+      <!-- mobile : la visite en carrousel — 1er clip en lecture auto, puis on swipe -->
+      <div class="mcar" aria-hidden="true">
+        <div class="mcar-track" id="mtrack">
+          <div class="mpanel">
+            <video class="mvid" data-src="video/pro.mp4?v=2" muted playsinline preload="auto" poster="img/ph/pro-1.jpg"></video>
+            <div class="mcap-p"><b>Studio Pro</b><span>la cuisine des chefs</span></div>
+          </div>
+          <div class="mpanel">
+            <video class="mvid" data-src="video/famille.mp4?v=2" muted playsinline preload="none" poster="img/ph/famille-9.jpg"></video>
+            <div class="mcap-p"><b>Studio Famille</b><span>comme à la maison, en mieux éclairé</span></div>
+          </div>
+        </div>
+        <button class="mcar-nav prev" id="mprev" type="button" aria-label="Studio précédent">‹</button>
+        <button class="mcar-nav next" id="mnext" type="button" aria-label="Studio suivant">›</button>
+        <div class="mcar-dots" id="mdots"><i class="on"></i><i></i></div>
+        <button class="mcar-tap" id="mtap" type="button" aria-label="Lancer la visite"><span>▶</span></button>
+      </div>
+
+      <div class="ch-open" id="open-pro">
+        <div class="t">Studio <em>Pro.</em></div>
+        <div class="h">la cuisine des chefs</div>
+      </div>
+      <div class="ch-open" id="open-fam">
+        <div class="t">Studio <em>Famille.</em></div>
+        <div class="h">comme à la maison, en mieux éclairé</div>
+      </div>
+
+      <div class="cap" id="vcap"></div>
+
+      <div class="scard" id="card-pro">
+        <h3>Studio <span class="it">Pro.</span></h3>
+        <div class="tag">la cuisine des chefs</div>
+        <div class="specs">
+          <div class="spec"><div class="v">80 m²</div><div class="k">surface</div></div>
+          <div class="spec"><div class="v">3,2 m</div><div class="k">plafond</div></div>
+        </div>
+        <div class="row">
+          <div class="price">800 € <small>/ jour</small></div>
+          <a class="go" href="pro/?studio=pro">Réserver →</a>
+        </div>
+      </div>
+      <div class="scard" id="card-fam">
+        <h3>Studio <span class="it">Famille.</span></h3>
+        <div class="tag">comme à la maison, en mieux éclairé</div>
+        <div class="specs">
+          <div class="spec"><div class="v">65 m²</div><div class="k">surface</div></div>
+          <div class="spec"><div class="v">2,8 m</div><div class="k">plafond</div></div>
+        </div>
+        <div class="row">
+          <div class="price">1 000 € <small>/ jour</small></div>
+          <a class="go" href="pro/?studio=famille">Réserver →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= ÉDITORIAL ================= -->
+<main>
+  <section id="plateaux">
+    <div class="wrap">
+      <h2 data-r>Deux décors, <span class="it">un toit.</span></h2>
+      <p class="pf-intro" data-r>Deux plateaux, deux ambiances, le même immeuble à Clichy. Vous réservez votre journée en ligne, tout est déjà installé quand vous arrivez.</p>
+
+      <div class="pf-list">
+
+        <!-- ligne 1 : la photo à gauche, le texte à droite -->
+        <article class="pf-row" data-r>
+          <div class="pf-media">
+            <div class="pf-frame">
+              <img class="rmain" src="img/ph/pro-1.jpg" alt="Studio Pro, cuisine professionnelle inox" loading="lazy">
+            </div>
+            <div class="rthumbs">
+              <img class="on" src="img/ph/pro-1.jpg" alt="Studio Pro vue 1" loading="lazy">
+              <img src="img/ph/pro-2.jpg" alt="Studio Pro vue 2" loading="lazy">
+              <img src="img/ph/pro-3.jpg" alt="Studio Pro vue 3" loading="lazy">
+              <img src="img/ph/pro-5.jpg" alt="Studio Pro vue 4" loading="lazy">
+            </div>
+          </div>
+
+          <div class="pf-body">
+            <h3 class="pf-title">Studio <span class="it hl">Pro.</span></h3>
+            <div class="pf-tag">la cuisine des chefs</div>
+            <p class="pf-desc">Plafond technique, grill lumière, plan inox, piano 6 feux et four UNOX. Cellule de refroidissement jusqu'à moins 40 °C, tour réfrigérée, Kitchen Aid, plonge et ustensiles complets. Le plateau des brand films, des pubs et des formats haut de gamme qui exigent un rendu net.</p>
+            <div class="pf-specs">
+              <div class="spec"><div class="v">80 m²</div><div class="k">surface</div></div>
+              <div class="spec"><div class="v">3,2 m</div><div class="k">plafond</div></div>
+            </div>
+            <div class="pf-buy">
+              <div class="pf-price">800 € <small>/ jour</small></div>
+              <a class="pf-cta" href="pro/?studio=pro" aria-label="Réserver ce plateau, le Studio Pro">Réserver ce plateau <span aria-hidden="true">→</span></a>
+              <p class="pf-note">Réservation en ligne, créneau bloqué aussitôt</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- l'axe : filet pointillé, perluète, note à la main qui relance le scroll -->
+        <div class="pf-split">
+          <i></i>
+          <div class="pf-split-in">
+            <b aria-hidden="true">&amp;</b>
+            <p>et l'autre décor, juste en dessous <span aria-hidden="true">↓</span></p>
+          </div>
+          <i></i>
+        </div>
+
+        <!-- ligne 2 : le texte à gauche, la photo à droite -->
+        <article class="pf-row rev" data-r>
+          <div class="pf-media">
+            <div class="pf-frame">
+              <img class="rmain" src="img/ph/famille-1.jpg" alt="Studio Famille, cuisine maison chaleureuse" loading="lazy">
+            </div>
+            <div class="rthumbs">
+              <img class="on" src="img/ph/famille-1.jpg" alt="Studio Famille vue 1" loading="lazy">
+              <img src="img/ph/famille-8.jpg" alt="Studio Famille vue 2" loading="lazy">
+              <img src="img/ph/famille-3.jpg" alt="Studio Famille vue 3" loading="lazy">
+              <img src="img/ph/famille-9.jpg" alt="Studio Famille vue 4" loading="lazy">
+            </div>
+          </div>
+
+          <div class="pf-body">
+            <h3 class="pf-title">Studio <span class="it hl">Famille.</span></h3>
+            <div class="pf-tag">comme à la maison, en mieux éclairé</div>
+            <p class="pf-desc">Cuisine habitée, lumière douce : îlot central mobile, plan bois, parquet chevrons, coin repas. Plaques 8 feux, hotte intégrée, four vapeur : entièrement équipée et personnalisable sur mesure. Le décor des formats UGC, contenus food et séries web.</p>
+            <div class="pf-specs">
+              <div class="spec"><div class="v">65 m²</div><div class="k">surface</div></div>
+              <div class="spec"><div class="v">2,8 m</div><div class="k">plafond</div></div>
+            </div>
+            <div class="pf-buy">
+              <div class="pf-price">1 000 € <small>/ jour</small></div>
+              <a class="pf-cta" href="pro/?studio=famille" aria-label="Réserver ce plateau, le Studio Famille">Réserver ce plateau <span aria-hidden="true">→</span></a>
+              <p class="pf-note">Réservation en ligne, créneau bloqué aussitôt</p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="infos" style="padding-top:0">
+    <div class="wrap">
+      <h2 data-r>Tout ce qu'il faut <span class="it">savoir.</span></h2>
+      <div class="infos" data-r>
+        <div class="info"><h4>Adresse</h4><div class="big">Clichy, <span class="it">Grand Paris.</span></div><p>4-10 rue Mozart, 92110<br>à 8 min de Saint-Lazare</p></div>
+        <div class="info"><h4>Accès</h4><div class="big">Métro 13 <span class="it">&</span> 14</div><p>Mairie de Clichy · Saint-Ouen<br>RER C · Porte de Clichy</p></div>
+        <div class="info"><h4>Horaires</h4><div class="big">8h à 22h, <span class="it">7j/7.</span></div><p>Toute la semaine,<br>week-ends compris</p></div>
+        <div class="info"><h4>Inclus</h4><div class="big">Tout est <span class="it">prêt.</span></div><p>Mobilier, café & wifi, aide<br>au setup · éclairage en option</p></div>
+      </div>
+      <div class="infos-hand" data-r><a href="mailto:contact@hivingfood.fr?subject=Équipe de production">+ une équipe de production <b>sur demande</b> ↗</a></div>
+    </div>
+  </section>
+
+  <section id="faq" style="padding-top:0">
+    <div class="wrap">
+      <h2 data-r>Les <span class="it">réponses</span> rapides.</h2>
+      <div class="faq" data-r>
+        <details><summary>Peut-on louer à la demi-journée ou à l'heure ?</summary><p>Oui : la demi-journée se réserve directement en ligne. Pour un créneau plus court, écrivez-nous avec vos horaires et on vous propose la formule la plus avantageuse.</p></details>
+        <details><summary>Le devis en ligne m'engage-t-il ?</summary><p>Non. Le devis est indicatif et instantané ; le créneau n'est bloqué qu'après notre confirmation écrite, sous 24h ouvrées.</p></details>
+        <details><summary>Le matériel de tournage est-il fourni ?</summary><p>Le mobilier, le café, le wifi et l'aide à l'installation sont inclus. L'éclairage se prend en <b>package</b> (à partir de 150 €). Caméras, optiques, stabilisateurs et équipe technique (cadreur, chef op) sont disponibles en option, chiffrés avec vous.</p></details>
+        <details><summary>Peut-on cuisiner réellement sur place ?</summary><p>Oui : les deux cuisines sont fonctionnelles (four pro, plaques, frigo). Vous pouvez cuisiner, dresser et shooter dans la foulée.</p></details>
+        <details><summary>Faut-il passer par l'agence Hiving ?</summary><p>Non. Les plateaux sont ouverts à toutes les marques, agences et créateurs indépendants. Et si vous cherchez talents ou production, la maison Hiving est dans le même immeuble, ou juste au-dessus.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="final" data-r>
+        <span class="hand">on vous garde une date ?</span>
+        <h2>On cale votre <span class="it">tournage.</span></h2>
+        <p>Demandez votre créneau en ligne, devis instantané, ou écrivez-nous pour toute demande spéciale.</p>
+        <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap">
+          <a class="cta" href="pro/">Demander un créneau <span>→</span></a>
+          <a class="cta ghost" style="border-color:rgba(250,249,244,.3); color:var(--paper)" href="mailto:contact@hivingfood.fr?subject=Demande spéciale · Hiving Studio">contact@hivingfood.fr</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Hiving Studio · Clichy</span>
+    <div class="maison">
+      <a href="https://hiving.me">Hiving · talents</a>
+      <a href="https://www.hivingfood.fr">Hiving Food · agence</a>
+      <a href="https://sense.contact">Sënse</a>
+    </div>
+    <span>contact@hivingfood.fr</span>
+  </footer>
+</main>
+
+<script>
+(() => {
+'use strict';
+const coarse = matchMedia('(pointer: coarse)').matches;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MOBILE = matchMedia('(max-width: 980px)').matches;   // mobile : pas de visite scrubbée, on montre les cartes studios
+const clamp01 = v => Math.max(0, Math.min(1, v));
+const $ = id => document.getElementById(id);
+
+/* ---------- la visite : un seul plan séquence scrubbé ----------
+   Durées des 4 clips concaténés dans video/visite-full.mp4 (Pro → Famille) :
+   pro, passage mur, famille, mise en place — total 18,2 s */
+const D = [5.8417, 4.7666, 4.5333, 3.0583];
+const T = i => D.slice(0, i).reduce((a, b) => a + b, 0);   // début du clip i
+const TOTAL = T(4);
+/* vitesse de scroll uniforme (vh de scroll par seconde de vidéo) : le rythme
+   vient du montage lui-même (clips famille et décor accélérés), pas du scroll */
+const U = MOBILE ? 12 : 40;   // mobile : section plus courte (la vidéo se lit en auto, pas de scrub)
+const S = D.map(() => U);
+const H = D.map((d, i) => d*S[i]);                          // hauteur de scroll (vh) par clip
+const HSUM = H.reduce((a, b) => a + b, 0);
+const yToT = y => {                                         // position scroll (vh) -> temps vidéo
+  let acc = 0;
+  for (let i = 0; i < D.length; i++){
+    if (y <= acc + H[i]) return T(i) + (y - acc)/S[i];
+    acc += H[i];
+  }
+  return TOTAL;
+};
+
+const OPENS = [
+  { el: $('open-pro'),  a: 0.15,       b: 1.7 },
+  { el: $('open-fam'),  a: T(2) - 0.7, b: T(2) + 0.9 },
+];
+const CAPS = [
+  { a: 2.0,        b: 5.6,        t: "Plafond technique, grill lumière,<br>plan inox : <b>la cuisine des chefs.</b>", s: "Studio Pro · 80 m² · 3,2 m sous plafond" },
+  { a: T(1) + 0.5, b: T(2) - 1.1, t: "On passe <b>à côté ?</b>", s: "du plateau pro à la cuisine famille" },
+  { a: T(2) + 1.8, b: T(2) + 4.6, t: "Îlot mobile, plan bois, parquet<br>chevrons : <b>comme à la maison.</b>", s: "Studio Famille · 65 m² · lumière douce" },
+  { a: T(3) + 0.35, b: TOTAL - 0.2, t: "Le décor se met <b>en place.</b>", s: "matériel fourni · il ne manque que vous" },
+];
+const CARDS = [
+  { el: $('card-pro'),  a: 3.4,        b: 5.9 },
+  { el: $('card-fam'),  a: T(3) + 0.4, b: TOTAL - 0.1 },
+];
+
+const seg = $('vseg'), vid = $('vvid'), veil = $('vveil'), cap = $('vcap');
+if (!MOBILE) seg.style.height = Math.round(HSUM + 30) + 'vh';   // desktop : longue section scrubbée (mobile = vidéo au tap, hauteur CSS)
+
+let srcSet = false, cur = 0, capIdx = -1, lastNow = performance.now();
+const eases = new Map();  // élément -> opacité lissée dans le temps
+function easeTo(el, target, dt, kIn, kOut){
+  const o = eases.get(el) ?? 0;
+  const k = target > o ? kIn : kOut;
+  const n = o + (target - o) * Math.min(1, dt * k);
+  eases.set(el, n);
+  return n;
+}
+
+/* chargement anticipé : la vidéo bufferise dès que la page est posée */
+function armVideo(){
+  if (MOBILE || srcSet) return;   // mobile : carrousel de clips dédiés, on ne charge pas la vidéo desktop (15 Mo)
+  srcSet = true;
+  vid.preload = 'auto';
+  vid.src = 'video/visite-full.mp4?v=9';   // bump à chaque remontage (cache média navigateur)
+  vid.load();
+}
+if (document.readyState === 'complete') setTimeout(armVideo, 300);
+else addEventListener('load', () => setTimeout(armVideo, 300));
+
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) armVideo();                                   // précharge la vidéo à l'approche
+  if (MOBILE && !e.isIntersecting && !vid.paused){ vid.pause(); }     // mobile : on met en pause en quittant
+}), {rootMargin: '80%'});
+io.observe(seg);
+
+if (MOBILE) {
+  /* ---- mobile : la visite en carrousel. Chaque studio = un clip court dédié.
+     Le 1er se lit tout seul ; ensuite on swipe (ou flèches / points) vers le 2e, 3e. ---- */
+  const track  = $('mtrack');
+  const panels = [...document.querySelectorAll('.mpanel')];
+  const vids   = panels.map(p => p.querySelector('.mvid'));
+  const dots   = [...document.querySelectorAll('#mdots i')];
+  const tap = $('mtap'), prev = $('mprev'), next = $('mnext');
+  const LAST = vids.length - 1;                    // dernier studio (générique : 2 studios aujourd'hui)
+  let ch = 0, started = false;
+
+  const load = v => { if (v && !v.src && v.dataset.src){ v.src = v.dataset.src; v.load(); } };
+
+  function playCh(i, autoplay){
+    i = Math.max(0, Math.min(LAST, i));
+    ch = i;
+    track.style.transform = `translateX(${-i*100}%)`;
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    if (prev) prev.hidden = i === 0;
+    if (next) next.hidden = i === LAST;
+    if (tap)  tap.classList.remove('on');
+    vids.forEach((v, k) => { if (k !== i && !v.paused){ v.pause(); } });   // on met les autres en pause
+    load(vids[i]); load(vids[i + 1]);                                      // clip courant + suivant (swipe fluide)
+    if (autoplay !== false){
+      const v = vids[i];
+      v.muted = true;                                                      // muet = lecture inline autorisée sur iOS
+      try { v.currentTime = 0; } catch (e) {}
+      const pr = v.play();
+      if (pr && pr.catch) pr.catch(err => {                                // vrai blocage autoplay -> bouton play ;
+        if (err && err.name !== 'AbortError' && tap) tap.classList.add('on');   // (on ignore l'interruption par un swipe rapide)
+      });
+    }
+  }
+
+  /* enchaînement automatique : à la fin d'un clip, on glisse tout seul vers le studio
+     suivant (et on reboucle sur le premier), la visite se regarde sans toucher */
+  vids.forEach((v, k) => v.addEventListener('ended', () => {
+    if (k === ch) playCh(k === LAST ? 0 : k + 1);
+  }));
+
+  playCh(0, false);                 // carrousel prêt sur le Studio Pro dès l'arrivée (sans lecture)
+
+  /* 1er clip en lecture auto dès que la visite entre à l'écran ;
+     pause quand on quitte la section, reprise quand on y revient */
+  function start(){ if (started) return; started = true; playCh(0); }
+  new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){
+      if (!started) start();
+      else if (vids[ch] && vids[ch].paused){
+        const pr = vids[ch].play();
+        if (pr && pr.catch) pr.catch(() => {});
+      }
+    } else if (started && vids[ch] && !vids[ch].paused){
+      const r = seg.getBoundingClientRect();          // l'entrée IO peut être périmée (1er callback après observe)
+      if (r.bottom < 0 || r.top > innerHeight) vids[ch].pause();   // on ne coupe que si vraiment hors écran
+    }
+  }), {threshold:.35}).observe(seg);
+  function maybeStart(){                                   // secours : certains mobiles déclenchent mal l'IO
+    if (started) return;
+    const r = seg.getBoundingClientRect();
+    if (r.top < innerHeight*0.6 && r.bottom > innerHeight*0.4) start();
+  }
+  addEventListener('scroll', maybeStart, {passive:true});
+  maybeStart();
+
+  if (tap)  tap.addEventListener('click', () => { tap.classList.remove('on'); playCh(ch); });
+  if (next) next.addEventListener('click', () => playCh(ch + 1));
+  if (prev) prev.addEventListener('click', () => playCh(ch - 1));
+  dots.forEach((d, k) => d.addEventListener('click', () => playCh(k)));
+
+  /* swipe */
+  let x0 = null;
+  seg.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive:true});
+  seg.addEventListener('touchend', e => {
+    if (x0 == null) return;
+    const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 45) playCh(dx < 0 ? ch + 1 : ch - 1);
+  }, {passive:true});
+} else {
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.1, (now - lastNow)/1000); lastNow = now;
+  const vh = innerHeight;
+  const r = seg.getBoundingClientRect();
+  if (r.bottom < -vh || r.top > vh*2) return;
+  const p = clamp01(-r.top / Math.max(1, r.height - vh));
+
+  /* position temporelle : scrub au scroll (desktop) ou lecture auto (mobile) */
+  let t;
+  if (!MOBILE){
+    const target = Math.min(TOTAL - .05, yToT(p*HSUM));
+    cur += (target - cur) * Math.min(1, dt*5);
+    if (srcSet && vid.duration && Math.abs(vid.currentTime - cur) > .033){
+      try { vid.currentTime = cur; } catch (e) {}
+    }
+    t = cur;
+  } else {
+    t = vid.currentTime || 0;
+  }
+
+  /* voile d'entrée / sortie du plan séquence (le raccord famille a son noir dans la vidéo) */
+  const vin = t < .5 ? (1 - t/.5)*.55 : 0;
+  const vout = p > .985 ? (p - .985)/.015*.7 : 0;
+  veil.style.opacity = Math.max(vin, vout);
+
+  /* titres de chapitres (fondu temporel, jamais moins d'une vraie seconde) */
+  OPENS.forEach(o => {
+    const inR = t >= o.a && t <= o.b;
+    o.el.style.opacity = easeTo(o.el, inR ? 1 : 0, dt, 5, 3.2);
+  });
+
+  /* légendes : sélection par temps vidéo, fondu par temps réel */
+  let idx = -1;
+  for (let i = 0; i < CAPS.length; i++){ if (t >= CAPS[i].a && t <= CAPS[i].b){ idx = i; break; } }
+  if (idx !== capIdx && idx >= 0){
+    const c = CAPS[idx];
+    cap.innerHTML = `<div class="txt">${c.t}</div>${c.s ? `<div class="sub2">${c.s}</div>` : ''}`;
+  }
+  if (idx >= 0) capIdx = idx;
+  let capTarget = idx >= 0 ? 1 : 0;
+
+  /* fiches studio (fondu temporel) · en mobile la fiche gagne sur la légende */
+  CARDS.forEach(c => {
+    const inR = t >= c.a && t <= c.b;
+    if (inR && innerWidth < 980) capTarget = 0;
+    const o = easeTo(c.el, inR ? 1 : 0, dt, 5, 3.2);
+    c.el.style.opacity = o;
+    c.el.style.transform = `translateY(${(1 - o)*26}px)`;
+    c.el.classList.toggle('on', o > .5);
+  });
+
+  const capO = easeTo(cap, capTarget, dt, 4.2, 2.8);
+  cap.style.opacity = capO;
+  cap.style.transform = `translateY(${(1 - capO)*24}px)`;
+
+  /* pill "passer la visite" */
+  const v = document.getElementById('visite').getBoundingClientRect();
+  document.getElementById('skip').classList.toggle('on', v.top < vh*.5 && v.bottom > vh);
+}
+requestAnimationFrame(frame);
+}   /* fin de la visite scrubbée (desktop) */
+
+/* reveals éditoriaux */
+const io2 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io2.unobserve(e.target); } }), {threshold: .12});
+document.querySelectorAll('[data-r]').forEach(el => io2.observe(el));
+
+/* galeries plateaux : vignette cliquée = photo principale */
+document.querySelectorAll('.rthumbs').forEach(strip => {
+  const main = strip.parentElement.querySelector('.rmain');
+  strip.querySelectorAll('img').forEach(th => th.addEventListener('click', () => {
+    main.src = th.src;
+    strip.querySelectorAll('img').forEach(x => x.classList.toggle('on', x === th));
+  }));
+});
+
+/* ============ hero ============ */
+const hero = document.querySelector('.hero');
+/* entrée en scène */
+setTimeout(() => hero.classList.add('in'), 180);
+})();
+</script>
+<noscript><style>.seg{height:auto!important}.seg .stick{position:static;height:60vh}.skip{display:none}</style></noscript>
+</body>
+</html>

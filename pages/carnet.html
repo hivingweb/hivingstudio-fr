@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Le Carnet — Blog photo & film culinaire | HIVING FOOD</title>
+<meta name="description" content="Le Carnet HIVING : conseils, méthode, tendances pour la photo et le film culinaire. Articles par notre équipe styliste, DA, chef." />
+<link rel="canonical" href="https://hiving.food/pages/carnet.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@400;500;600;700&family=Familjen+Grotesk:wght@400;500;600;700&family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<style>body { margin: 0; background: #fafaf5; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } *, *::before, *::after { box-sizing: border-box; }</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="../site-i18n.jsx"></script>
+<script type="text/babel" src="../site-data.jsx"></script>
+<script type="text/babel" src="../site-shared.jsx"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const P = window.HIVING_PALETTE;
+
+function CarnetPage() {
+  const articles = window.HIVING_ARTICLES;
+  const [feat, ...rest] = articles;
+
+  return (
+    <window.PageShell active="carnet">
+      <window.Breadcrumb items={[{ label: 'Le Carnet' }]} />
+
+      <section style={{ padding: '60px 40px 60px', maxWidth: 1400, margin: '0 auto' }}>
+        <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>¶ Le Carnet · {articles.length} articles</div>
+        <h1 style={{ fontFamily: P.display, fontSize: 'clamp(50px, 8vw, 130px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 0.92, margin: 0 }}>
+          Notes, méthodes,<br /><span style={{ fontFamily: P.hand, color: P.lime, transform: 'rotate(-2deg)', display: 'inline-block' }}>tendances.</span>
+        </h1>
+        <p style={{ fontFamily: P.serif, fontSize: 22, lineHeight: 1.5, color: P.inkSoft, marginTop: 24, maxWidth: 720 }}>
+          Ce qu'on apprend en studio, on l'écrit ici. Par notre équipe.
+        </p>
+      </section>
+
+      <section style={{ padding: '0 40px 40px', maxWidth: 1400, margin: '0 auto' }}>
+        <a href={`${feat.slug}.html`} style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 0,
+          background: P.lime, color: P.ink, borderRadius: 28, overflow: 'hidden',
+          textDecoration: 'none', border: `1.5px solid ${P.ink}`, minHeight: 400,
+        }}>
+          <div style={{ padding: '48px 44px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.7, marginBottom: 16, textTransform: 'uppercase' }}>★ À la une · {feat.eyebrow}</div>
+              <h2 style={{ fontFamily: P.display, fontSize: 'clamp(36px, 4.5vw, 60px)', fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1.02, margin: 0 }}>{feat.title}</h2>
+              <p style={{ fontFamily: P.serif, fontSize: 19, lineHeight: 1.5, color: P.ink, opacity: 0.8, marginTop: 20, maxWidth: 520 }}>{feat.excerpt}</p>
+            </div>
+            <div style={{ marginTop: 32, fontFamily: P.mono, fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', opacity: 0.7 }}>
+              {feat.author} · {feat.readTime} min de lecture
+            </div>
+          </div>
+          <div style={{ background: P.ink, color: P.bg, padding: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ fontFamily: P.display, fontSize: 280, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.85, color: P.lime, opacity: 0.9 }}>
+              {String(articles.indexOf(feat) + 1).padStart(2, '0')}
+            </div>
+          </div>
+        </a>
+      </section>
+
+      <section style={{ padding: '40px 40px 80px', maxWidth: 1400, margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
+          {rest.map((a, i) => (
+            <a key={a.slug} href={`${a.slug}.html`} style={{
+              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+              background: i % 2 === 0 ? P.cream : P.paper, padding: '32px 28px', borderRadius: 24,
+              textDecoration: 'none', color: P.ink, minHeight: 280,
+              border: `1px solid ${P.ink}10`,
+            }}>
+              <div>
+                <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, textTransform: 'uppercase', marginBottom: 16 }}>
+                  {a.eyebrow} · {a.readTime} min
+                </div>
+                <h3 style={{ fontFamily: P.display, fontSize: 30, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.05, margin: 0 }}>{a.title}</h3>
+                <p style={{ fontFamily: P.serif, fontSize: 17, lineHeight: 1.5, color: P.inkSoft, marginTop: 16 }}>{a.excerpt}</p>
+              </div>
+              <div style={{ marginTop: 24, fontFamily: P.mono, fontSize: 11, letterSpacing: '0.12em', color: P.inkSoft, textTransform: 'uppercase' }}>
+                Lire →
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <window.BigCTA eyebrow="On reste en contact" title="Newsletter" hand="mensuelle." ctaLabel="S'abonner" ctaHref="#" ctaSecondaryLabel="Voir l'équipe" ctaSecondaryHref="equipe.html" />
+    </window.PageShell>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<CarnetPage />);
+</script>
+</body>
+</html>

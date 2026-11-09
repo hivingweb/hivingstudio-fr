@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Louer un plateau · Hiving Studio</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.svg?v=hf" type="image/svg+xml">
+<link rel="stylesheet" href="../shared/ui.css">
+<style>
+  .step{scroll-margin-top:80px; transition:opacity .3s var(--ease)}
+  .step.locked{opacity:.35; pointer-events:none; filter:grayscale(.5); user-select:none}
+  .step .kick{margin-bottom:8px}
+
+  /* cartes studios : deux plateaux côte à côte, effet bordure noire de la maison */
+  .studio-card{border:1.5px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; cursor:pointer;
+    text-align:left; padding:0; display:block; width:100%; transition:transform .25s var(--ease), border-color .2s, box-shadow .25s}
+  .studio-card:hover{transform:translate(-3px,-3px); border-color:var(--ink); box-shadow:7px 7px 0 var(--ink)}
+  .studio-card img{width:100%; height:clamp(180px,22vw,240px); object-fit:cover; display:block}
+  .studio-card.sel{border-color:var(--ink); box-shadow:4px 4px 0 var(--lime-deep)}
+  .studio-card.sel:hover{box-shadow:7px 7px 0 var(--ink)}
+  .sc-body{padding:16px 18px 18px}
+  .sc-top{display:flex; align-items:center; justify-content:space-between; gap:8px}
+  .sc-top b{font-size:19px; letter-spacing:-.02em}
+  .sc-price{font-family:var(--mono); font-size:12px; letter-spacing:.08em; color:var(--ink); margin-top:5px; font-weight:500}
+  .sc-tag{font-family:var(--serif); font-style:italic; font-size:15px; color:var(--ink-dim); margin-top:8px}
+
+  /* calendrier mensuel */
+  .mcal{border:1px solid var(--line); border-radius:16px; background:#fff; overflow:hidden}
+  .mcal-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px;
+    background:var(--cream); border-bottom:1px solid var(--line)}
+  .mcal-head .lbl{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-dim)}
+  .mcal-nav{background:none; border:1px solid var(--line); border-radius:999px; width:30px; height:30px; color:var(--ink-dim); font-size:14px; line-height:1}
+  .mcal-nav:hover{border-color:var(--ink); color:var(--ink)}
+  .mcal-nav:disabled{opacity:.35; cursor:default}
+  .mcal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:2px; padding:10px}
+  .mcal-grid .dow{text-align:center; font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); padding:4px 0 8px}
+  .mcal-grid .day{aspect-ratio:1; border:1.5px solid transparent; background:none; border-radius:10px; font-size:14px; color:var(--ink); transition:background .15s}
+  .mcal-grid .day:hover{background:var(--cream)}
+  .mcal-grid .day:disabled{cursor:default; background:none}
+  .mcal-grid .day.past{color:rgba(17,16,9,.2)}
+  /* jour pris : gris pour un créateur ou un blocage, rouge pour une autre marque */
+  .mcal-grid .day.busy{cursor:pointer; text-decoration:line-through}
+  .mcal-grid .day.busy.k-creator, .mcal-grid .day.busy.k-block, .mcal-grid .day.busy.k-unknown{
+    color:var(--ink-faint); background:rgba(17,16,9,.07); border-color:rgba(17,16,9,.10)}
+  .mcal-grid .day.busy.k-creator:hover, .mcal-grid .day.busy.k-block:hover, .mcal-grid .day.busy.k-unknown:hover{
+    background:#e7e2d5; color:var(--ink-dim); text-decoration:none}
+  .mcal-grid .day.busy.k-brand{color:var(--red); background:var(--red-bg); border-color:rgba(192,78,47,.35)}
+  .mcal-grid .day.busy.k-brand:hover{background:#f0d5cb; text-decoration:none}
+  .mcal-grid .day.past.busy{background:none; border-color:transparent; color:rgba(17,16,9,.2)}
+  .mcal-grid .day.sel{background:var(--lime); border-color:var(--ink); font-weight:700}
+  .mcal-grid .day.range{background:var(--lime); opacity:.6}
+
+  .hint.err{color:var(--red)}
+  .picked{font-size:14px; margin-top:10px}
+  .picked b{font-family:var(--serif); font-style:italic; font-weight:500}
+
+  /* barre récap */
+  .sumbar{position:fixed; left:0; right:0; bottom:0; z-index:60; display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    background:var(--ink); color:var(--paper); padding:12px clamp(16px,3vw,40px); box-shadow:0 -14px 40px -20px rgba(17,16,9,.5)}
+  .sumbar.on{display:flex}
+  .sumbar .sum{flex:1; min-width:220px; font-size:13.5px; line-height:1.45}
+  .sumbar .sum b{color:var(--lime)}
+  .sumbar .sum .sep{color:rgba(250,249,244,.35); margin:0 6px}
+  body.baron{padding-bottom:96px}
+
+  /* succès */
+  .ok-panel{text-align:center; padding:clamp(30px,6vh,60px) 22px}
+  .ok-total{font-family:var(--mono); font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-dim); margin:16px 0 24px}
+  .ok-total b{display:block; font-family:var(--display); font-size:clamp(34px,5vw,52px); letter-spacing:-.03em; color:var(--ink); margin-top:6px}
+  .ok-actions{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:20px}
+
+  /* légende des couleurs du calendrier */
+  .cal-legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-family:var(--mono); font-size:10px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint)}
+  .cal-legend i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px}
+  .cal-legend .sw-free{background:#fff; border:1.5px solid var(--line)}
+  .cal-legend .sw-creator{background:rgba(17,16,9,.18)}
+  .cal-legend .sw-brand{background:var(--red-bg); border:1.5px solid var(--red)}
+
+  /* la modale « demander à libérer » */
+  .rel-cta{width:100%; justify-content:center; padding:15px 22px; font-size:12.5px; margin-top:14px}
+  .rel-note{border-left:3px solid var(--line); padding-left:12px; margin:10px 0 4px}
+  .rel-note.is-brand{border-color:var(--red)}
+
+  /* options & matériel (étape 03) */
+  .fmuted{color:var(--ink-faint); font-weight:400; text-transform:none; letter-spacing:0}
+
+  /* en-tête de famille : libellé mono + filet éditorial + compteur */
+  .optcat{display:flex; align-items:center; gap:11px; margin:24px 0 11px}
+  .optcat:first-child{margin-top:4px}
+  .optcat b{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-dim); font-weight:400}
+  .optcat .rule{flex:1; height:1px; background:var(--line)}
+  .optcat .n{font-family:var(--mono); font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink);
+    background:var(--lime); border:1.5px solid var(--ink); border-radius:var(--squig-a); padding:3px 10px}
+  .optcat .n:empty{display:none}
+
+  .optgrid{display:grid; grid-template-columns:repeat(2,1fr); gap:11px}
+  @media(max-width:640px){ .optgrid{grid-template-columns:1fr} }
+
+  /* la carte option : bordure « dessinée à la main » + ombre dure au survol (signature maison) */
+  .opt{display:flex; align-items:center; gap:12px; text-align:left; width:100%; padding:13px 15px; background:#fff;
+    border:1.5px solid var(--line); border-radius:var(--squig-b); color:var(--ink); cursor:pointer;
+    transition:transform .18s, box-shadow .18s, background .18s, border-color .18s}
+  .opt:nth-child(2n){border-radius:var(--squig-a)}
+  .opt:hover{border-color:var(--ink); transform:translate(-2px,-2px) rotate(-.35deg); box-shadow:3px 3px 0 var(--ink)}
+  .opt.on{background:var(--lime); border-color:var(--ink); box-shadow:2px 2px 0 var(--ink)}
+  .opt.on:hover{box-shadow:4px 4px 0 var(--ink)}
+  .opt:active{transform:translate(0,0); box-shadow:1px 1px 0 var(--ink)}
+
+  .opt .box{flex:none; width:19px; height:19px; border:1.5px solid var(--ink-faint);
+    border-radius:7px 4px 8px 5px / 5px 8px 4px 7px;
+    display:grid; place-items:center; font-size:11px; line-height:1; color:transparent; transition:.18s}
+  .opt.on .box{background:var(--ink); border-color:var(--ink); color:var(--lime)}
+  /* vignette du matériel : photo produit sur fond blanc, format carré */
+  .opt .thumb{flex:none; width:46px; height:46px; border-radius:9px; background:#fff;
+    border:1px solid var(--line); object-fit:contain; padding:2px}
+  .opt.on .thumb{border-color:var(--ink)}
+  .opt .ol{flex:1; font-size:13.5px; line-height:1.32}
+  .opt .ol em{display:block; font-family:var(--serif); font-style:italic; font-size:12.5px;
+    color:var(--ink-faint); margin-top:3px}
+  .opt.on .ol em{color:rgba(17,16,9,.62)}
+  .opt .op{flex:none; font-family:var(--mono); font-size:12.5px; color:var(--ink-dim); white-space:nowrap}
+  .opt.on .op{color:var(--ink); font-weight:600}
+  .opt .op .x{color:var(--ink-faint); font-size:11px}
+  .opt.on .op .x{color:rgba(17,16,9,.55)}
+
+  /* le package : carte pleine largeur, traitée comme une offre signature */
+  .opt.hero{grid-column:1/-1; background:var(--cream); border-color:var(--ink-faint); padding:16px 18px}
+  .opt.hero .ol{font-size:14px}
+  .opt.hero .ol b{font-family:var(--serif); font-style:italic; font-weight:500; font-size:17.5px; display:block}
+  .opt.hero .ol em{margin-top:5px; font-style:normal; font-family:var(--display); font-size:12.5px}
+  .opt.hero .op{font-size:15px; color:var(--ink)}
+  .opt.hero.on{background:var(--lime)}
+  .opt .tag{display:inline-block; margin-top:7px; font-family:var(--mono); font-size:9px; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--ink-dim); border:1px solid var(--ink-faint);
+    border-radius:var(--squig-a); padding:3px 9px}
+  .opt.on .tag{border-color:var(--ink); color:var(--ink)}
+
+  #opt-total{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+  #opt-total b{font-family:var(--serif); font-style:italic; font-weight:500; font-size:15px}
+  #opt-clear{background:none; border:none; padding:0; font-family:var(--mono); font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-faint); cursor:pointer; text-decoration:underline; text-underline-offset:3px}
+  #opt-clear:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="logo" href="../">hiving <em>studio</em><span class="dot">.</span><small>location plateaux</small></a>
+  <div class="nav-right">
+    <a class="btn ghost sm" href="../">← le site</a>
+    <a class="btn sm" href="mailto:contact@hivingfood.fr?subject=Demande%20sp%C3%A9ciale%20%C2%B7%20location%20de%20plateau">Une demande spéciale ? Écrivez à l'équipe</a>
+  </div>
+</nav>
+
+<!-- ================= WIZARD ================= -->
+<div id="wizard" class="wrap">
+  <div class="kick">( location <b>plateaux</b> )</div>
+  <h1 class="title">Louer un <span class="it">plateau.</span></h1>
+  <p class="sub">Deux décors, une réservation en ligne. Choisissez votre plateau et votre date : le prix s'affiche et vous réservez. Si vous voulez une équipe de production ou un décor modifié, ça part en devis, chiffré sous 24h.</p>
+  <div style="height:26px"></div>
+
+  <!-- 01 · le plateau -->
+  <div class="panel step" id="p1">
+    <div class="kick">( 01 · <b>le plateau</b> )</div>
+    <h3>Choisissez votre <span class="it">décor.</span></h3>
+    <div style="height:12px"></div>
+    <div class="grid2" id="studio-cards"></div>
+    <div class="hint err" id="e-studio"></div>
+  </div>
+
+  <!-- 02 · la date -->
+  <div class="panel step locked" id="p2">
+    <div class="kick">( 02 · <b>la date</b> )</div>
+    <h3>Quand <span class="it">tournez-vous ?</span></h3>
+    <div style="height:12px"></div>
+    <div class="grid2">
+      <div>
+        <div class="mcal">
+          <div class="mcal-head">
+            <button type="button" class="mcal-nav" id="cal-prev">←</button>
+            <span class="lbl" id="cal-label"></span>
+            <button type="button" class="mcal-nav" id="cal-next">→</button>
+          </div>
+          <div class="mcal-grid" id="cal-grid"></div>
+        </div>
+        <div class="cal-legend">
+          <span><i class="sw-free"></i>libre</span>
+          <span><i class="sw-creator"></i>pris par un créateur</span>
+          <span><i class="sw-brand"></i>pris par une autre marque</span>
+        </div>
+        <div class="hint" id="range-note" style="margin-top:6px"></div>
+        <div class="hint err" id="e-date"></div>
+      </div>
+      <div>
+        <label class="f" style="margin-top:0">Durée</label>
+        <div class="radio-row">
+          <input type="radio" name="duration" id="dur-full" value="full" checked><label for="dur-full" id="lab-full">Journée (8h à 22h)</label>
+          <input type="radio" name="duration" id="dur-am" value="half-am"><label for="dur-am" id="lab-am">Matin (8h à 14h)</label>
+          <input type="radio" name="duration" id="dur-pm" value="half-pm"><label for="dur-pm" id="lab-pm">Après-midi (14h à 22h)</label>
+          <input type="radio" name="duration" id="dur-custom" value="custom"><label for="dur-custom">Horaires personnalisés</label>
+        </div>
+        <div id="days-wrap">
+          <label class="f" for="f-days">Nombre de jours</label>
+          <input type="number" id="f-days" min="1" max="10" value="1" style="max-width:120px">
+        </div>
+        <div id="custom-wrap" style="display:none">
+          <label class="f">Vos horaires</label>
+          <div style="display:flex; gap:10px; align-items:center">
+            <select id="h-start" style="max-width:110px"></select>
+            <span class="hint" style="margin:0">à</span>
+            <select id="h-end" style="max-width:110px"></select>
+          </div>
+          <p class="hint">Pour des horaires sur mesure, le tarif exact est confirmé avec le devis définitif sous 24h.</p>
+        </div>
+        <p class="picked" id="picked-date"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 · votre projet -->
+  <div class="panel step locked" id="p3">
+    <div class="kick">( 03 · <b>votre projet</b> )</div>
+    <h3>Composez votre <span class="it">tournage.</span></h3>
+    <p class="hint" style="margin-bottom:16px">Le plateau arrive prêt : mobilier, café, wifi, aide au setup. Ajoutez le matériel dont vous avez besoin ; l'équipe de production et le sur-mesure sont chiffrés à part.</p>
+
+    <label class="f">Options &amp; matériel <span class="fmuted">(à la journée · facultatif)</span></label>
+    <div id="opt-list"></div>
+    <p class="hint" id="opt-total" style="margin:12px 0 20px"></p>
+
+    <label class="f">Le plateau</label>
+    <div class="radio-row">
+      <input type="radio" name="keep" id="keep-asis" value="asis" checked><label for="keep-asis">Tel quel</label>
+      <input type="radio" name="keep" id="keep-modify" value="modify"><label for="keep-modify">À modifier</label>
+      <input type="radio" name="keep" id="keep-unknown" value="unknown"><label for="keep-unknown">Je ne sais pas encore</label>
+    </div>
+
+    <label class="f">La production</label>
+    <div class="radio-row">
+      <input type="radio" name="prod" id="prod-self" value="self" checked><label for="prod-self">Je viens avec mon équipe</label>
+      <input type="radio" name="prod" id="prod-hiving" value="hiving"><label for="prod-hiving">Je veux une équipe Hiving</label>
+      <input type="radio" name="prod" id="prod-unknown" value="unknown"><label for="prod-unknown">Je ne sais pas encore</label>
+    </div>
+    <p class="hint" id="custom-note"></p>
+
+    <label class="f" for="f-needs">Un mot sur votre projet ? (facultatif)</label>
+    <textarea id="f-needs" placeholder="Ex. recette en gros plan, ambiance recherchée, références…"></textarea>
+  </div>
+
+  <!-- 04 · le devis -->
+  <div class="panel step locked" id="p4">
+    <div class="kick">( 04 · <b>le devis</b> )</div>
+    <h3>Vos coordonnées de <span class="it">facturation.</span></h3>
+    <div class="grid2">
+      <div>
+        <label class="f" for="f-company">Société *</label>
+        <input type="text" id="f-company" maxlength="200" autocomplete="organization">
+        <div class="hint err" id="e-company"></div>
+      </div>
+      <div>
+        <label class="f" for="f-contact">Nom du contact *</label>
+        <input type="text" id="f-contact" maxlength="200" autocomplete="name">
+        <div class="hint err" id="e-contact"></div>
+      </div>
+      <div>
+        <label class="f" for="f-email">Email *</label>
+        <input type="email" id="f-email" autocomplete="email">
+        <div class="hint err" id="e-email"></div>
+      </div>
+      <div>
+        <label class="f" for="f-phone">Téléphone</label>
+        <input type="tel" id="f-phone" autocomplete="tel">
+      </div>
+    </div>
+    <label class="f" for="f-address">Adresse de facturation *</label>
+    <input type="text" id="f-address" autocomplete="street-address" placeholder="N° et rue">
+    <div class="hint err" id="e-address"></div>
+    <div class="grid2">
+      <div>
+        <label class="f" for="f-zip">Code postal *</label>
+        <input type="text" id="f-zip" maxlength="12" autocomplete="postal-code" placeholder="75002">
+        <div class="hint err" id="e-zip"></div>
+      </div>
+      <div>
+        <label class="f" for="f-city">Ville *</label>
+        <input type="text" id="f-city" maxlength="120" autocomplete="address-level2" placeholder="Paris">
+        <div class="hint err" id="e-city"></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label class="f" for="f-vat">N° TVA intracommunautaire</label>
+        <input type="text" id="f-vat" placeholder="FR12345678901" autocomplete="off">
+        <div class="hint err" id="e-vat"></div>
+      </div>
+      <div>
+        <label class="f" for="f-siret">SIRET</label>
+        <input type="text" id="f-siret" placeholder="14 chiffres" autocomplete="off">
+        <div class="hint err" id="e-siret"></div>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:12px">Pour une date libre, la réservation est confirmée aussitôt ; votre facture vous parvient séparément, sous 24h. Le sur-mesure part en devis, sans engagement.</p>
+    <div class="modal-actions" style="justify-content:flex-start">
+      <button class="btn" id="go">Réserver mon créneau →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SUCCÈS ================= -->
+<div id="success" class="wrap" style="display:none">
+  <div class="panel ok-panel">
+    <span class="hand">et voilà ↓</span>
+    <h1 class="title" id="ok-title">Votre réservation est <span class="it">confirmée.</span></h1>
+    <div class="ok-total"><span id="ok-total-lbl">Montant</span><b id="ok-total"></b></div>
+    <div class="ok-actions">
+      <a class="btn" id="ok-link" href="#">Voir ma confirmation</a>
+      <a class="btn ghost" href="mailto:contact@hivingfood.fr">Une question ? Écrivez-nous</a>
+    </div>
+    <p class="hint" id="ok-note"></p>
+  </div>
+</div>
+
+<!-- ================= BARRE RÉCAP ================= -->
+<div class="sumbar" id="bar">
+  <div class="sum" id="bar-sum"></div>
+  <button class="btn" id="bar-go">Recevoir mon devis →</button>
+</div>
+
+<!-- demander à libérer un créneau déjà pris -->
+<div class="modal-bg" id="m-release">
+  <div class="modal">
+    <button class="x" type="button" data-relclose aria-label="Fermer">×</button>
+    <h3 id="rel-title">Ce créneau est <span class="it">déjà pris.</span></h3>
+    <p class="hint" id="rel-when" style="margin:2px 0 12px"></p>
+    <div class="rel-note" id="rel-note"><p class="hint" id="rel-why" style="margin:0"></p></div>
+    <p class="hint">Vous pouvez demander à notre équipe de le libérer : on contacte la personne qui l'occupe et on revient vers vous. Un créneau n'est jamais annulé sans son accord.</p>
+    <button class="btn rel-cta" type="button" id="rel-cta">Faire une demande →</button>
+    <div id="rel-form" hidden>
+      <label class="f" for="rel-email">Votre email *</label>
+      <input type="email" id="rel-email" autocomplete="email">
+      <label class="f" for="rel-company">Société (facultatif)</label>
+      <input type="text" id="rel-company" autocomplete="organization">
+      <label class="f" for="rel-msg">Un mot sur votre besoin ? (facultatif)</label>
+      <textarea id="rel-msg" placeholder="Ex. tournage possible uniquement ce jour-là, deadline serrée…"></textarea>
+      <div class="hint err" id="rel-err"></div>
+      <div class="modal-actions">
+        <button class="btn ghost" type="button" data-relclose>Annuler</button>
+        <button class="btn" type="button" id="rel-go">Envoyer la demande →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { CONFIG } from '../shared/config.js';
+import { api, fmt, toast, mockBanner } from '../shared/sb.js';
+
+mockBanner();
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const META = {
+  pro:       { img: '../img/classic/pro-1.webp',     tag: 'la cuisine des chefs' },
+  famille:   { img: '../img/classic/famille-1.webp', tag: 'comme à la maison, en mieux éclairé' },
+};
+
+let studios = [];
+const S = { studio: null, date: null, duration: 'full', days: 1, keepSet: 'asis', production: 'self', h0: 10, h1: 16, rangeConflict: false };
+
+/* durée : libellés alignés sur la config */
+const MID = 14;
+$('lab-full').textContent = `Journée (${CONFIG.OPEN_HOUR}h à ${CONFIG.CLOSE_HOUR}h)`;
+$('lab-am').textContent = `Matin (${CONFIG.OPEN_HOUR}h à ${MID}h)`;
+$('lab-pm').textContent = `Après-midi (${MID}h à ${CONFIG.CLOSE_HOUR}h)`;
+/* horaires personnalisés */
+$('h-start').innerHTML = [...Array(CONFIG.CLOSE_HOUR - CONFIG.OPEN_HOUR)].map((_, i) => { const h = CONFIG.OPEN_HOUR + i; return `<option value="${h}" ${h === 10 ? 'selected' : ''}>${h}h00</option>`; }).join('');
+$('h-end').innerHTML = [...Array(CONFIG.CLOSE_HOUR - CONFIG.OPEN_HOUR)].map((_, i) => { const h = CONFIG.OPEN_HOUR + 1 + i; return `<option value="${h}" ${h === 16 ? 'selected' : ''}>${h}h00</option>`; }).join('');
+$('h-start').onchange = () => { S.h0 = +$('h-start').value; if (S.h1 <= S.h0){ S.h1 = S.h0 + 1; $('h-end').value = S.h1; } update(); };
+$('h-end').onchange = () => { S.h1 = +$('h-end').value; if (S.h1 <= S.h0){ S.h0 = S.h1 - 1; $('h-start').value = S.h0; } update(); };
+
+/* ---------- 01 · studios ---------- */
+function renderCards(){
+  $('studio-cards').innerHTML = studios.map(s => {
+    const m = META[s.id] || { img: '../img/classic/photo-1.webp', tag: s.tag || '' };
+    const sel = S.studio && S.studio.id === s.id;
+    return `<button type="button" class="studio-card ${sel ? 'sel' : ''}" data-s="${esc(s.id)}">
+      <img src="${m.img}" alt="${esc(s.name)}" loading="lazy">
+      <div class="sc-body">
+        <div class="sc-top"><b>${esc(s.name)}</b>${sel ? '<span class="pill on">sélectionné</span>' : ''}</div>
+        <div class="sc-price">${fmt.euro(s.price_day)} / jour</div>
+        <div class="sc-tag">${esc(m.tag)}</div>
+      </div></button>`;
+  }).join('');
+  $('studio-cards').querySelectorAll('[data-s]').forEach(b => b.onclick = () => selectStudio(b.dataset.s));
+}
+
+async function selectStudio(id){
+  S.studio = studios.find(s => s.id === id) || null;
+  $('e-studio').textContent = '';
+  renderCards();
+  // la date déjà choisie peut être prise sur ce nouveau plateau
+  if (S.date){
+    const [y, m, d] = S.date.split('-').map(Number);
+    const busy = await getBusy(y, m - 1);
+    if (dayBusy(busy, y, m - 1, d)){
+      S.date = null;
+      toast('Cette date est prise sur ce plateau, choisissez-en une autre.');
+    }
+  }
+  await renderCal();
+  update();
+}
+
+/* ---------- 02 · calendrier ---------- */
+const today = new Date(); today.setHours(0, 0, 0, 0);
+let viewY = today.getFullYear(), viewM = today.getMonth();
+const busyCache = {};
+function getBusy(y, m){
+  const k = y + '-' + m;
+  if (!busyCache[k]){
+    const from = new Date(y, m, 1), to = new Date(y, m + 1, 1);
+    busyCache[k] = api.allBusy(from.toISOString(), to.toISOString()).catch(e => { delete busyCache[k]; toast(esc(e.message)); return []; });
+  }
+  return busyCache[k];
+}
+/* qui occupe le créneau : on montre le type, jamais l'identité */
+const KIND = {
+  creator: { cls:'k-creator', title:'Pris par un créateur, cliquez pour demander à le libérer',
+             h3:'Ce créneau est pris par <span class="it">un créateur.</span>',
+             why:'Un créateur de la maison tourne déjà sur ce plateau ce jour là.' },
+  brand:   { cls:'k-brand', title:'Pris par une autre marque, cliquez pour demander à le libérer',
+             h3:'Ce créneau est pris par <span class="it">une autre marque.</span>',
+             why:'Une autre marque a déjà réservé ce plateau ce jour là.' },
+  block:   { cls:'k-block', title:'Indisponible, cliquez pour demander à le libérer',
+             h3:'Ce créneau est <span class="it">indisponible.</span>',
+             why:'Le plateau est bloqué par notre équipe ce jour là.' },
+  _:       { cls:'k-unknown', title:'Déjà réservé, cliquez pour demander à le libérer',
+             h3:'Ce créneau est <span class="it">déjà pris.</span>',
+             why:'Ce plateau est déjà occupé ce jour là.' },
+};
+const kindUI = k => KIND[k] || KIND._;
+const KRANK = { brand:3, creator:2, block:1 };   // sur un jour mixte, la marque l'emporte à l'affichage
+function dayKind(busy, y, m, d){
+  if (!S.studio) return null;
+  const d0 = new Date(y, m, d), d1 = new Date(y, m, d + 1);
+  let best = null;
+  for (const b of busy){
+    if (b.studio_id !== S.studio.id) continue;
+    if (!(new Date(b.starts_at) < d1 && new Date(b.ends_at) > d0)) continue;
+    const k = b.kind || '_';
+    if (best === null || (KRANK[k] || 0) > (KRANK[best] || 0)) best = k;
+  }
+  return best;
+}
+function dayBusy(busy, y, m, d){ return dayKind(busy, y, m, d) !== null; }
+// contrôle autoritaire de la plage multi-jours (async : charge les dispos des mois couverts)
+async function computeRangeConflict(){
+  if (!(S.studio && S.date && S.duration === 'full' && S.days > 1)) return false;
+  const [sy, sm, sd] = S.date.split('-').map(Number);
+  const start = new Date(sy, sm - 1, sd), end = new Date(sy, sm - 1, sd + S.days - 1);
+  const byMonth = {};
+  for (let t = new Date(start); t <= end; t.setDate(t.getDate() + 1)){
+    const k = t.getFullYear() + '-' + t.getMonth();
+    if (!byMonth[k]) byMonth[k] = await getBusy(t.getFullYear(), t.getMonth());
+  }
+  for (let t = new Date(start); t <= end; t.setDate(t.getDate() + 1)){
+    if (t < today) return true;
+    if (dayBusy(byMonth[t.getFullYear() + '-' + t.getMonth()] || [], t.getFullYear(), t.getMonth(), t.getDate())) return true;
+  }
+  return false;
+}
+
+async function renderCal(){
+  $('cal-prev').disabled = $('cal-next').disabled = true;
+  const busy = await getBusy(viewY, viewM);
+  const first = new Date(viewY, viewM, 1);
+  $('cal-label').textContent = first.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+  const offset = (first.getDay() + 6) % 7; // lundi en tête
+  const nDays = new Date(viewY, viewM + 1, 0).getDate();
+  // plage sélectionnée (journée complète sur plusieurs jours)
+  const span = (S.duration === 'full' && S.days > 1) ? S.days : 1;
+  let rangeStart = null, rangeEnd = null;
+  if (S.date){
+    const [sy, sm, sd] = S.date.split('-').map(Number);
+    rangeStart = new Date(sy, sm - 1, sd);
+    rangeEnd = new Date(sy, sm - 1, sd + span - 1);
+  }
+  let html = ['lu','ma','me','je','ve','sa','di'].map(d => `<div class="dow">${d}</div>`).join('');
+  html += '<div></div>'.repeat(offset);
+  for (let d = 1; d <= nDays; d++){
+    const dt = new Date(viewY, viewM, d);
+    const past = dt < today;
+    const kindD = dayKind(busy, viewY, viewM, d);
+    const busyD = kindD !== null;
+    const isoD = `${viewY}-${String(viewM + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const isStart = S.date === isoD;
+    const isEnd = span > 1 && rangeEnd && dt.getTime() === rangeEnd.getTime();
+    const inRange = rangeStart && dt >= rangeStart && dt <= rangeEnd;
+    const cls = (isStart || isEnd) ? 'sel' : (inRange ? 'range' : '');
+    const ku = busyD ? kindUI(kindD) : null;
+    html += `<button type="button" class="day ${past ? 'past' : ''} ${busyD ? 'busy ' + ku.cls : ''} ${cls}"
+      ${past ? 'disabled' : ''} ${busyD ? `data-busy="1" data-kind="${esc(kindD)}"` : ''} data-d="${isoD}"${busyD ? ` title="${esc(ku.title)}" aria-label="${d} · ${esc(ku.title)}"` : ''}>${d}</button>`;
+  }
+  $('cal-grid').innerHTML = html;
+  // avertissement si la période de plusieurs jours croise un jour déjà pris (contrôle async correct, multi-mois)
+  const conflict = await computeRangeConflict();
+  S.rangeConflict = conflict;
+  $('range-note').innerHTML = (conflict && rangeStart && rangeEnd)
+    ? `⚠ Un jour de cette période (du <b>${rangeStart.getDate()}</b> au <b>${rangeEnd.getDate()}</b>) est déjà pris ou passé — choisissez une autre date de départ ou réduisez la durée.`
+    : '';
+  $('cal-grid').querySelectorAll('.day[data-d]:not(:disabled):not([data-busy])').forEach(b => b.onclick = () => {
+    S.date = b.dataset.d;
+    $('e-date').textContent = '';
+    renderCal();
+    update();
+  });
+  // jour déjà pris : on ne le réserve pas, on propose de demander à le libérer
+  $('cal-grid').querySelectorAll('.day[data-busy]').forEach(b => b.onclick = () => openRelease(b.dataset.d, b.dataset.kind));
+  $('cal-prev').disabled = viewY === today.getFullYear() && viewM === today.getMonth();
+  $('cal-next').disabled = false;
+}
+$('cal-prev').onclick = () => { viewM--; if (viewM < 0){ viewM = 11; viewY--; } renderCal(); };
+$('cal-next').onclick = () => { viewM++; if (viewM > 11){ viewM = 0; viewY++; } renderCal(); };
+
+/* ---------- demander à libérer un créneau déjà pris ---------- */
+let relDate = null, relKind = null;
+function openRelease(dateStr, kind){
+  if (!S.studio) return;
+  relDate = dateStr; relKind = kind || null;
+  const u = kindUI(relKind);
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  $('rel-title').innerHTML = u.h3;
+  $('rel-why').textContent = u.why;
+  $('rel-note').classList.toggle('is-brand', relKind === 'brand');
+  $('rel-when').innerHTML = `<b>${esc(S.studio.name)}</b> · ${dt.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`;
+  $('rel-err').textContent = '';
+  $('rel-email').value = $('f-email').value.trim();
+  $('rel-company').value = $('f-company').value.trim();
+  $('rel-msg').value = '';                 // on ne traîne pas le message d'un autre jour
+  $('rel-form').hidden = true;             // temps 1 : le message + le gros bouton
+  $('rel-cta').hidden = false;
+  $('m-release').classList.add('on');
+}
+// temps 2 : le formulaire, seulement si la marque clique sur « Faire une demande »
+$('rel-cta').onclick = () => { $('rel-cta').hidden = true; $('rel-form').hidden = false; $('rel-email').focus(); };
+function closeRelease(){ $('m-release').classList.remove('on'); }
+document.querySelectorAll('[data-relclose]').forEach(b => b.onclick = closeRelease);
+$('m-release').onclick = e => { if (e.target.id === 'm-release') closeRelease(); };
+$('rel-go').onclick = async () => {
+  const email = $('rel-email').value.trim();
+  if (!email.includes('@')){ $('rel-err').textContent = 'Entrez un email valide pour qu\'on vous réponde.'; return; }
+  $('rel-go').disabled = true;
+  try {
+    await api.releaseRequest({ studio_id: S.studio.id, date: relDate, email, company: $('rel-company').value.trim() || null, message: $('rel-msg').value.trim() || null });
+    closeRelease();
+    toast('Demande envoyée · on revient vers vous très vite.');
+    $('rel-msg').value = '';
+  } catch (e){ $('rel-err').textContent = e.message; }
+  $('rel-go').disabled = false;
+};
+
+document.querySelectorAll('input[name=duration]').forEach(r => r.onchange = () => {
+  S.duration = r.value;
+  $('days-wrap').style.display = S.duration === 'full' ? '' : 'none';
+  $('custom-wrap').style.display = S.duration === 'custom' ? '' : 'none';
+  renderCal();
+  renderOptions();   // le « × N j » des options dépend de la durée
+  update();
+});
+$('f-days').oninput = () => {
+  const v = Math.min(10, Math.max(1, parseInt($('f-days').value, 10) || 1));
+  S.days = v;
+  renderCal();
+  renderOptions();   // le « × N j » des options dépend du nombre de jours
+  update();
+};
+$('f-days').onblur = () => { $('f-days').value = S.days; };
+
+/* ---------- 03 · le projet (2 questions qui pilotent le sur mesure) ---------- */
+document.querySelectorAll('input[name=keep]').forEach(r => r.onchange = () => { S.keepSet = r.value; update(); });
+document.querySelectorAll('input[name=prod]').forEach(r => r.onchange = () => { S.production = r.value; update(); });
+// sur mesure = décor pas « tel quel » OU production assurée par Hiving
+function needsQuote(){ return S.keepSet !== 'asis' || S.production === 'hiving'; }
+
+/* ---------- 03 · options & matériel (catalogue st_options) ---------- */
+let cat = [];
+const chosen = new Set();
+const OPT_CATS = { lumiere: 'Lumières', camera: 'Caméras', optique: 'Optiques', accessoire: 'Accessoires', materiel: 'Matériel' };
+const CAT_ORDER = ['lumiere', 'camera', 'optique', 'accessoire', 'materiel'];
+const selectable = () => cat.filter(o => o.active !== false && !o.included);
+// nb de jours réellement facturé : une demi-journée reste 1 jour (identique à ce qu'envoie submit())
+function billDays(){ return S.duration === 'full' ? S.days : 1; }
+// total des options (prix × jours facturés pour l'unité « day »), aligné sur le calcul serveur
+function optionsTotal(){
+  const n = billDays();
+  let t = 0;
+  for (const o of selectable()){ if (chosen.has(o.id)) t += Number(o.price) * (o.unit === 'day' ? n : 1); }
+  return t;
+}
+// « Package Lumière : 2 lumières… » → titre + description, pour aérer la carte
+function splitLabel(label){
+  const i = String(label).indexOf(' : ');
+  return i < 0 ? [label, ''] : [label.slice(0, i), label.slice(i + 3)];
+}
+function optCard(o){
+  const [title, desc] = splitLabel(o.label);
+  const hero = /^package/i.test(title);
+  // prix nu : la demi-journée ne divise pas le matériel. On n'affiche « × N » qu'en multi-jours.
+  const n = billDays();
+  const mult = (o.unit === 'day' && n > 1) ? ` <span class="x">× ${n} j</span>` : '';
+  // vignette du matériel quand on en a une (le Package est un lot, il n'en a pas)
+  const thumb = o.image
+    ? `<img class="thumb" src="../img/options/${esc(o.image)}" alt="" loading="lazy" decoding="async">`
+    : '';
+  return `<button type="button" class="opt${hero ? ' hero' : ''} ${chosen.has(o.id) ? 'on' : ''}" data-o="${esc(o.id)}">
+    <span class="box">✓</span>${thumb}
+    <span class="ol">${hero ? `<b>${esc(title)}</b>` : esc(title)}${desc ? `<em>${esc(desc)}</em>` : ''}${hero ? '<span class="tag">le plus demandé</span>' : ''}</span>
+    <span class="op">${fmt.euro(o.price)}${mult}</span>
+  </button>`;
+}
+function renderOptions(){
+  const list = selectable();
+  if (!list.length){ $('opt-list').innerHTML = ''; $('opt-total').textContent = ''; return; }
+  const byCat = {};
+  list.forEach(o => { (byCat[o.category] = byCat[o.category] || []).push(o); });
+  const cats = Object.keys(byCat).sort((a, b) => (CAT_ORDER.indexOf(a) + 1 || 99) - (CAT_ORDER.indexOf(b) + 1 || 99));
+  $('opt-list').innerHTML = cats.map(c => `
+    <div class="optcat" data-c="${esc(c)}"><b>${esc(OPT_CATS[c] || c)}</b><i class="rule"></i><span class="n"></span></div>
+    <div class="optgrid">${byCat[c].map(optCard).join('')}</div>`).join('');
+  $('opt-list').querySelectorAll('[data-o]').forEach(b => b.onclick = () => {
+    const id = b.dataset.o;
+    if (chosen.has(id)) chosen.delete(id); else chosen.add(id);
+    b.classList.toggle('on');
+    update();
+  });
+  countOptions();
+}
+// compteur par famille : mis à jour sans re-render, pour ne pas casser l'animation
+function countOptions(){
+  $('opt-list').querySelectorAll('.optcat').forEach(h => {
+    const n = selectable().filter(o => o.category === h.dataset.c && chosen.has(o.id)).length;
+    h.querySelector('.n').textContent = n ? `${n} choisie${n > 1 ? 's' : ''}` : '';
+  });
+}
+function clearOptions(){ chosen.clear(); renderOptions(); update(); }
+
+/* ---------- déblocage + barre récap ---------- */
+function dateLabel(full){
+  if (!S.date) return null;
+  const d = new Date(S.date + 'T12:00:00');
+  return full ? fmt.dateFull(d) : fmt.date(d);
+}
+// sur mesure (décor modifié / équipe Hiving) ou horaires perso → devis à chiffrer, sinon facture ferme
+function isCustom(){ return needsQuote() || S.duration === 'custom'; }
+function studioTotal(){
+  if (!S.studio) return 0;
+  if (S.duration === 'custom') return null;
+  if (S.duration.startsWith('half')) return Math.round(S.studio.price_day * 0.6);
+  return S.studio.price_day * S.days;
+}
+function total(){
+  if (!S.studio) return 0;
+  if (isCustom()) return null;                                    // devis (sur-mesure / horaires perso)
+  return studioTotal() + optionsTotal();
+}
+function update(){
+  const okDate = !!(S.studio && S.date);
+  $('p2').classList.toggle('locked', !S.studio);
+  $('p3').classList.toggle('locked', !okDate);
+  $('p4').classList.toggle('locked', !okDate);
+
+  $('picked-date').innerHTML = S.date
+    ? `Votre date : <b>${esc(dateLabel(true))}</b>`
+    : (S.studio ? 'Cliquez sur un jour libre du calendrier.' : '');
+
+  // ligne récap des options choisies (dépend du nb de jours)
+  if (selectable().length){
+    if (chosen.size){
+      $('opt-total').innerHTML = `<span>${chosen.size} option${chosen.size > 1 ? 's' : ''} · <b>+ ${fmt.euro(optionsTotal())} HT</b>`
+        + `${billDays() > 1 ? ' <span class="fmuted">sur ' + billDays() + ' jours</span>' : ''}</span>`
+        + `<button type="button" id="opt-clear">tout effacer</button>`;
+      $('opt-clear').onclick = clearOptions;
+    } else {
+      $('opt-total').innerHTML = '<span class="fmuted">Facultatif — ajoutez seulement ce dont vous avez besoin.</span>';
+    }
+    countOptions();
+  }
+
+  // la note dit pourquoi la demande bascule en devis
+  $('custom-note').innerHTML = needsQuote()
+    ? 'Votre demande part en <b>devis</b> : notre équipe la chiffre et revient vers vous sous 24h ouvrées. Le créneau n\'est pas bloqué avant votre accord.'
+    : 'Réservation directe : c\'est confirmé aussitôt en ligne ; la <b>facture</b> (plateau + options) vous parvient séparément.';
+
+  // le bouton dit ce qui va se passer : réserver (facture) ou demander un devis (sur mesure)
+  const goTxt = isCustom() ? 'Demander mon devis →' : 'Réserver mon créneau →';
+  $('go').textContent = goTxt; $('bar-go').textContent = goTxt;
+
+  const on = !!S.studio;
+  $('bar').classList.toggle('on', on);
+  document.body.classList.toggle('baron', on);
+  if (on){
+    const dur = S.duration === 'half-am' ? 'matin' : S.duration === 'half-pm' ? 'après-midi'
+      : S.duration === 'custom' ? `${S.h0}h à ${S.h1}h` : (S.days > 1 ? S.days + ' jours' : 'journée');
+    const t = total();
+    const priceHtml = t != null ? `total <b>${fmt.euro(t)} HT</b>`
+      : isCustom() ? '<b>sur devis</b>' : '<b>tarif confirmé sous 24h</b>';
+    const optTxt = chosen.size ? `<span class="sep">·</span>${chosen.size} option${chosen.size > 1 ? 's' : ''}` : '';
+    $('bar-sum').innerHTML = `<b>${esc(S.studio.name)}</b><span class="sep">·</span>${S.date ? esc(dateLabel(false)) : 'date à choisir'}
+      <span class="sep">·</span>${dur}${optTxt}<span class="sep">·</span>${priceHtml}`;
+  }
+}
+
+/* ---------- validation + envoi ---------- */
+function problem(panel, hintId, msg, focusId){
+  $(hintId).textContent = msg;
+  $(panel).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (focusId) $(focusId).focus({ preventScroll: true });
+  return false;
+}
+function validate(){
+  if (!S.studio) return problem('p1', 'e-studio', 'Choisissez d\'abord votre plateau.');
+  if (!S.date) return problem('p2', 'e-date', 'Choisissez une date libre dans le calendrier.');
+  if (!$('f-company').value.trim()) return problem('p4', 'e-company', 'Le nom de votre société est indispensable pour la facture.', 'f-company');
+  if (!$('f-contact').value.trim()) return problem('p4', 'e-contact', 'Indiquez le nom du contact.', 'f-contact');
+  if (!$('f-email').value.trim().includes('@')) return problem('p4', 'e-email', 'Entrez un email valide : c\'est là que part votre document.', 'f-email');
+  // adresse complète : exigée pour éditer une facture conforme
+  if (!$('f-address').value.trim()) return problem('p4', 'e-address', 'L\'adresse est obligatoire pour établir la facture.', 'f-address');
+  if (!$('f-zip').value.trim()) return problem('p4', 'e-zip', 'Indiquez le code postal.', 'f-zip');
+  if (!$('f-city').value.trim()) return problem('p4', 'e-city', 'Indiquez la ville.', 'f-city');
+  // TVA et SIRET restent facultatifs, mais s'ils sont remplis ils doivent être
+  // valides : un numéro mal formé fait rejeter la facture par notre comptabilité.
+  const vat = $('f-vat').value.toUpperCase().replace(/[\s.\-]/g, '');
+  if (vat && !/^[A-Z]{2}[0-9A-Z]{2,13}$/.test(vat))
+    return problem('p4', 'e-vat', 'Format attendu : 2 lettres de pays puis les chiffres, ex. FR12345678901. Laissez vide si vous ne l\'avez pas.', 'f-vat');
+  const siret = $('f-siret').value.replace(/[\s.\-]/g, '');
+  if (siret && !/^\d{9}$|^\d{14}$/.test(siret))
+    return problem('p4', 'e-siret', 'Le SIRET compte 14 chiffres (ou 9 pour un SIREN). Laissez vide si vous ne l\'avez pas.', 'f-siret');
+  return true;
+}
+
+async function submit(){
+  ['e-studio','e-date','e-company','e-contact','e-email','e-address','e-zip','e-city','e-vat','e-siret'].forEach(id => $(id).textContent = '');
+  if (!validate()) return;
+  if (await computeRangeConflict()){ problem('p2', 'e-date', 'Un jour de votre période est déjà pris : changez la date de départ ou réduisez le nombre de jours.'); return; }
+  const btns = [$('go'), $('bar-go')];
+  btns.forEach(b => b.disabled = true);
+  try {
+    const r = await api.createBrandRequest({
+      studio_id: S.studio.id,
+      date: S.date,
+      days: S.duration === 'full' ? S.days : 1,
+      duration: S.duration,
+      hours: S.duration === 'custom' ? `${S.h0}h à ${S.h1}h` : null,
+      keep_set: S.keepSet, production: S.production,
+      custom: needsQuote(),
+      options: selectable().filter(o => chosen.has(o.id)).map(o => ({ id: o.id, label: o.label, price: Number(o.price), unit: o.unit })),
+      needs: $('f-needs').value.trim() || null,
+      company: $('f-company').value.trim(),
+      contact_name: $('f-contact').value.trim(),
+      email: $('f-email').value.trim(),
+      phone: $('f-phone').value.trim() || null,
+      billing_address: $('f-address').value.trim() || null,
+      billing_zip: $('f-zip').value.trim() || null,
+      billing_city: $('f-city').value.trim() || null,
+      vat: $('f-vat').value.toUpperCase().replace(/[\s.\-]/g, '') || null,
+      siret: $('f-siret').value.replace(/[\s.\-]/g, '') || null,
+    });
+    const invoice = r.doc_type === 'invoice';
+    $('ok-title').innerHTML = invoice
+      ? `Votre <span class="it">réservation</span> est confirmée.`
+      : `Votre devis <span class="it">N° ${esc(r.quote_number)}</span> est prêt.`;
+    $('ok-total-lbl').textContent = invoice ? 'Montant' : 'Estimation';
+    $('ok-total').textContent = r.quote_total == null ? 'Sur devis' : fmt.euro(r.quote_total) + ' HT';
+    $('ok-link').textContent = invoice ? 'Voir ma confirmation' : 'Voir mon devis';
+    $('ok-link').href = '../devis/?id=' + encodeURIComponent(r.id);
+    $('ok-note').textContent = invoice
+      ? `Créneau bloqué à votre nom (${esc(S.studio.name)}). Un email de confirmation vous a été envoyé ; votre facture vous parviendra séparément, sous 24h, payable par virement.`
+      : 'Notre équipe chiffre votre demande sur-mesure et revient sous 24h ouvrées : le créneau n\'est pas encore bloqué.';
+    $('wizard').style.display = 'none';
+    $('bar').classList.remove('on');
+    document.body.classList.remove('baron');
+    $('success').style.display = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) {
+    toast(e.message === 'SLOT_TAKEN'
+      ? 'Ce créneau vient d\'être réservé. Choisissez une autre date, ou écrivez-nous pour une demande de libération.'
+      : esc(e.message));
+    if (e.message === 'SLOT_TAKEN'){ Object.keys(busyCache).forEach(k => delete busyCache[k]); renderCal(); }
+  }
+  btns.forEach(b => b.disabled = false);
+}
+$('go').onclick = submit;
+$('bar-go').onclick = submit;
+
+/* ---------- boot ---------- */
+async function boot(){
+  try { studios = await api.studios(); }
+  catch (e) { studios = CONFIG.STUDIOS_FALLBACK; }
+  try { cat = await api.options(); }
+  catch (e) { cat = []; }
+  renderCards();
+  renderOptions();
+  await renderCal();
+  update();
+  // auto-sélection depuis ?studio=xxx (clic « Réserver » sur un plateau du site)
+  const pre = new URLSearchParams(location.search).get('studio');
+  if (pre && studios.some(s => s.id === pre)){
+    await selectStudio(pre);
+    setTimeout(() => $('p2')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 400);
+  }
+}
+boot();
+</script>
+</body>
+</html>
