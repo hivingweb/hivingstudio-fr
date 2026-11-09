@@ -3,9 +3,9 @@
 //
 // Parcours de réservation en 3 étapes (décision de Maxime, nov. 2026) :
 //   1. plateau + date(s)   2. options   3. facturation + « Réserver »
-// Envoi : si CRM_RESERVATION_URL (shared/config.js) est rempli, la demande part au CRM Hiving,
-// qui crée le devis Pennylane et bloque la date 48 h (docs/reservation-pennylane.md).
-// Sinon : e-mail à l'équipe via la fonction Vercel /api/contact (circuit actuel).
+// Envoi : d'abord la fonction Vercel /api/reservation (devis Pennylane direct, date bloquée 48 h,
+// docs/reservation-pennylane.md « Version autonome site »). Si elle ne répond pas 200 (non activée,
+// panne) : CRM_RESERVATION_URL (shared/config.js) s'il est rempli, sinon e-mail via /api/contact.
 const P = window.HIVING_PALETTE;
 const fmt = (n) => Math.round(n).toLocaleString('fr-FR');
 const CONTACT = 'contact@hivingfood.fr';
@@ -127,72 +127,97 @@ function DevisPage() {
     const siren = info.siren.replace(/[\s.\-]/g, '');
     const crm = (window.HIVING_CONFIG && window.HIVING_CONFIG.CRM_RESERVATION_URL) || '';
     setEnvoi({ etat: 'envoi', msg: 'Envoi en cours…' });
+    const demande = JSON.stringify({
+      source: 'hivingstudio.fr/pages/devis.html',
+      idempotency_key: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2),
+      studio_id: plateau.slug.replace(/^studio-/, ''),
+      start_date: date, days,
+      options: lignesOptions.map(l => ({ catalog: 'site', id: l.a.id, label: l.a.name, qty: l.q, unit: l.a.unit, unit_price_ht: l.a.price })),
+      customer: {
+        company: info.company.trim(), siren: siren || null, contact_name: info.name.trim(), email,
+        billing_address: { line1: info.address.trim(), zip: info.zip.trim(), city: info.city.trim(), country: 'FR' },
+      },
+      message: info.message.trim() || null,
+      client_total_ht: ht,
+      accept_conditions: true,
+      website: piege,
+    });
 
-    if (crm) {
-      // Nouveau circuit : le CRM crée le devis Pennylane et bloque la date 48 h.
-      fetch(crm, {
-        method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
+    // 1. Réservation directe : la fonction Vercel /api/reservation crée le devis Pennylane et bloque la date.
+    //    Si elle n'est pas active (501), absente ou en panne : repli sur le circuit précédent (2 ou 3).
+    fetch('/api/reservation', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: demande })
+      .then(lireReponse, horsLigne)
+      .then(res => {
+        if (res.status === 200 && res.data.ok) {
+          const fin = res.data.holdUntil ? new Date(res.data.holdUntil).toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : null;
+          const num = res.data.quoteNumber ? ` (N° ${res.data.quoteNumber})` : '';
+          setEnvoi({ etat: 'ok', msg: (res.data.quoteSent
+            ? `Votre devis Pennylane${num} vient de partir par e-mail.`
+            : `Votre devis Pennylane${num} part par e-mail dans quelques minutes.`)
+            + ` Votre date est bloquée 48 h${fin ? ', jusqu\'au ' + fin : ''}. Elle est confirmée à réception du paiement.` });
+        } else if (res.status === 409) {
+          setErrs({ date: 'Cette date n\'est plus libre sur ce plateau.' });
+          setEnvoi({ etat: 'erreur', msg: 'Cette date vient d\'être prise sur ce plateau. Choisissez une autre date, ou écrivez-nous.' });
+        } else if ([400, 413, 422, 429].includes(res.status) && res.data.error) {
+          setEnvoi({ etat: 'erreur', msg: res.data.error });
+        } else {
+          circuitPrecedent();
+        }
+      });
+
+    function circuitPrecedent() {
+      if (crm) {
+        // 2. Circuit CRM : le CRM crée le devis Pennylane et bloque la date 48 h.
+        fetch(crm, {
+          method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
+          body: demande,
+        })
+          .then(lireReponse, horsLigne)
+          .then(res => {
+            if (res.ok) {
+              const fin = res.data.hold_expires_at ? new Date(res.data.hold_expires_at).toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : null;
+              setEnvoi({ etat: 'ok', msg: `C'est noté : votre date est bloquée${fin ? ' jusqu\'au ' + fin : ' 48 h'}. Votre devis Pennylane${res.data.quote_number ? ' N° ' + res.data.quote_number : ''} vous est envoyé par e-mail : signez-le en ligne, puis réglez la facture pour confirmer la réservation.` });
+            } else if (res.status === 409) {
+              setErrs({ date: 'Cette date n\'est plus libre sur ce plateau.' });
+              setEnvoi({ etat: 'erreur', msg: 'Cette date vient d\'être prise sur ce plateau. Choisissez une autre date, ou écrivez-nous.' });
+            } else if ((res.status === 400 || res.status === 422) && res.data.error) {
+              setEnvoi({ etat: 'erreur', msg: res.data.error });
+            } else {
+              setEnvoi({ etat: 'indispo', msg: `Réservation en ligne momentanément indisponible, écrivez-nous à ${CONTACT}.` });
+            }
+          });
+        return;
+      }
+
+      // 3. Circuit e-mail : la demande part à l'équipe, qui envoie le devis Pennylane.
+      const lignes = [
+        'Demande de réservation (hivingstudio.fr/pages/devis.html)', '',
+        `Plateau : ${plateau.name}`,
+        `Date : ${libelleDates(date, days)} (${days} jour${days > 1 ? 's' : ''}) · ${fmt(platTotal)} € HT`,
+        ...lignesOptions.map(l => `Option : ${l.a.name} ×${l.q} · ${fmt(l.a.price * l.q)} € HT`),
+        `Total : ${fmt(ht)} € HT (${fmt(ttc)} € TTC)`, '',
+        'Facturation',
+        `Société : ${info.company.trim()}`,
+        `SIREN / SIRET : ${siren || '-'}`,
+        `Adresse : ${info.address.trim()}, ${info.zip.trim()} ${info.city.trim()}`,
+        ...(info.message.trim() ? ['', `Message : ${info.message.trim()}`] : []),
+        '', 'Conditions acceptées : date bloquée 48 h, confirmée à réception du paiement.',
+      ];
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          source: 'hivingstudio.fr/pages/devis.html',
-          idempotency_key: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2),
-          studio_id: plateau.slug.replace(/^studio-/, ''),
-          start_date: date, days,
-          options: lignesOptions.map(l => ({ catalog: 'site', id: l.a.id, label: l.a.name, qty: l.q, unit: l.a.unit, unit_price_ht: l.a.price })),
-          customer: {
-            company: info.company.trim(), siren: siren || null, contact_name: info.name.trim(), email,
-            billing_address: { line1: info.address.trim(), zip: info.zip.trim(), city: info.city.trim(), country: 'FR' },
-          },
-          message: info.message.trim() || null,
-          client_total_ht: ht,
-          accept_conditions: true,
-          website: piege,
+          name: info.name.trim(), email, company: info.company.trim(),
+          subject: 'Réservation studio : devis Pennylane à envoyer', source: 'devis', message: lignes.join('\n'), website: piege,
         }),
       })
         .then(lireReponse, horsLigne)
         .then(res => {
-          if (res.ok) {
-            const fin = res.data.hold_expires_at ? new Date(res.data.hold_expires_at).toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : null;
-            setEnvoi({ etat: 'ok', msg: `C'est noté : votre date est bloquée${fin ? ' jusqu\'au ' + fin : ' 48 h'}. Votre devis Pennylane${res.data.quote_number ? ' N° ' + res.data.quote_number : ''} vous est envoyé par e-mail : signez-le en ligne, puis réglez la facture pour confirmer la réservation.` });
-          } else if (res.status === 409) {
-            setErrs({ date: 'Cette date n\'est plus libre sur ce plateau.' });
-            setEnvoi({ etat: 'erreur', msg: 'Cette date vient d\'être prise sur ce plateau. Choisissez une autre date, ou écrivez-nous.' });
-          } else if ((res.status === 400 || res.status === 422) && res.data.error) {
-            setEnvoi({ etat: 'erreur', msg: res.data.error });
-          } else {
-            setEnvoi({ etat: 'indispo', msg: `Réservation en ligne momentanément indisponible, écrivez-nous à ${CONTACT}.` });
-          }
+          if (res.ok) setEnvoi({ etat: 'ok', msg: 'Merci, votre demande est bien partie. Nous vérifions la disponibilité et vous envoyons votre devis Pennylane sous 24 h : la date est alors bloquée 48 h, puis confirmée à réception du paiement.' });
+          else if (res.status === 400 && res.data.error) setEnvoi({ etat: 'erreur', msg: res.data.error });
+          else setEnvoi({ etat: 'indispo', msg: `Envoi momentanément indisponible, écrivez-nous à ${CONTACT}.` });
         });
-      return;
     }
-
-    // Circuit actuel : la demande part par e-mail à l'équipe, qui envoie le devis Pennylane.
-    const lignes = [
-      'Demande de réservation (hivingstudio.fr/pages/devis.html)', '',
-      `Plateau : ${plateau.name}`,
-      `Date : ${libelleDates(date, days)} (${days} jour${days > 1 ? 's' : ''}) · ${fmt(platTotal)} € HT`,
-      ...lignesOptions.map(l => `Option : ${l.a.name} ×${l.q} · ${fmt(l.a.price * l.q)} € HT`),
-      `Total : ${fmt(ht)} € HT (${fmt(ttc)} € TTC)`, '',
-      'Facturation',
-      `Société : ${info.company.trim()}`,
-      `SIREN / SIRET : ${siren || '-'}`,
-      `Adresse : ${info.address.trim()}, ${info.zip.trim()} ${info.city.trim()}`,
-      ...(info.message.trim() ? ['', `Message : ${info.message.trim()}`] : []),
-      '', 'Conditions acceptées : date bloquée 48 h, confirmée à réception du paiement.',
-    ];
-    fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: info.name.trim(), email, company: info.company.trim(),
-        subject: 'Réservation studio : devis Pennylane à envoyer', source: 'devis', message: lignes.join('\n'), website: piege,
-      }),
-    })
-      .then(lireReponse, horsLigne)
-      .then(res => {
-        if (res.ok) setEnvoi({ etat: 'ok', msg: 'Merci, votre demande est bien partie. Nous vérifions la disponibilité et vous envoyons votre devis Pennylane sous 24 h : la date est alors bloquée 48 h, puis confirmée à réception du paiement.' });
-        else if (res.status === 400 && res.data.error) setEnvoi({ etat: 'erreur', msg: res.data.error });
-        else setEnvoi({ etat: 'indispo', msg: `Envoi momentanément indisponible, écrivez-nous à ${CONTACT}.` });
-      });
   };
 
   const aria = (k) => ({ id: 'dv-' + k, 'aria-invalid': errs[k] ? 'true' : undefined, 'aria-describedby': errs[k] ? 'dv-' + k + '-err' : undefined });
