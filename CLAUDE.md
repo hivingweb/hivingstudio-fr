@@ -32,7 +32,7 @@ Ce fichier est lu automatiquement par Claude Code au début de chaque session. C
 ├── pages/                     # anciennes pages HIVING FOOD (hiving.food) servies ici — à trier, ne pas supprimer sans redirection
 ├── img/ · assets/ · shared/ · devis/
 ├── video/ · videos/           # sur Vercel Blob (voir docs/medias.md)
-├── sitemap.xml (⚠ pointe vers hiving.food) · robots.txt · llms.txt
+├── sitemap.xml (adresses en https://hivingstudio.fr/…) · robots.txt · llms.txt
 ├── vercel.json · CLAUDE.md · ONBOARDING.md
 └── docs/  (journal.md, decisions/, urls.md, medias.md)
 ```
