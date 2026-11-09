@@ -13,14 +13,14 @@ function ServicesPage() {
       {/* Hero */}
       <section style={{ padding: '80px 40px 100px', maxWidth: 1400, margin: '0 auto' }}>
         <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>
-          ¶ Services · 4 expertises
+          ¶ Services · 4 usages
         </div>
         <h1 style={{
           fontFamily: P.display, fontSize: 'clamp(54px, 8.5vw, 140px)',
           fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 0.92, margin: 0,
         }}>
           Photographier<br />
-          <span style={{ fontFamily: P.hand, color: P.lime, fontWeight: 700, transform: 'rotate(-2deg)', display: 'inline-block', marginRight: '0.2em' }}>&</span>
+          <span style={{ ...window.HIVING_HAND_ON_LIGHT, fontWeight: 700, transform: 'rotate(-2deg)', display: 'inline-block', marginRight: '0.2em' }}>&</span>
           filmer<br />
           la nourriture.
         </h1>
@@ -28,15 +28,15 @@ function ServicesPage() {
           fontFamily: P.serif, fontSize: 'clamp(20px, 1.8vw, 26px)', lineHeight: 1.45,
           color: P.inkSoft, marginTop: 40, maxWidth: 720,
         }}>
-          Quatre métiers, deux plateaux, une équipe.
-          De la photo packshot e-commerce au spot TV chef étoilé,
-          on a outillé chaque scénario pour que vous n'ayez plus qu'à créer.
+          Quatre usages, deux plateaux à Clichy.
+          De la photo packshot au spot publicitaire, le Studio Pro et le Studio Famille
+          sont équipés pour que vous n'ayez plus qu'à créer.
         </p>
       </section>
 
       {/* Services grid */}
       <section style={{ padding: '40px 40px 120px', maxWidth: 1400, margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(420px, 100%), 1fr))', gap: 24 }}>
           {services.map((s, i) => (
             <a key={s.slug} href={`${s.slug}.html`} data-cursor="" style={{
               display: 'block', textDecoration: 'none', color: P.ink,
@@ -98,8 +98,8 @@ function ServicesPage() {
         hand="ensemble."
         ctaLabel={t('cta.devis')}
         ctaHref="devis.html"
-        ctaSecondaryLabel={t('cta.visite')}
-        ctaSecondaryHref="../index.html#reserver"
+        ctaSecondaryLabel="Voir les plateaux"
+        ctaSecondaryHref="plateaux.html"
       />
     </window.PageShell>
   );

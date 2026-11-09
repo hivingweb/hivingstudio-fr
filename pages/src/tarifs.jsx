@@ -17,7 +17,7 @@ function TarifsPage() {
         </div>
         <h1 style={{ fontFamily: P.display, fontSize: 'clamp(54px, 9vw, 140px)', fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.9, margin: 0 }}>
           Tarifs<br />
-          <span style={{ fontFamily: P.hand, color: P.lime, transform: 'rotate(-2deg)', display: 'inline-block' }}>transparents.</span>
+          <span style={{ ...window.HIVING_HAND_ON_LIGHT, transform: 'rotate(-2deg)', display: 'inline-block' }}>transparents.</span>
         </h1>
         <p style={{ fontFamily: P.serif, fontSize: 22, lineHeight: 1.5, color: P.inkSoft, marginTop: 24, maxWidth: 720 }}>
           Pas de devis caché. Tous nos tarifs sont publics. HT, hors food cost, sans frais de dossier.
@@ -69,7 +69,7 @@ function TarifsPage() {
                         <div style={{ fontFamily: P.sans, fontSize: 13, opacity: 0.6, marginTop: 2 }}>{a.desc}</div>
                       </div>
                       <div style={{ fontFamily: P.display, fontSize: 22, fontWeight: 700, whiteSpace: 'nowrap' }}>
-                        {a.price === 0 ? 'au coût' : `${a.price}\u00a0€`}
+                        {a.price === 0 ? 'au coût' : `${a.price}\u00a0€ HT`}
                         <span style={{ fontFamily: P.mono, fontSize: 10, opacity: 0.5, marginLeft: 6 }}>/{a.unit}</span>
                       </div>
                     </div>
@@ -85,7 +85,7 @@ function TarifsPage() {
       <section style={{ padding: '100px 40px', maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>¶ Conditions</div>
         <h2 style={{ fontFamily: P.display, fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1, margin: '0 0 40px' }}>
-          Les <span style={{ fontFamily: P.hand, color: P.lime }}>petites lignes</span> en gros.
+          Les <span style={{ ...window.HIVING_HAND_ON_LIGHT }}>petites lignes</span> en gros.
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 32 }}>
           {[

@@ -13,7 +13,7 @@ function CarnetPage() {
       <section style={{ padding: '60px 40px 60px', maxWidth: 1400, margin: '0 auto' }}>
         <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>¶ Le Carnet · {articles.length} articles</div>
         <h1 style={{ fontFamily: P.display, fontSize: 'clamp(50px, 8vw, 130px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 0.92, margin: 0 }}>
-          Notes, méthodes,<br /><span style={{ fontFamily: P.hand, color: P.lime, transform: 'rotate(-2deg)', display: 'inline-block' }}>tendances.</span>
+          Notes, méthodes,<br /><span style={{ ...window.HIVING_HAND_ON_LIGHT, transform: 'rotate(-2deg)', display: 'inline-block' }}>tendances.</span>
         </h1>
         <p style={{ fontFamily: P.serif, fontSize: 22, lineHeight: 1.5, color: P.inkSoft, marginTop: 24, maxWidth: 720 }}>
           Ce qu'on apprend en studio, on l'écrit ici. Par notre équipe.
@@ -68,7 +68,7 @@ function CarnetPage() {
         </div>
       </section>
 
-      <window.BigCTA eyebrow="On reste en contact" title="Newsletter" hand="mensuelle." ctaLabel="S'abonner" ctaHref="#" ctaSecondaryLabel="Voir l'équipe" ctaSecondaryHref="equipe.html" />
+      <window.BigCTA eyebrow="On reste en contact" title="Newsletter" hand="mensuelle." ctaLabel="S'abonner" ctaHref="#" ctaSecondaryLabel="Voir les plateaux" ctaSecondaryHref="plateaux.html" />
     </window.PageShell>
   );
 }
