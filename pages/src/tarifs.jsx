@@ -89,9 +89,9 @@ function TarifsPage() {
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 32 }}>
           {[
-            { l: 'Réservation', v: 'Acompte 30 % à la confirmation. Solde à J-7.' },
+            { l: 'Réservation', v: 'Devis Pennylane, puis paiement en ligne. La date est confirmée à réception du paiement : sans paiement, pas de prestation.' },
             { l: 'Annulation', v: 'Gratuite jusqu\'à J-14. 50% J-7. 100% J-3.' },
-            { l: 'Hold', v: 'Date bloquée gratuitement 48h pendant qu\'on cale le brief.' },
+            { l: 'Option 48 h', v: 'Votre date est bloquée 48 h, le temps de régler la facture.' },
             { l: 'Fidélité', v: '-10 % à partir du 3e tournage dans l\'année.' },
             { l: 'Pack matériel', v: '-15 % sur tout le matos quand vous réservez le plateau.' },
             { l: 'Paiement', v: 'Virement, CB, Stripe. Net 30 sur dossier.' },

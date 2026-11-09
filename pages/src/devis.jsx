@@ -1,226 +1,329 @@
 // Source du composant React de pages/devis.html.
 // Après modification : node scripts/build-jsx.mjs (voir docs/build-jsx.md).
+//
+// Parcours de réservation en 3 étapes (décision de Maxime, nov. 2026) :
+//   1. plateau + date(s)   2. options   3. facturation + « Réserver »
+// Envoi : si CRM_RESERVATION_URL (shared/config.js) est rempli, la demande part au CRM Hiving,
+// qui crée le devis Pennylane et bloque la date 48 h (docs/reservation-pennylane.md).
+// Sinon : e-mail à l'équipe via la fonction Vercel /api/contact (circuit actuel).
 const P = window.HIVING_PALETTE;
 const fmt = (n) => Math.round(n).toLocaleString('fr-FR');
+const CONTACT = 'contact@hivingfood.fr';
+const REGLE = 'Votre date est bloquée 48 h. Elle est confirmée à réception du paiement. Sans paiement, pas de prestation.';
+// Couleurs et polices de la charte (site-shared.jsx), passées en variables CSS au style de la page
+const VARS = {
+  '--dv-ink': P.ink, '--dv-soft': P.inkSoft, '--dv-lime': P.lime, '--dv-paper': P.paper, '--dv-cream': P.cream,
+  '--dv-bg': P.bg, '--dv-display': P.display, '--dv-sans': P.sans, '--dv-mono': P.mono, '--dv-hand': P.hand,
+};
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function isoAujourdhui() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function plusJours(iso, n) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d + n, 12);
+}
+function libelleDates(iso, jours) {
+  if (!iso) return 'date à choisir';
+  const d0 = plusJours(iso, 0);
+  if (jours <= 1) return d0.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const d1 = plusJours(iso, jours - 1);
+  return `du ${d0.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} au ${d1.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+}
+
+// Champ de formulaire accessible : libellé lié, aide et erreur annoncées
+function Champ({ id, label, req, err, children }) {
+  return (
+    <div className="dv-champ">
+      <label htmlFor={id}>{label}{req ? <span aria-hidden="true"> *</span> : <span className="dv-fac"> (facultatif)</span>}</label>
+      {children}
+      {err && <p className="dv-err" id={id + '-err'}>{err}</p>}
+    </div>
+  );
+}
+
+function Pas({ n, titre, children }) {
+  return (
+    <fieldset className="dv-pas">
+      <legend><span className="dv-num" aria-hidden="true">{n}</span><span className="dv-sr">Étape {n} sur 3 : </span>{titre}</legend>
+      {children}
+    </fieldset>
+  );
+}
+
+function Stepper({ valeur, min, max, onChange, nom }) {
+  return (
+    <div className="dv-stepper" role="group" aria-label={nom}>
+      <button type="button" onClick={() => onChange(Math.max(min, valeur - 1))} disabled={valeur <= min} aria-label={`Retirer : ${nom}`}>−</button>
+      <output aria-live="polite">{valeur}</output>
+      <button type="button" onClick={() => onChange(Math.min(max, valeur + 1))} disabled={valeur >= max} aria-label={`Ajouter : ${nom}`}>+</button>
+    </div>
+  );
+}
+
+const lireReponse = (r) => r.json().catch(() => ({})).then(d => ({ ok: r.ok, status: r.status, data: d }));
+const horsLigne = () => ({ ok: false, status: 0, data: {} });
 
 function DevisPage() {
-  const narrow = window.useHivingNarrow(900);
   const plateaux = window.HIVING_PLATEAUX;
   const addons = window.HIVING_ADDONS_FULL.filter(a => a.price > 0);
-  const [pIdx, setPIdx] = React.useState(0);
-  const [duration, setDuration] = React.useState('day');
-  const [days, setDays] = React.useState(1);
-  const [ax, setAx] = React.useState({});
-  const [info, setInfo] = React.useState({ name: '', email: '', company: '' });
-
-  const plateau = plateaux[pIdx];
-  const platBase = duration === 'half' ? plateau.priceHalf : plateau.price;
-  const platTotal = platBase * (duration === 'half' ? 1 : days);
-  const addonsTotal = Object.entries(ax).reduce((s, [id, q]) => {
-    const a = addons.find(x => x.id === id);
-    return a ? s + a.price * q : s;
-  }, 0);
-  const subtotal = platTotal + addonsTotal;
-  const discount = days >= 3 ? subtotal * 0.10 : 0;
-  const ht = subtotal - discount;
-  const tva = ht * 0.20;
-  const ttc = ht + tva;
-
   const cats = [...new Set(addons.map(a => a.cat))];
 
-  // Envoi de la demande de devis par e-mail (fonction Vercel /api/contact → contact@hivingfood.fr)
-  const [envoi, setEnvoi] = React.useState({ etat: 'idle', msg: '' }); // idle | envoi | ok | erreur
+  const [pIdx, setPIdx] = React.useState(() => {
+    const q = new URLSearchParams(location.search).get('studio');
+    const i = plateaux.findIndex(p => p.slug === 'studio-' + q || p.slug === q);
+    return i >= 0 ? i : 0;
+  });
+  const [date, setDate] = React.useState('');
+  const [days, setDays] = React.useState(1);
+  const [ax, setAx] = React.useState({});
+  const [info, setInfo] = React.useState({ company: '', siren: '', name: '', email: '', address: '', zip: '', city: '', message: '' });
+  const [accept, setAccept] = React.useState(false);
+  const [errs, setErrs] = React.useState({});
   const [piege, setPiege] = React.useState('');
-  const CONTACT = 'contact@hivingfood.fr';
-  const envoyerDevis = () => {
-    if (envoi.etat === 'envoi') return;
+  const [envoi, setEnvoi] = React.useState({ etat: 'idle', msg: '' }); // idle | envoi | ok | erreur | indispo
+
+  const plateau = plateaux[pIdx];
+  const platTotal = plateau.price * days;
+  const lignesOptions = Object.entries(ax).filter(([_, q]) => q > 0)
+    .map(([id, q]) => ({ a: addons.find(x => x.id === id), q })).filter(l => l.a);
+  const optTotal = lignesOptions.reduce((s, l) => s + l.a.price * l.q, 0);
+  const ht = platTotal + optTotal;
+  const tva = ht * 0.20;
+  const ttc = ht + tva;
+  const set = (k) => (e) => { setInfo({ ...info, [k]: e.target.value }); if (errs[k]) setErrs({ ...errs, [k]: undefined }); };
+
+  const valider = () => {
+    const e = {};
+    if (!date) e.date = 'Choisissez le premier jour de votre tournage.';
+    else if (date < isoAujourdhui()) e.date = 'Cette date est passée.';
+    if (!info.company.trim()) e.company = 'Indiquez votre société : elle figure sur le devis.';
+    const siren = info.siren.replace(/[\s.\-]/g, '');
+    if (siren && !/^\d{9}$|^\d{14}$/.test(siren)) e.siren = '9 chiffres (SIREN) ou 14 (SIRET). Laissez vide si vous ne l\'avez pas.';
+    if (!info.name.trim()) e.name = 'Indiquez votre nom.';
+    if (!EMAIL_RE.test(info.email.trim())) e.email = 'Entrez une adresse e-mail valide : le devis y sera envoyé.';
+    if (!info.address.trim()) e.address = 'L\'adresse de facturation est obligatoire.';
+    if (!info.zip.trim()) e.zip = 'Indiquez le code postal.';
+    if (!info.city.trim()) e.city = 'Indiquez la ville.';
+    if (!accept) e.accept = 'Merci de confirmer avoir lu les conditions de réservation.';
+    return e;
+  };
+
+  const reserver = (ev) => {
+    ev.preventDefault();
+    if (envoi.etat === 'envoi' || envoi.etat === 'ok') return;
+    const e = valider();
+    setErrs(e);
+    const premier = ['date', 'company', 'siren', 'name', 'email', 'address', 'zip', 'city', 'accept'].find(k => e[k]);
+    if (premier) {
+      setEnvoi({ etat: 'erreur', msg: 'Il manque une information : voir le champ signalé.' });
+      const el = document.getElementById('dv-' + premier);
+      if (el) el.focus();
+      return;
+    }
     const email = info.email.trim();
-    if (!info.name.trim() || !email) { setEnvoi({ etat: 'erreur', msg: 'Indiquez votre nom et votre e-mail (étape 4) pour recevoir le devis.' }); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { setEnvoi({ etat: 'erreur', msg: 'Adresse e-mail invalide.' }); return; }
-    const lignes = [
-      'Demande de devis depuis le configurateur (hivingstudio.fr/pages/devis.html)', '',
-      `Plateau : ${plateau.name}`,
-      `Durée : ${duration === 'half' ? '½ journée' : days + ' jour(s)'} · ${fmt(platTotal)} € HT`,
-      ...Object.entries(ax).filter(([_, q]) => q > 0).map(([id, q]) => {
-        const a = addons.find(x => x.id === id);
-        return a ? `Option : ${a.name} ×${q} · ${fmt(a.price * q)} € HT` : '';
-      }).filter(Boolean),
-      discount > 0 ? `Remise fidélité −10 % : −${fmt(discount)} € HT` : '',
-      `Total estimé : ${fmt(ht)} € HT (${fmt(ttc)} € TTC)`,
-    ].filter(l => l !== '');
+    const siren = info.siren.replace(/[\s.\-]/g, '');
+    const crm = (window.HIVING_CONFIG && window.HIVING_CONFIG.CRM_RESERVATION_URL) || '';
     setEnvoi({ etat: 'envoi', msg: 'Envoi en cours…' });
+
+    if (crm) {
+      // Nouveau circuit : le CRM crée le devis Pennylane et bloque la date 48 h.
+      fetch(crm, {
+        method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'hivingstudio.fr/pages/devis.html',
+          idempotency_key: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2),
+          studio_id: plateau.slug.replace(/^studio-/, ''),
+          start_date: date, days,
+          options: lignesOptions.map(l => ({ catalog: 'site', id: l.a.id, label: l.a.name, qty: l.q, unit: l.a.unit, unit_price_ht: l.a.price })),
+          customer: {
+            company: info.company.trim(), siren: siren || null, contact_name: info.name.trim(), email,
+            billing_address: { line1: info.address.trim(), zip: info.zip.trim(), city: info.city.trim(), country: 'FR' },
+          },
+          message: info.message.trim() || null,
+          client_total_ht: ht,
+          accept_conditions: true,
+          website: piege,
+        }),
+      })
+        .then(lireReponse, horsLigne)
+        .then(res => {
+          if (res.ok) {
+            const fin = res.data.hold_expires_at ? new Date(res.data.hold_expires_at).toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : null;
+            setEnvoi({ etat: 'ok', msg: `C'est noté : votre date est bloquée${fin ? ' jusqu\'au ' + fin : ' 48 h'}. Votre devis Pennylane${res.data.quote_number ? ' N° ' + res.data.quote_number : ''} vous est envoyé par e-mail : signez-le en ligne, puis réglez la facture pour confirmer la réservation.` });
+          } else if (res.status === 409) {
+            setErrs({ date: 'Cette date n\'est plus libre sur ce plateau.' });
+            setEnvoi({ etat: 'erreur', msg: 'Cette date vient d\'être prise sur ce plateau. Choisissez une autre date, ou écrivez-nous.' });
+          } else if ((res.status === 400 || res.status === 422) && res.data.error) {
+            setEnvoi({ etat: 'erreur', msg: res.data.error });
+          } else {
+            setEnvoi({ etat: 'indispo', msg: `Réservation en ligne momentanément indisponible, écrivez-nous à ${CONTACT}.` });
+          }
+        });
+      return;
+    }
+
+    // Circuit actuel : la demande part par e-mail à l'équipe, qui envoie le devis Pennylane.
+    const lignes = [
+      'Demande de réservation (hivingstudio.fr/pages/devis.html)', '',
+      `Plateau : ${plateau.name}`,
+      `Date : ${libelleDates(date, days)} (${days} jour${days > 1 ? 's' : ''}) · ${fmt(platTotal)} € HT`,
+      ...lignesOptions.map(l => `Option : ${l.a.name} ×${l.q} · ${fmt(l.a.price * l.q)} € HT`),
+      `Total : ${fmt(ht)} € HT (${fmt(ttc)} € TTC)`, '',
+      'Facturation',
+      `Société : ${info.company.trim()}`,
+      `SIREN / SIRET : ${siren || '-'}`,
+      `Adresse : ${info.address.trim()}, ${info.zip.trim()} ${info.city.trim()}`,
+      ...(info.message.trim() ? ['', `Message : ${info.message.trim()}`] : []),
+      '', 'Conditions acceptées : date bloquée 48 h, confirmée à réception du paiement.',
+    ];
     fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: info.name, email, company: info.company,
-        subject: 'Demande de devis studio', source: 'devis', message: lignes.join('\n'), website: piege,
+        name: info.name.trim(), email, company: info.company.trim(),
+        subject: 'Réservation studio : devis Pennylane à envoyer', source: 'devis', message: lignes.join('\n'), website: piege,
       }),
     })
-      .then(r => r.json().catch(() => ({})).then(d => ({ ok: r.ok, status: r.status, data: d })), () => ({ ok: false, status: 0, data: {} }))
+      .then(lireReponse, horsLigne)
       .then(res => {
-        if (res.ok) setEnvoi({ etat: 'ok', msg: 'Merci, votre demande est bien partie. Nous vous envoyons le devis sous 4h ouvrées.' });
+        if (res.ok) setEnvoi({ etat: 'ok', msg: 'Merci, votre demande est bien partie. Nous vérifions la disponibilité et vous envoyons votre devis Pennylane sous 24 h : la date est alors bloquée 48 h, puis confirmée à réception du paiement.' });
         else if (res.status === 400 && res.data.error) setEnvoi({ etat: 'erreur', msg: res.data.error });
         else setEnvoi({ etat: 'indispo', msg: `Envoi momentanément indisponible, écrivez-nous à ${CONTACT}.` });
       });
   };
 
+  const aria = (k) => ({ id: 'dv-' + k, 'aria-invalid': errs[k] ? 'true' : undefined, 'aria-describedby': errs[k] ? 'dv-' + k + '-err' : undefined });
+  const fini = envoi.etat === 'ok';
+
   return (
     <window.PageShell active="tarifs">
-      <window.Breadcrumb items={[{ label: 'Devis instantané' }]} />
+      <window.Breadcrumb items={[{ label: 'Réserver un plateau' }]} />
+      <div className="dv" style={VARS}>
 
-      <section style={{ padding: '60px 40px 40px', maxWidth: 1400, margin: '0 auto' }}>
-        <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>¶ Configurateur · 2 minutes</div>
-        <h1 style={{ fontFamily: P.display, fontSize: 'clamp(50px, 8vw, 120px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 0.92, margin: 0 }}>
-          Votre devis,<br /><span style={{ ...window.HIVING_HAND_ON_LIGHT, transform: 'rotate(-2deg)', display: 'inline-block' }}>en direct.</span>
-        </h1>
+      <section className="dv-hero">
+        <div className="dv-kick">¶ Réservation · 3 étapes</div>
+        <h1>Réservez votre <span className="dv-hand">plateau.</span></h1>
+        <p>Plateau, date, options : le prix HT s'affiche tout de suite. Vous recevez ensuite votre devis Pennylane à signer en ligne, puis la facture à régler.</p>
       </section>
 
-      <section style={{ padding: narrow ? '20px 16px 80px' : '20px 40px 120px', maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: narrow ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 380px', gap: 32 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          {/* Plateau */}
-          <div style={{ background: P.paper, padding: 28, borderRadius: 20, border: `1px solid ${P.ink}10` }}>
-            <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.16em', color: P.inkSoft, marginBottom: 16, textTransform: 'uppercase' }}>1 · Plateau</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
-              {plateaux.map((p, i) => {
-                const sel = i === pIdx;
-                return (
-                  <button key={p.slug} onClick={() => setPIdx(i)} style={{
-                    border: `1.5px solid ${sel ? P.ink : `${P.ink}25`}`, borderRadius: 16,
-                    background: sel ? P.lime : 'transparent', cursor: 'pointer',
-                    padding: '16px 18px', textAlign: 'left',
-                    color: P.ink,
-                  }}>
-                    <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.16em', opacity: 0.6, textTransform: 'uppercase' }}>Plateau {p.num}</div>
-                    <div style={{ fontFamily: P.display, fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', marginTop: 2 }}>{p.name}</div>
-                    <div style={{ fontFamily: P.mono, fontSize: 11, marginTop: 4, opacity: 0.7 }}>{p.price.toLocaleString('fr-FR')}&nbsp;€ HT / jour</div>
-                  </button>
-                );
-              })}
+      <form className="dv-grille" onSubmit={reserver} noValidate>
+        <div className="dv-col">
+          <Pas n={1} titre="Plateau et date">
+            <div className="dv-plateaux">
+              {plateaux.map((p, i) => (
+                <label key={p.slug} className={'dv-plateau' + (i === pIdx ? ' on' : '')}>
+                  <input type="radio" name="plateau" value={p.slug} checked={i === pIdx} onChange={() => setPIdx(i)} />
+                  <span className="dv-pn">{p.name}</span>
+                  <span className="dv-pt">{p.tagline}</span>
+                  <span className="dv-pp">{fmt(p.price)}&nbsp;€ HT / jour</span>
+                </label>
+              ))}
             </div>
-          </div>
-
-          {/* Durée */}
-          <div style={{ background: P.paper, padding: 28, borderRadius: 20, border: `1px solid ${P.ink}10` }}>
-            <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.16em', color: P.inkSoft, marginBottom: 16, textTransform: 'uppercase' }}>2 · Durée</div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
-              {[{ k: 'day', l: 'Journée' }].map(o => {
-                const sel = duration === o.k;
-                return (
-                  <button key={o.k} onClick={() => setDuration(o.k)} style={{
-                    flex: '1 1 200px', padding: '14px 18px',
-                    border: `1.5px solid ${sel ? P.ink : `${P.ink}25`}`,
-                    background: sel ? P.lime : 'transparent', borderRadius: 14,
-                    fontFamily: P.sans, fontSize: 14, fontWeight: 600, cursor: 'pointer', color: P.ink,
-                  }}>{o.l}</button>
-                );
-              })}
-            </div>
-            {duration === 'day' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, paddingTop: 12, borderTop: `1px dashed ${P.ink}20` }}>
-                <span style={{ fontFamily: P.serif, fontSize: 16 }}>Nombre de jours</span>
-                <button onClick={() => setDays(Math.max(1, days - 1))} style={{ width: 36, height: 36, borderRadius: '50%', border: `1px solid ${P.ink}30`, background: 'transparent', cursor: 'pointer', fontSize: 18 }}>−</button>
-                <span style={{ fontFamily: P.display, fontSize: 28, fontWeight: 700, minWidth: 32, textAlign: 'center' }}>{days}</span>
-                <button onClick={() => setDays(days + 1)} style={{ width: 36, height: 36, borderRadius: '50%', border: `1px solid ${P.ink}30`, background: 'transparent', cursor: 'pointer', fontSize: 18 }}>+</button>
-                {days >= 3 && <span style={{ fontFamily: P.mono, fontSize: 11, color: P.splash, marginLeft: 8 }}>−10 % fidélité ✓</span>}
+            <div className="dv-ligne2">
+              <Champ id="dv-date" label="Premier jour" req err={errs.date}>
+                <input type="date" min={isoAujourdhui()} value={date} onChange={e => { setDate(e.target.value); setErrs({ ...errs, date: undefined }); }} {...aria('date')} />
+              </Champ>
+              <div className="dv-champ">
+                <span className="dv-lbl">Nombre de jours</span>
+                <Stepper valeur={days} min={1} max={10} onChange={setDays} nom="Nombre de jours" />
               </div>
-            )}
-          </div>
+            </div>
+            <p className="dv-aide">Journée de 8 h à 22 h, jours consécutifs. Demi-journée, horaires sur mesure, équipe de production ou décor modifié : <a href={`mailto:${CONTACT}?subject=${encodeURIComponent('Demande sur mesure · location de plateau')}`}>écrivez-nous</a>.</p>
+          </Pas>
 
-          {/* Add-ons */}
-          <div style={{ background: P.paper, padding: 28, borderRadius: 20, border: `1px solid ${P.ink}10` }}>
-            <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.16em', color: P.inkSoft, marginBottom: 16, textTransform: 'uppercase' }}>3 · Options</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-              {cats.map(cat => (
-                <div key={cat}>
-                  <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.14em', color: P.inkSoft, marginBottom: 10, textTransform: 'uppercase' }}>{cat}</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {addons.filter(a => a.cat === cat).map(a => {
-                      const q = ax[a.id] || 0;
-                      return (
-                        <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: 12, background: q > 0 ? P.cream : 'transparent', border: `1px solid ${q > 0 ? P.ink : 'transparent'}` }}>
-                          <div style={{ minWidth: 0, flex: 1 }}>
-                            <div style={{ fontFamily: P.serif, fontSize: 17, fontWeight: 600 }}>{a.name}</div>
-                            <div style={{ fontFamily: P.sans, fontSize: 12, color: P.inkSoft }}>{a.desc} · {a.price}&nbsp;€ HT/{a.unit}</div>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <button onClick={() => setAx({ ...ax, [a.id]: Math.max(0, q - 1) })} style={{ width: 28, height: 28, borderRadius: '50%', border: `1px solid ${P.ink}30`, background: 'transparent', cursor: 'pointer' }}>−</button>
-                            <span style={{ fontFamily: P.mono, fontSize: 13, minWidth: 18, textAlign: 'center' }}>{q}</span>
-                            <button onClick={() => setAx({ ...ax, [a.id]: q + 1 })} style={{ width: 28, height: 28, borderRadius: '50%', border: `1px solid ${P.ink}`, background: P.lime, cursor: 'pointer' }}>+</button>
-                          </div>
+          <Pas n={2} titre="Options (facultatif)">
+            {cats.map(cat => (
+              <div key={cat} className="dv-cat">
+                <h3>{cat}</h3>
+                <ul>
+                  {addons.filter(a => a.cat === cat).map(a => {
+                    const q = ax[a.id] || 0;
+                    return (
+                      <li key={a.id} className={q > 0 ? 'on' : ''}>
+                        <div className="dv-opt">
+                          <span className="dv-on">{a.name}</span>
+                          <span className="dv-od">{a.desc} · {fmt(a.price)}&nbsp;€ HT / {a.unit}</span>
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                        <Stepper valeur={q} min={0} max={30} onChange={v => setAx({ ...ax, [a.id]: v })} nom={a.name} />
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </Pas>
 
-          {/* Contact */}
-          <div style={{ background: P.paper, padding: 28, borderRadius: 20, border: `1px solid ${P.ink}10` }}>
-            <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.16em', color: P.inkSoft, marginBottom: 16, textTransform: 'uppercase' }}>4 · Contact (pour recevoir le devis)</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
-              {[
-                { k: 'name', l: 'Nom *', t: 'text', a: 'name' },
-                { k: 'email', l: 'Email *', t: 'email', a: 'email' },
-                { k: 'company', l: 'Société', t: 'text', a: 'organization' },
-              ].map(f => (
-                <input key={f.k} type={f.t} autoComplete={f.a} aria-label={f.l} placeholder={f.l} value={info[f.k]} onChange={e => setInfo({ ...info, [f.k]: e.target.value })}
-                  style={{ padding: '14px 16px', fontFamily: P.sans, fontSize: 15, border: `1px solid ${P.ink}25`, borderRadius: 12, background: P.bg }} />
-              ))}
+          <Pas n={3} titre="Facturation">
+            <div className="dv-ligne2">
+              <Champ id="dv-company" label="Société" req err={errs.company}>
+                <input type="text" autoComplete="organization" maxLength={160} value={info.company} onChange={set('company')} {...aria('company')} />
+              </Champ>
+              <Champ id="dv-siren" label="SIREN" err={errs.siren}>
+                <input type="text" inputMode="numeric" autoComplete="off" maxLength={20} value={info.siren} onChange={set('siren')} {...aria('siren')} />
+              </Champ>
+              <Champ id="dv-name" label="Nom et prénom" req err={errs.name}>
+                <input type="text" autoComplete="name" maxLength={120} value={info.name} onChange={set('name')} {...aria('name')} />
+              </Champ>
+              <Champ id="dv-email" label="E-mail" req err={errs.email}>
+                <input type="email" autoComplete="email" maxLength={254} value={info.email} onChange={set('email')} {...aria('email')} />
+              </Champ>
             </div>
-            <div aria-hidden="true" style={{ position: 'absolute', left: -10000, width: 1, height: 1, overflow: 'hidden' }}>
+            <Champ id="dv-address" label="Adresse de facturation" req err={errs.address}>
+              <input type="text" autoComplete="street-address" maxLength={200} placeholder="N° et rue" value={info.address} onChange={set('address')} {...aria('address')} />
+            </Champ>
+            <div className="dv-ligne2">
+              <Champ id="dv-zip" label="Code postal" req err={errs.zip}>
+                <input type="text" autoComplete="postal-code" inputMode="numeric" maxLength={12} value={info.zip} onChange={set('zip')} {...aria('zip')} />
+              </Champ>
+              <Champ id="dv-city" label="Ville" req err={errs.city}>
+                <input type="text" autoComplete="address-level2" maxLength={120} value={info.city} onChange={set('city')} {...aria('city')} />
+              </Champ>
+            </div>
+            <Champ id="dv-message" label="Un mot sur votre projet">
+              <textarea id="dv-message" rows={3} maxLength={2000} value={info.message} onChange={set('message')} />
+            </Champ>
+            <div aria-hidden="true" className="dv-piege">
               <input type="text" name="website" tabIndex={-1} autoComplete="off" value={piege} onChange={e => setPiege(e.target.value)} />
             </div>
-          </div>
+          </Pas>
         </div>
 
-        {/* Sticky summary */}
-        <aside style={{ position: narrow ? 'static' : 'sticky', top: 100, alignSelf: 'start', background: P.ink, color: P.bg, padding: 28, borderRadius: 24 }}>
-          <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.5, marginBottom: 16, textTransform: 'uppercase' }}>Récapitulatif</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 16, borderBottom: `1px solid ${P.bg}25`, fontFamily: P.serif, fontSize: 15 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ opacity: 0.7 }}>{plateau.name} · {duration === 'half' ? '½ jour' : `${days} j`}</span>
-              <span>{fmt(platTotal)}&nbsp;€ HT</span>
-            </div>
-            {Object.entries(ax).filter(([_, q]) => q > 0).map(([id, q]) => {
-              const a = addons.find(x => x.id === id);
-              return (
-                <div key={id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, opacity: 0.85 }}>
-                  <span>{a.name} ×{q}</span>
-                  <span>{fmt(a.price * q)}&nbsp;€ HT</span>
-                </div>
-              );
-            })}
-            {discount > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: P.lime }}>
-                <span>Fidélité −10 %</span>
-                <span>−{fmt(discount)}&nbsp;€ HT</span>
-              </div>
-            )}
+        <aside className="dv-recap" aria-labelledby="dv-recap-titre">
+          <h2 id="dv-recap-titre">Récapitulatif</h2>
+          <dl>
+            <div><dt>{plateau.name}</dt><dd>{fmt(platTotal)}&nbsp;€</dd></div>
+            <div className="dv-sub"><dt>{libelleDates(date, days)}</dt><dd>{days}&nbsp;j × {fmt(plateau.price)}&nbsp;€</dd></div>
+            {lignesOptions.map(l => (
+              <div key={l.a.id} className="dv-sub"><dt>{l.a.name} ×{l.q}</dt><dd>{fmt(l.a.price * l.q)}&nbsp;€</dd></div>
+            ))}
+          </dl>
+          <div className="dv-total"><span>Total HT</span><strong>{fmt(ht)}&nbsp;€</strong></div>
+          <p className="dv-ttc">TVA 20 % : {fmt(tva)} € · soit {fmt(ttc)} € TTC</p>
+
+          <div className="dv-regle" role="note">
+            <strong>Conditions</strong>
+            <p>{REGLE}</p>
+            <p>Vous recevez un devis Pennylane à signer en ligne, puis la facture avec son lien de paiement.</p>
           </div>
-          <div style={{ paddingTop: 16, fontFamily: P.serif, fontSize: 14, display: 'flex', flexDirection: 'column', gap: 6, opacity: 0.85 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>HT</span><span>{fmt(ht)}&nbsp;€</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>TVA 20 %</span><span>{fmt(tva)}&nbsp;€</span></div>
+          <div className="dv-accept">
+            <input type="checkbox" checked={accept} onChange={e => { setAccept(e.target.checked); setErrs({ ...errs, accept: undefined }); }} {...aria('accept')} />
+            <label htmlFor="dv-accept">J'ai lu les <a href="tarifs.html">conditions de réservation</a> et je les accepte.</label>
           </div>
-          <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${P.bg}25`, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <span style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', opacity: 0.7 }}>Total TTC</span>
-            <span style={{ fontFamily: P.display, fontSize: 36, fontWeight: 700, letterSpacing: '-0.02em', color: P.lime }}>{fmt(ttc)}&nbsp;€</span>
-          </div>
-          <button type="button" onClick={envoyerDevis} disabled={envoi.etat === 'envoi'} aria-disabled={envoi.etat === 'envoi'}
-            style={{ marginTop: 20, width: '100%', padding: '16px 22px', background: P.lime, color: P.ink, border: `1.5px solid ${P.lime}`, borderRadius: 999, fontFamily: P.sans, fontSize: 15, fontWeight: 700, cursor: envoi.etat === 'envoi' ? 'wait' : 'pointer', opacity: envoi.etat === 'envoi' ? 0.6 : 1 }}>
-            {envoi.etat === 'envoi' ? 'Envoi en cours…' : 'Recevoir mon devis →'}
+          {errs.accept && <p className="dv-err" id="dv-accept-err">{errs.accept}</p>}
+
+          <button type="submit" className="dv-go" disabled={envoi.etat === 'envoi' || fini}>
+            {envoi.etat === 'envoi' ? 'Envoi en cours…' : fini ? 'Demande envoyée ✓' : 'Réserver →'}
           </button>
-          <p role="status" aria-live="polite" style={{ fontFamily: P.sans, fontSize: 14, lineHeight: 1.5, margin: envoi.msg ? '14px 0 0' : 0, color: P.bg, fontWeight: envoi.etat === 'erreur' || envoi.etat === 'indispo' ? 600 : 400 }}>
+          <p role="status" aria-live="polite" className={'dv-statut' + (envoi.etat === 'erreur' || envoi.etat === 'indispo' ? ' fort' : '')}>
             {envoi.msg}
-            {envoi.etat === 'indispo' && <> <a href={'mailto:' + CONTACT + '?subject=' + encodeURIComponent('Demande de devis studio')} style={{ color: P.lime }}>Écrire un e-mail</a></>}
-          </p>
-          <p style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.1em', opacity: 0.5, marginTop: 14, textAlign: 'center' }}>
-            Sans engagement · Réponse sous 4h ouvrées
+            {envoi.etat === 'indispo' && <> <a href={'mailto:' + CONTACT + '?subject=' + encodeURIComponent('Réservation studio')}>Écrire un e-mail</a></>}
           </p>
         </aside>
-      </section>
+      </form>
+      </div>
     </window.PageShell>
   );
 }
