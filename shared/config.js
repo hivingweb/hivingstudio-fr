@@ -6,7 +6,7 @@ export const CONFIG = {
   SUPABASE_ANON_KEY: 'sb_publishable_j_kHa-caXfSxkSyeGd-veA_ZdUvNCw8',
   CONTACT_EMAIL: 'contact@hivingfood.fr',
   STUDIOS_FALLBACK: [
-    { id: 'pro',       name: 'Studio Pro',       price_day: 800,  tag: 'la cuisine des chefs' },
+    { id: 'pro',       name: 'Studio Pro',       price_day: 850,  tag: 'la cuisine des chefs' },
     { id: 'famille',   name: 'Studio Famille',   price_day: 1000, tag: 'comme à la maison' },
   ],
   OPEN_HOUR: 8, CLOSE_HOUR: 22,

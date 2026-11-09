@@ -4,10 +4,6 @@ Ne jamais casser une de ces adresses sans redirection dans `vercel.json` (voir C
 
 - https://hivingstudio.fr/
 - https://hivingstudio.fr/pages/plateaux.html
-- https://hivingstudio.fr/pages/le-blanc.html
-- https://hivingstudio.fr/pages/la-table.html
-- https://hivingstudio.fr/pages/la-cuisine.html
-- https://hivingstudio.fr/pages/plan-3d.html
 - https://hivingstudio.fr/pages/services.html
 - https://hivingstudio.fr/pages/photo-culinaire-paris.html
 - https://hivingstudio.fr/pages/packshot-produit-alimentaire.html
@@ -15,7 +11,6 @@ Ne jamais casser une de ces adresses sans redirection dans `vercel.json` (voir C
 - https://hivingstudio.fr/pages/spot-tv-cuisine.html
 - https://hivingstudio.fr/pages/tarifs.html
 - https://hivingstudio.fr/pages/devis.html
-- https://hivingstudio.fr/pages/comparateur.html
 - https://hivingstudio.fr/pages/travaux.html
 - https://hivingstudio.fr/pages/case-picard.html
 - https://hivingstudio.fr/pages/carnet.html
@@ -27,3 +22,12 @@ Ne jamais casser une de ces adresses sans redirection dans `vercel.json` (voir C
 - https://hivingstudio.fr/pages/mentions-legales.html
 - https://hivingstudio.fr/pages/politique-confidentialite.html
 
+## Redirigées (301)
+
+Pages des anciens plateaux (ancien studio Paris 11), supprimées le 2026-11-09, redirigées vers https://hivingstudio.fr/#plateaux :
+
+- https://hivingstudio.fr/pages/le-blanc.html
+- https://hivingstudio.fr/pages/la-table.html
+- https://hivingstudio.fr/pages/la-cuisine.html
+- https://hivingstudio.fr/pages/plan-3d.html
+- https://hivingstudio.fr/pages/comparateur.html

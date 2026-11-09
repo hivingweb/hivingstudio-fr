@@ -80,13 +80,13 @@ function DevisPage() {
                 return (
                   <button key={p.slug} onClick={() => setPIdx(i)} style={{
                     border: `1.5px solid ${sel ? P.ink : `${P.ink}25`}`, borderRadius: 16,
-                    background: sel ? p.color : 'transparent', cursor: 'pointer',
+                    background: sel ? P.lime : 'transparent', cursor: 'pointer',
                     padding: '16px 18px', textAlign: 'left',
-                    color: sel && p.color === P.ink ? P.bg : P.ink,
+                    color: P.ink,
                   }}>
                     <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.16em', opacity: 0.6, textTransform: 'uppercase' }}>Plateau {p.num}</div>
                     <div style={{ fontFamily: P.display, fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', marginTop: 2 }}>{p.name}</div>
-                    <div style={{ fontFamily: P.mono, fontSize: 11, marginTop: 4, opacity: 0.7 }}>{p.priceHalf}-{p.price}&nbsp;€</div>
+                    <div style={{ fontFamily: P.mono, fontSize: 11, marginTop: 4, opacity: 0.7 }}>{p.price.toLocaleString('fr-FR')}&nbsp;€ HT / jour</div>
                   </button>
                 );
               })}
@@ -97,7 +97,7 @@ function DevisPage() {
           <div style={{ background: P.paper, padding: 28, borderRadius: 20, border: `1px solid ${P.ink}10` }}>
             <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.16em', color: P.inkSoft, marginBottom: 16, textTransform: 'uppercase' }}>2 · Durée</div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
-              {[{ k: 'half', l: 'Demi-journée (4h)' }, { k: 'day', l: 'Journée (8h)' }].map(o => {
+              {[{ k: 'day', l: 'Journée' }].map(o => {
                 const sel = duration === o.k;
                 return (
                   <button key={o.k} onClick={() => setDuration(o.k)} style={{

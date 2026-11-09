@@ -1480,18 +1480,15 @@ function V3Footer({ P }) {
           {
             title: 'Contact',
             links: [
-              { label: 'hello@hiving.me', href: 'mailto:hello@hiving.me' },
-              { label: '01 88 47 98 06', href: 'tel:+33188479806' },
+              { label: 'contact@hivingfood.fr', href: 'mailto:contact@hivingfood.fr' },
               { label: 'Devis instantané', href: 'pages/devis.html' },
             ],
           },
           {
             title: 'Plateaux',
             links: [
-              { label: 'Le Pro — Cuisine pro', href: 'pages/le-blanc.html' },
-              { label: 'Le Familial — Cuisine maison', href: 'pages/la-table.html' },
-              { label: 'Le Photo — Studio photo', href: 'pages/la-cuisine.html' },
-              { label: 'Comparateur', href: 'pages/comparateur.html' },
+              { label: 'Studio Pro', href: 'index.html#plateaux' },
+              { label: 'Studio Famille', href: 'index.html#plateaux' },
               { label: 'Tarifs', href: 'pages/tarifs.html' },
             ],
           },

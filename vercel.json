@@ -14,6 +14,56 @@
       "permanent": true
     },
     {
+      "source": "/pages/le-blanc.html",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/le-blanc",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/la-table.html",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/la-table",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/la-cuisine.html",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/la-cuisine",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/plan-3d.html",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/plan-3d",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/comparateur.html",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
+      "source": "/pages/comparateur",
+      "destination": "/#plateaux",
+      "permanent": true
+    },
+    {
       "source": "/:file(.*\\.(?:mp4|glb))",
       "destination": "https://xy8wkkceax6fodpg.public.blob.vercel-storage.com/hivingstudio-fr/:file",
       "permanent": false

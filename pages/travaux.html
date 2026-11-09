@@ -34,12 +34,12 @@
 const P = window.HIVING_PALETTE;
 
 const WORKS = [
-  { id: 'picard', client: 'Picard', cat: 'Packshot · Print', year: 2025, count: '480 visuels', plateau: 'LE BLANC + LA TABLE', featured: true, href: 'case-picard.html' },
-  { id: 'bonne-maman', client: 'Bonne Maman', cat: 'Lifestyle · Social', year: 2025, count: '120 visuels', plateau: 'LA TABLE' },
-  { id: 'laduree', client: 'Ladurée', cat: 'Éditorial · Catalogue', year: 2025, count: '95 visuels', plateau: 'LE BLANC' },
-  { id: 'bordier', client: 'Bordier', cat: 'Stop motion · Social', year: 2024, count: '8 spots', plateau: 'LA TABLE' },
-  { id: 'maille', client: 'Maille', cat: 'Spot TV · 30s', year: 2024, count: '1 film', plateau: 'LA CUISINE' },
-  { id: 'septime', client: 'Septime', cat: 'Éditorial chef', year: 2024, count: '40 visuels', plateau: 'LA CUISINE' },
+  { id: 'picard', client: 'Picard', cat: 'Packshot · Print', year: 2025, count: '480 visuels', featured: true, href: 'case-picard.html' },
+  { id: 'bonne-maman', client: 'Bonne Maman', cat: 'Lifestyle · Social', year: 2025, count: '120 visuels' },
+  { id: 'laduree', client: 'Ladurée', cat: 'Éditorial · Catalogue', year: 2025, count: '95 visuels' },
+  { id: 'bordier', client: 'Bordier', cat: 'Stop motion · Social', year: 2024, count: '8 spots' },
+  { id: 'maille', client: 'Maille', cat: 'Spot TV · 30s', year: 2024, count: '1 film' },
+  { id: 'septime', client: 'Septime', cat: 'Éditorial chef', year: 2024, count: '40 visuels' },
 ];
 
 function TravauxPage() {
@@ -87,7 +87,7 @@ function TravauxPage() {
               <div>
                 <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, textTransform: 'uppercase', marginBottom: 16 }}>{w.year} · {w.cat}</div>
                 <div style={{ fontFamily: P.display, fontSize: 36, fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1 }}>{w.client}</div>
-                <div style={{ fontFamily: P.serif, fontSize: 17, color: P.inkSoft, marginTop: 14 }}>{w.count} · {w.plateau}</div>
+                <div style={{ fontFamily: P.serif, fontSize: 17, color: P.inkSoft, marginTop: 14 }}>{w.count}</div>
               </div>
               <div style={{ marginTop: 24, fontFamily: P.mono, fontSize: 11, letterSpacing: '0.12em', opacity: 0.5, textTransform: 'uppercase' }}>Bientôt en case study</div>
             </div>
