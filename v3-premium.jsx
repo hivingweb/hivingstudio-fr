@@ -86,7 +86,6 @@ function V3HeroStatus({ P }) {
       <div style={{ display: 'flex', gap: 24, opacity: 0.7 }}>
         <span>Le Pro — disponible</span>
         <span>Le Familial — en tournage</span>
-        <span>Le Photo — disponible</span>
       </div>
       <style>{`@keyframes v3-blink { 0%,100% { opacity: 1 } 50% { opacity: 0.3 } }`}</style>
     </div>

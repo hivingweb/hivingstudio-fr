@@ -1,5 +1,5 @@
 // Shared data + utility components for HIVING STUDIO (Clichy 92)
-// Vraies données Hiving — Pro, Familial, Photo
+// Vraies données Hiving — Studio Pro, Studio Famille (2 plateaux)
 
 const HIVING_STUDIOS = [
   {
@@ -13,7 +13,7 @@ const HIVING_STUDIOS = [
     desc: 'Studio culinaire haut de gamme pensé pour le tournage : chefs, marques alimentaires, créateurs et équipes de production. Plan de travail spacieux, équipements pro, circulation fluide. Démonstrations techniques, recettes, ateliers, émissions, pubs — chaque détail du décor signe un rendu premium.',
     features: ['Plan inox', 'Four Unox Bakertop', 'KitchenAid', 'Plaque induction pro', 'Top-shot intégré', 'Modulable axes caméra', 'Option matériel + accompagnement technique'],
     image: '/img/studio-pro/1.webp',
-    slug: 'le-blanc',
+    slug: 'plateaux',
     seoTitle: 'Le Pro — Studio cuisine professionnelle Paris (Clichy 92)',
     images: ['/img/studio-pro/1.webp', '/img/studio-pro/2.webp', '/img/studio-pro/3.webp', '/img/studio-pro/4.webp', '/img/studio-pro/5.webp', '/img/studio-pro/6.webp'],
     hotspots: [
@@ -34,7 +34,7 @@ const HIVING_STUDIOS = [
     desc: 'Cuisine modulable pensée comme une vraie cuisine maison, optimisée pour la capture. Rendu chaleureux, authentique et premium. Îlot central et modules sur roulettes pour adapter l\'espace : démonstration, caméra faciale, duo chef-invité, atelier, masterclass, publicité, contenus sociaux.',
     features: ['Plan bois', 'Parquet chevrons', 'Îlot central mobile', 'Modules sur roulettes', 'Coin salle à manger', 'Modulable axes caméra', 'Option matériel + accompagnement'],
     image: '/img/studio-famille/4.webp',
-    slug: 'la-table',
+    slug: 'plateaux',
     seoTitle: 'Le Familial — Cuisine maison modulable Paris (Clichy 92)',
     images: ['/img/studio-famille/4.webp', '/img/studio-famille/1.webp', '/img/studio-famille/2.webp', '/img/studio-famille/3.webp', '/img/studio-famille/5.webp', '/img/studio-famille/6.webp', '/img/studio-famille/7.webp'],
     hotspots: [
@@ -44,28 +44,6 @@ const HIVING_STUDIOS = [
     ],
     formats: ['Recettes & capsules premium', 'Émissions & masterclass chefs', 'Publicités food & marque', 'YouTube · Instagram · TikTok', 'Cuisine en direct, défis, packshots'],
     price: '100',
-  },
-  {
-    id: 'plateau-3',
-    num: '03',
-    name: 'LE PHOTO',
-    surface: '55 m²',
-    height: '2,8 m',
-    light: 'Lumière naturelle (fenêtres sud) + rideaux occultants',
-    color: '#fafaf5',
-    desc: 'Studio loft moderne baigné de lumière naturelle, conçu pour shootings photo, tournages vidéo, interviews, castings ou coworking. Cyclorama blanc 5 m × 2,7 m intégré pour productions visuelles haut de gamme. Design épuré et chaleureux qui s\'adapte à tous les univers.',
-    features: ['Cyclorama blanc 5 × 2,7 m', 'Fenêtres exposées sud', 'Rideaux occultants', 'Éclairages studio pro (sur demande)', 'Mobilier modulable', '2 postes de travail équipés', 'Métro 14 — Saint-Ouen'],
-    image: '/img/studio-photo/1.webp',
-    slug: 'la-cuisine',
-    seoTitle: 'Le Photo — Studio photo loft cyclorama Paris (Clichy 92)',
-    images: ['/img/studio-photo/1.webp', '/img/studio-photo/2.webp', '/img/studio-photo/3.webp', '/img/studio-photo/4.webp', '/img/studio-photo/5.webp', '/img/studio-photo/6.webp', '/img/studio-photo/7.webp', '/img/studio-photo/8.webp', '/img/studio-photo/9.webp', '/img/studio-photo/10.webp'],
-    hotspots: [
-      { top: '55%', left: '28%', label: 'Cyclorama 5 m' },
-      { top: '38%', left: '62%', label: 'Lumière sud' },
-      { top: '60%', left: '82%', label: 'Postes retouche' },
-    ],
-    formats: ['Shootings photo & packshots', 'Tournages vidéo', 'Interviews & podcasts', 'Castings & coworking'],
-    price: '50',
   },
 ];
 
@@ -149,9 +127,9 @@ const HIVING_EQUIPMENT = [
 
 const HIVING_FAQ = [
   { q: 'Quels sont les horaires de location ?', a: 'Les plateaux sont disponibles 7j/7, de 8h à 22h. Demi-journées et créneaux nocturnes possibles sur demande.' },
-  { q: 'Puis-je visiter avant de réserver ?', a: 'Oui, sur rendez-vous du lundi au vendredi. Contactez-nous à hello@hiving.me ou au 01 88 47 98 06.' },
+  { q: 'Puis-je visiter avant de réserver ?', a: 'Oui, sur rendez-vous du lundi au vendredi. Contactez-nous à contact@hivingfood.fr.' },
   { q: 'Le matériel est-il inclus ?', a: 'Oui — éclairage Neewer LED sur rail, électroménager pro (four Unox Bakertop, KitchenAid, induction). Vous n\'apportez rien sauf besoins spécifiques.' },
   { q: 'Vous proposez chefs et créateurs ?', a: 'Oui — Hiving Food représente plus de 10 chefs et créateurs culinaires : Peppe Cutraro, Drice Cook, Vincent Salur, Kilian Franceschi, Mohamed Belkassam, Chester Foodies… On propose le casting le plus juste pour votre marque.' },
-  { q: 'Tarifs journée préférentiels ?', a: 'Oui : 1 000€ pour Le Pro ou Le Familial (au lieu de 1 400€), 500€ pour Le Photo (au lieu de 700€). Acompte d\'une heure pour valider.' },
+  { q: 'Tarifs journée préférentiels ?', a: 'Studio Pro : 850 € HT / jour. Studio Famille : 1 000 € HT / jour.' },
   { q: 'Comment accéder aux studios ?', a: '4 Rue Mozart, 92110 Clichy. Métro Mairie de Clichy (L13) — 5 min à pied. 10 min de la Porte de Clichy en voiture. Parking gratuit à proximité.' },
 ];
