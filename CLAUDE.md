@@ -87,6 +87,7 @@ Explications en français, chaque terme technique expliqué en une phrase la pre
 - Ne jamais ajouter de script de suivi, pixel ou outil tiers (analytics, chat, cookies) sans accord : bannière de consentement et RGPD en dépendent.
 - Pas de PHP ni de code serveur : Vercel ne l'exécute pas comme OVH. Un formulaire passe par la base Supabase déjà utilisée (CRM) — aucune nouvelle table sans accord de Milan.
 - Ne jamais changer le texte des mentions légales, des CGV ou des tarifs de son propre chef : signaler et attendre.
+- **Anciens stagiaires et collaborateurs partis** : aucun accès (GitHub, Vercel, Supabase, Google, sites). Ne jamais les inviter ni leur rendre de droits ; toute trace trouvée (membre, propriétaire, fichier de validation, e-mail dans le code) est retirée et signalée à Maxime, qui tient la liste des noms hors de ce dépôt (le dépôt est public).
 
 ## 8. Commandes utiles
 
