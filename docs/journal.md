@@ -2,6 +2,7 @@
 
 Le plus récent en haut : date, qui, quoi.
 
+- 2026-11-09 · Maxime (avec Claude) · Équipe d'agents Claude Code : 6 sous-agents dans .claude/agents/ (seo, sea, social-media, contenu, dev, relecteur), guide docs/equipe-agents.md, section 9 ajoutée au CLAUDE.md. Branche modif/equipe-agents, en attente de validation.
 - 2026-11-09 · Maxime (avec Claude) · SEO (branche modif/seo-hivingstudio, à valider sur la preview) : images de partage manquantes remplacées par img/ph/pro-1.jpg ; balises Open Graph et twitter:card ajoutées sur toutes les pages du sitemap ; titres et descriptions raccourcis (accueil, photo culinaire, packshot, tarifs, la-table, la-cuisine) ; contenu de secours (h1 + texte déjà présent sur le site) dans le conteneur React des pages, remplacé au rendu ; CLAUDE.md : mention périmée du sitemap corrigée. Aucun tarif, CGV ni mention légale modifié.
 - 2026-11-09 · Maxime (avec Claude) · robots.txt : retrait de « Disallow: /*.jsx$ », qui empêchait Google de lire le texte des pages (rendu par React depuis les .jsx) et les lui faisait voir vides.
 - 2026-11-09 · Maxime (avec Claude) · CLAUDE.md : règle permanente, les anciens stagiaires et collaborateurs partis n'ont aucun accès ; toute trace trouvée est retirée.
