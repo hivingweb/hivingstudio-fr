@@ -10,6 +10,22 @@
 | Accueil `/` | Pas de formulaire : liens e-mail vers contact@hivingfood.fr | Inchangé |
 | **Configurateur `/pages/devis.html`** (« Recevoir mon devis ») | **N'envoyait rien** (bouton sans action) | **Branché** sur la fonction Vercel `/api/contact` |
 
+## Réservation avec devis Pennylane direct (`/api/reservation`, nov. 2026)
+
+`/pro/` et `/pages/devis.html` appellent d'abord la fonction Vercel **`POST /api/reservation`** : prix recalculé par le serveur, disponibilité vérifiée, client et devis créés dans Pennylane, date bloquée dans la base (`st_create_brand_request`, comme avant), devis envoyé par e-mail Pennylane et récapitulatif Resend. Une **tâche planifiée** (`/api/cron-paiements`, toutes les 15 min) transforme le devis signé en facture, prévient au paiement et fait expirer l'option au bout de 48 h. Détail, limites et recette : `docs/reservation-pennylane.md`, section « Version autonome site ».
+
+Tant que `PENNYLANE_API_KEY` n'est pas posée, `/api/reservation` répond `501` et les pages gardent le circuit ci-dessus (rien ne change pour les clients).
+
+Variables Vercel en plus de celles du tableau plus bas :
+
+| Variable | Obligatoire | Valeur |
+|---|---|---|
+| `PENNYLANE_API_KEY` | pour activer | jeton API v2 Pennylane (Paramètres → Connectivité → Développeurs), droits `customers:all`, `quotes:all`, `customer_invoices:all` : **secret** |
+| `CRON_SECRET` | oui avec la clé | longue chaîne aléatoire ; protège `/api/cron-paiements` : **secret** |
+| `PENNYLANE_DRY_RUN` | non | `1` = test : aucun appel Pennylane, rien en base, tout journalisé, e-mails « [TEST] » |
+
+Tests : `node tests/reservation.test.js` (Pennylane, base et Resend simulés).
+
 ## Comment ça marche
 
 Le site est statique : le configurateur envoie la demande à une petite **fonction Vercel** (du code qui tourne chez Vercel seulement quand quelqu'un envoie le formulaire) : `api/contact.js`. Elle envoie un e-mail à **contact@hivingfood.fr** grâce à **Resend** (un service d'envoi d'e-mails), avec le plateau, la durée, les options et le total estimé HT (et TTC), et « répondre » va directement au client. Aucun PHP, aucune écriture dans Supabase, aucun traceur. Même mécanique que hivingfood.fr et hiving.me.
