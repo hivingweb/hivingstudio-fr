@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /admin/
-Disallow: /*.jsx$
+# Les fichiers .jsx contiennent le texte des pages (rendu React) : Google doit pouvoir les lire.
 
 # AI crawlers — autorisés (visibilité IA = trafic qualifié 2026)
 User-agent: GPTBot
