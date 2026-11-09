@@ -10,3 +10,5 @@ node_modules/
 *.webm
 *.glb
 *.zip
+# Exports Search Console / GA4 : jamais dans le dépôt public
+docs/data/

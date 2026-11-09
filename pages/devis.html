@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Devis instantané studio food Paris | HIVING FOOD</title>
-<meta name="description" content="Configurez votre devis studio food en 2 minutes : plateau, durée, options, équipe. Prix immédiat, sans engagement. HIVING FOOD Paris." />
+<title>Réserver un plateau studio food à Clichy | HIVING FOOD</title>
+<meta name="description" content="Réservez le Studio Pro (850 € HT/jour) ou le Studio Famille (1 000 € HT/jour) en 3 étapes : prix HT immédiat, devis Pennylane à signer en ligne." />
 <link rel="canonical" href="https://hivingstudio.fr/pages/devis.html" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Devis instantané studio food Paris | HIVING FOOD" />
-<meta property="og:description" content="Configurez votre devis studio food en 2 minutes : plateau, durée, options, équipe. Prix immédiat, sans engagement. HIVING FOOD Paris." />
+<meta property="og:title" content="Réserver un plateau studio food à Clichy | HIVING FOOD" />
+<meta property="og:description" content="Réservez le Studio Pro (850 € HT/jour) ou le Studio Famille (1 000 € HT/jour) en 3 étapes : prix HT immédiat, devis Pennylane à signer en ligne." />
 <meta property="og:url" content="https://hivingstudio.fr/pages/devis.html" />
 <meta property="og:image" content="https://hivingstudio.fr/img/ph/pro-1.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -29,7 +29,7 @@
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Devis instantané",
+      "name": "Réserver un plateau",
       "item": "https://hivingstudio.fr/pages/devis.html"
     }
   ]
@@ -42,9 +42,91 @@
 <style>body { margin: 0; background: #fafaf5; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } *, *::before, *::after { box-sizing: border-box; }</style>
 <script defer src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
 <script defer src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
-<script defer src="../js/site-i18n.min.js?v=89191c18ed"></script>
-<script defer src="../js/site-data.min.js?v=d492463904"></script>
-<script defer src="../js/site-shared.min.js?v=3ab0e5cbf5"></script>
+<script defer src="../js/site-i18n.min.js?v=4cbcbda373"></script>
+<script defer src="../js/site-data.min.js?v=c6bfbc4466"></script>
+<script defer src="../js/site-shared.min.js?v=7fe5e38af5"></script>
+<style>
+  /* parcours de réservation en 3 étapes : mobile d'abord ; couleurs = variables posées par devis.jsx (charte site-shared.jsx) */
+  .dv { color: var(--dv-ink); font-family: var(--dv-sans); }
+  .dv-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .dv-hero { padding: 32px 16px 8px; max-width: 1200px; margin: 0 auto; }
+  .dv-kick { font-family: var(--dv-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--dv-soft); margin-bottom: 14px; }
+  .dv-hero h1 { font-family: var(--dv-display); font-size: clamp(40px, 9vw, 96px); font-weight: 700; letter-spacing: -.03em; line-height: .95; margin: 0; }
+  .dv-hand { font-family: var(--dv-hand); display: inline-block; transform: rotate(-2deg); }
+  .dv-hero p { font-size: 16px; line-height: 1.55; max-width: 620px; margin: 16px 0 0; color: var(--dv-soft); }
+  .dv-grille { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 20px 16px 80px; max-width: 1200px; margin: 0 auto; }
+  .dv-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  .dv-pas { margin: 0; min-width: 0; background: var(--dv-paper); border: 1px solid color-mix(in srgb, var(--dv-ink) 12%, transparent); border-radius: 18px; padding: 20px 16px 22px; }
+  .dv-pas legend { float: left; width: 100%; padding: 0; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; font-family: var(--dv-display); font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+  .dv-pas legend + * { clear: both; }
+  .dv-num { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--dv-lime); border: 1.5px solid var(--dv-ink); font-family: var(--dv-mono); font-size: 13px; }
+  .dv-plateaux { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+  .dv-plateau { position: relative; display: flex; flex-direction: column; gap: 2px; padding: 14px 16px 14px 46px; border: 1.5px solid color-mix(in srgb, var(--dv-ink) 22%, transparent); border-radius: 14px; cursor: pointer; }
+  .dv-plateau.on { border-color: var(--dv-ink); background: var(--dv-lime); }
+  .dv-plateau input { position: absolute; left: 16px; top: 18px; width: 18px; height: 18px; margin: 0; accent-color: var(--dv-ink); }
+  .dv-plateau:focus-within { outline: 2px solid var(--dv-ink); outline-offset: 2px; }
+  .dv-pn { font-family: var(--dv-display); font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+  .dv-pt { font-size: 14px; color: var(--dv-soft); }
+  .dv-plateau.on .dv-pt { color: var(--dv-ink); }
+  .dv-pp { font-family: var(--dv-mono); font-size: 12px; margin-top: 4px; }
+  .dv-ligne2 { display: grid; grid-template-columns: 1fr; gap: 0 14px; }
+  .dv-champ { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; min-width: 0; }
+  .dv-champ label, .dv-lbl { font-size: 14px; font-weight: 600; }
+  .dv-fac { font-weight: 400; color: var(--dv-soft); }
+  .dv input[type=text], .dv input[type=email], .dv input[type=date], .dv textarea { width: 100%; min-height: 48px; padding: 12px 14px; font: 16px/1.3 var(--dv-sans); color: var(--dv-ink); background: var(--dv-bg); border: 1.5px solid color-mix(in srgb, var(--dv-ink) 30%, transparent); border-radius: 12px; }
+  .dv textarea { resize: vertical; min-height: 88px; }
+  .dv [aria-invalid=true] { border-color: var(--dv-ink); border-width: 2px; }
+  .dv-err { margin: 0; font-size: 13.5px; font-weight: 600; }
+  .dv-err::before { content: "⚠ "; }
+  .dv-aide { margin: 4px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--dv-soft); }
+  .dv a { color: inherit; text-underline-offset: 3px; }
+  .dv-stepper { display: inline-flex; align-items: center; gap: 6px; }
+  .dv-stepper button { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--dv-ink); background: transparent; color: var(--dv-ink); font-size: 20px; line-height: 1; cursor: pointer; }
+  .dv-stepper button:last-child { background: var(--dv-lime); }
+  .dv-stepper button:disabled { opacity: .35; cursor: default; }
+  .dv-stepper output { min-width: 28px; text-align: center; font-family: var(--dv-mono); font-size: 16px; font-weight: 600; }
+  .dv-cat + .dv-cat { margin-top: 18px; }
+  .dv-cat h3 { font-family: var(--dv-mono); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--dv-soft); margin: 0 0 8px; }
+  .dv-cat ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .dv-cat li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--dv-ink) 10%, transparent); }
+  .dv-cat li.on { background: var(--dv-cream); border-color: var(--dv-ink); }
+  .dv-opt { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .dv-on { font-weight: 600; font-size: 15px; }
+  .dv-od { font-size: 13px; color: var(--dv-soft); }
+  .dv-piege { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .dv-recap { background: var(--dv-ink); color: var(--dv-bg); border-radius: 20px; padding: 22px 18px; align-self: start; }
+  .dv-recap h2 { font-family: var(--dv-mono); font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; margin: 0 0 14px; }
+  .dv-recap dl { margin: 0; display: flex; flex-direction: column; gap: 8px; padding-bottom: 14px; border-bottom: 1px solid color-mix(in srgb, var(--dv-bg) 25%, transparent); }
+  .dv-recap dl div { display: flex; justify-content: space-between; gap: 12px; }
+  .dv-recap dt { margin: 0; } .dv-recap dd { margin: 0; white-space: nowrap; }
+  .dv-recap .dv-sub { font-size: 14px; }
+  .dv-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; }
+  .dv-total span { font-family: var(--dv-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .dv-total strong { font-family: var(--dv-display); font-size: 36px; letter-spacing: -.02em; color: var(--dv-lime); }
+  .dv-ttc { margin: 4px 0 0; font-size: 13.5px; text-align: right; }
+  .dv-regle { margin: 18px 0 0; padding: 14px; border: 1.5px solid var(--dv-lime); border-radius: 14px; font-size: 14px; line-height: 1.5; }
+  .dv-regle strong { color: var(--dv-lime); font-family: var(--dv-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 500; }
+  .dv-regle p { margin: 6px 0 0; }
+  .dv-regle p:first-of-type { font-weight: 700; }
+  .dv-accept { display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; font-size: 14px; line-height: 1.45; }
+  .dv-accept input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: var(--dv-lime); }
+  .dv-recap .dv-err { margin-top: 8px; color: var(--dv-bg); }
+  .dv-go { margin-top: 18px; width: 100%; min-height: 54px; padding: 14px 22px; background: var(--dv-lime); color: var(--dv-ink); border: 1.5px solid var(--dv-lime); border-radius: 999px; font: 700 16px var(--dv-sans); cursor: pointer; }
+  .dv-go:disabled { opacity: .65; cursor: default; }
+  .dv-recap :focus-visible { outline-color: var(--dv-lime); }
+  .dv-statut { margin: 12px 0 0; font-size: 14.5px; line-height: 1.5; }
+  .dv-statut:empty { margin: 0; }
+  .dv-statut.fort { font-weight: 600; }
+  @media (min-width: 640px) {
+    .dv-plateaux, .dv-ligne2 { grid-template-columns: 1fr 1fr; }
+    .dv-pas { padding: 26px; }
+  }
+  @media (min-width: 980px) {
+    .dv-hero { padding: 56px 40px 16px; }
+    .dv-grille { grid-template-columns: minmax(0, 1fr) 380px; gap: 28px; padding: 24px 40px 120px; }
+    .dv-recap { position: sticky; top: 100px; padding: 26px; }
+  }
+</style>
 <style>
   /* accessibilité : lien d'évitement, focus clavier visible, mouvements réduits */
   .skip-link { position: absolute; left: 12px; top: -80px; z-index: 1000; padding: 10px 16px; border-radius: 8px; text-decoration: none; font: 500 13px/1.2 'Inter', sans-serif; }
@@ -58,10 +140,15 @@
 <body>
 <div id="root">
 <div style="max-width: 1400px; margin: 0 auto; padding: 60px 40px;">
-<h1>Votre devis, en direct.</h1>
-<p>Configurez votre devis studio food en 2 minutes : plateau, durée, options, équipe. Prix immédiat, sans engagement. HIVING FOOD Paris.</p>
+<h1>Réservez votre plateau.</h1>
+<p>Réservez le Studio Pro (850 € HT/jour) ou le Studio Famille (1 000 € HT/jour) en 3 étapes : prix HT immédiat, devis Pennylane à signer en ligne.</p>
 </div>
 </div>
-<script defer src="../js/pages/devis.min.js?v=91a5396667"></script>
+<script type="module">
+  // Adresse de l'API de réservation du CRM (vide = envoi par e-mail via /api/contact) : voir shared/config.js
+  import { CONFIG } from '../shared/config.js';
+  window.HIVING_CONFIG = { CRM_RESERVATION_URL: CONFIG.CRM_RESERVATION_URL || '' };
+</script>
+<script defer src="../js/pages/devis.min.js?v=6537201b2e"></script>
 </body>
 </html>

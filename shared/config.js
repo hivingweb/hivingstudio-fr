@@ -5,6 +5,11 @@ export const CONFIG = {
   SUPABASE_URL: 'https://pmrqrbjxikljlarhkseu.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable_j_kHa-caXfSxkSyeGd-veA_ZdUvNCw8',
   CONTACT_EMAIL: 'contact@hivingfood.fr',
+  // Réservation via le CRM Hiving (devis puis facture Pennylane) : adresse COMPLÈTE de l'API du CRM,
+  // ex. 'https://crm.exemple.fr/api/studio/reservations'. Vide = ancien circuit (Supabase pour /pro/,
+  // e-mail /api/contact pour /pages/devis.html). En la remplissant, ajouter l'origine du CRM à
+  // connect-src dans vercel.json (les deux CSP). Spécification : docs/reservation-pennylane.md.
+  CRM_RESERVATION_URL: '',
   STUDIOS_FALLBACK: [
     { id: 'pro',       name: 'Studio Pro',       price_day: 850,  tag: 'la cuisine des chefs' },
     { id: 'famille',   name: 'Studio Famille',   price_day: 1000, tag: 'comme à la maison' },

@@ -38,87 +38,89 @@
 
   // ─── SERVICES SEO ─────────────────────────────────────
   const SERVICES = [
+    // Textes alignés sur les 2 plateaux actuels (accueil, 2026-11-09) : aucun équipement,
+    // personne ni délai de l'ancien studio. Montants « from » inchangés (à revoir par Maxime).
     {
       slug: 'photo-culinaire-paris',
       title: 'Photo culinaire Paris',
       eyebrow: 'Service · Photographie',
-      hero: 'Le studio photo food le plus complet de Paris.',
-      desc: 'Deux plateaux dédiés, lumière naturelle nord, équipe stylisme intégrée. Pour les marques food, chefs étoilés et magazines exigeants.',
+      hero: 'Deux cuisines équipées pour la photo food, aux portes de Paris.',
+      desc: 'Studio Pro (80 m², cuisine inox) et Studio Famille (65 m², cuisine habitée) à Clichy, à 8 min de Saint-Lazare. Pour les marques food, les agences et les créateurs.',
       keywords: 'studio photo culinaire paris, photographe food paris, location studio food, plateau photo gastronomie',
       bullets: [
-        '2 plateaux modulaires de 65 et 80 m²',
-        'Cyclo blanc + 18 décors bois/marbre',
-        'Parc lumière LED + naturelle nord',
-        'Stylistes culinaires sur place',
-        'Cuisine pro Bonnet attenante',
-        'Décote -15% sur le matos en bookant le plateau',
+        '2 plateaux de 80 et 65 m²',
+        'Studio Pro : plan inox, piano 6 feux, four UNOX',
+        'Studio Famille : îlot central mobile, plan bois, parquet chevrons',
+        'Mobilier, café, wifi et aide au setup inclus',
+        'Éclairage en package, à partir de 150 € HT',
+        'Ouvert 7j/7, de 8h à 22h',
       ],
       from: 750,
       faq: [
-        { q: 'Combien coûte une journée de photo culinaire en studio à Paris ?', a: 'La location d\'un plateau est à 850 € HT la journée pour le Studio Pro et 1 000 € HT pour le Studio Famille. Compter 1 500 à 3 500 € avec stylisme + matériel pro.' },
-        { q: 'Quelle est la meilleure lumière pour photographier des plats ?', a: 'La lumière naturelle nord est idéale (constante, douce, sans dominante). À défaut, des LED bicolores diffusées simulent très bien le rendu.' },
-        { q: 'Faut-il un styliste culinaire pour un shooting food ?', a: 'Pour une photo qui vend (packaging, pub, magazine), oui. Un styliste prépare les plats spécifiquement pour la photo (texture, brillance, taille des portions, vapeur figée). Nous avons 4 stylistes partenaires expérimentés.' },
+        { q: 'Combien coûte une journée de photo culinaire en studio à Paris ?', a: 'La location d\'un plateau est à 850 € HT la journée pour le Studio Pro et 1 000 € HT pour le Studio Famille. L\'éclairage se prend en package (à partir de 150 € HT) ; caméras, optiques et équipe technique sont chiffrés avec vous.' },
+        { q: 'Quelle est la meilleure lumière pour photographier des plats ?', a: 'Une lumière douce et constante, sans dominante de couleur. Au studio, l\'éclairage se prend en package : dites-nous ce que vous shootez, on vous oriente vers la bonne formule.' },
+        { q: 'Faut-il un styliste culinaire pour un shooting food ?', a: 'Pour une photo qui vend (packaging, pub, magazine), c\'est recommandé : un styliste prépare les plats spécifiquement pour l\'image. Une équipe de production peut être proposée sur demande : écrivez-nous à contact@hivingfood.fr.' },
       ],
     },
     {
       slug: 'packshot-produit-alimentaire',
       title: 'Packshot produit alimentaire',
       eyebrow: 'Service · E-commerce',
-      hero: 'Vos produits, sublimés. À l\'échelle catalogue.',
-      desc: 'Cyclo blanc, lumière calibrée, banc de prise stable. Volume catalogue ou grandes campagnes — workflow industrialisé sans perte de qualité.',
+      hero: 'Vos produits alimentaires, shootés dans une vraie cuisine.',
+      desc: 'Deux plateaux cuisine à Clichy pour photographier vos produits et leurs mises en situation : plan inox du Studio Pro ou décor maison du Studio Famille.',
       keywords: 'packshot alimentaire paris, photo produit food, photographie packaging, studio packshot e-commerce',
       bullets: [
-        'Cyclo blanc parfaitement uniforme',
-        'Banc Cambo + Phase One IQ4 150 MP',
-        'Capture tethered + retouche live',
-        'Workflow 200+ refs / jour',
-        'Calibration colorimétrique D65',
-        'Livraison RAW + retouche en J+2',
+        '2 plateaux : 80 m² (Pro) et 65 m² (Famille)',
+        'Cuisine fonctionnelle : cuisiner, dresser et shooter dans la foulée',
+        'Cellule de refroidissement et tour réfrigérée (Studio Pro)',
+        'Éclairage en package, à partir de 150 € HT',
+        'Caméras, optiques et équipe technique en option',
+        'Mobilier, café, wifi et aide au setup inclus',
       ],
       from: 950,
       faq: [
-        { q: 'Combien de packshots peut-on shooter en une journée ?', a: 'Selon la complexité : 200 références simples (1 angle), 60-80 sets multi-angles avec props. Notre workflow tethered + 2e poste de retouche en parallèle accélère tout.' },
-        { q: 'Format de livraison standard ?', a: 'RAW + JPG haute déf + PNG détouré sur fond transparent + version e-commerce 1500 px. Workflow couleur D65, conversion sRGB et Adobe RGB livrés.' },
+        { q: 'Le matériel photo est-il fourni ?', a: 'Le mobilier, le café, le wifi et l\'aide à l\'installation sont inclus. L\'éclairage se prend en package (à partir de 150 € HT). Caméras, optiques, stabilisateurs et équipe technique sont disponibles en option, chiffrés avec vous.' },
+        { q: 'Faut-il passer par l\'agence Hiving pour réserver ?', a: 'Non. Les plateaux sont ouverts à toutes les marques, agences et créateurs indépendants.' },
       ],
     },
     {
       slug: 'stop-motion-food',
       title: 'Stop motion food',
       eyebrow: 'Service · Animation',
-      hero: 'Le format qui crève l\'écran social.',
-      desc: 'Studio dédié stop motion : banc multiplane, robot DMX, contrôle lumière image par image. Pour les marques food qui veulent percer sur Insta, TikTok, YouTube.',
+      hero: 'Un décor cuisine prêt à tourner pour vos animations food.',
+      desc: 'Studio Pro ou Studio Famille à la journée, à Clichy : une cuisine équipée et un décor prêt à l\'emploi pour les formats sociaux des marques food.',
       keywords: 'stop motion food paris, animation culinaire, studio stop motion alimentaire, vidéo food réseaux sociaux',
       bullets: [
-        'Banc motion control DMX + Dragonframe',
-        'Lumière 100% LED stable image par image',
-        'Préparation par styliste dédié',
-        'Storyboarding inclus',
-        'Livraison 4K ProRes + montage social',
-        'Formats Insta/TikTok/YouTube prêts',
+        '2 décors : cuisine inox (Pro) ou cuisine maison (Famille)',
+        'Plafond technique et grill lumière (Studio Pro)',
+        'Éclairage en package, à partir de 150 € HT',
+        'Caméras, optiques et équipe technique en option',
+        'Ouvert 7j/7, de 8h à 22h',
+        'Devis instantané en ligne',
       ],
       from: 1500,
       faq: [
-        { q: 'Combien de temps pour produire 15 secondes de stop motion food ?', a: 'Compter 1 à 2 jours de tournage selon la complexité (nombre de plats, transitions). Plus 1-2 jours de post-prod. Budget moyen 8 000-15 000 € HT pour un spot social qualité diffusion.' },
+        { q: 'Peut-on louer le studio à la demi-journée ?', a: 'Oui : la demi-journée se réserve directement en ligne. Pour un créneau plus court, écrivez-nous avec vos horaires et on vous propose la formule la plus avantageuse.' },
       ],
     },
     {
       slug: 'spot-tv-cuisine',
       title: 'Spot TV cuisine',
       eyebrow: 'Service · Film',
-      hero: 'Tournage TV : cuisine pro, équipe pro, plateau pro.',
-      desc: 'Cuisine 6 feux pro + cyclo + extraction industrielle. Hauteur sous plafond 4m, monte-charge, loges. Pour les pubs TV, capsules YouTube, contenus chefs étoilés.',
+      hero: 'Pubs et brand films : la cuisine des chefs.',
+      desc: 'Le Studio Pro (80 m², 3,2 m sous plafond) : plafond technique, grill lumière, plan inox, piano 6 feux et four UNOX. Le plateau des brand films, des pubs et des formats haut de gamme.',
       keywords: 'tournage spot tv food paris, location plateau cinéma cuisine, studio film culinaire, location cuisine tournage paris',
       bullets: [
-        'Hauteur 4m + grill technique',
-        'Cuisine Bonnet 6 feux + plancha + piano',
-        'Extraction 6000 m³/h silencieuse',
-        'Loges + maquillage + régie',
-        'Monte-charge 1.4 t',
-        'Brigade Hiving (chef + commis) en option',
+        'Studio Pro : 80 m², 3,2 m sous plafond',
+        'Plafond technique et grill lumière',
+        'Plan inox, piano 6 feux, four UNOX',
+        'Cellule de refroidissement jusqu\'à −40 °C, tour réfrigérée',
+        'Équipe de production sur demande',
+        'Ouvert 7j/7, de 8h à 22h',
       ],
       from: 2200,
       faq: [
-        { q: 'Le studio est-il adapté à un tournage avec une équipe complète ?', a: 'Oui. 4m sous plafond, grille technique câblée 32A, monte-charge 1.4 t, 3 loges, salle de régie, parking 8 places. Capacité jusqu\'à 25 personnes en plateau.' },
+        { q: 'Le Studio Pro convient-il à un tournage publicitaire ?', a: 'Oui : c\'est le plateau des brand films, des pubs et des formats haut de gamme qui exigent un rendu net. Pour une équipe ou un dispositif particulier, écrivez-nous à contact@hivingfood.fr.' },
       ],
     },
   ];
@@ -132,7 +134,7 @@
       excerpt: 'La lumière, la profondeur, le timing : ce qu\'on voit (et qu\'on revoit) tous les jours en studio. Et comment les corriger.',
       readTime: 6,
       date: '2026-04-22',
-      author: 'Léa Marchand · Cheffe styliste',
+      author: 'Studio Hiving',
       tags: ['Photo', 'Pratique', 'Light'],
     },
     {
@@ -142,7 +144,7 @@
       excerpt: 'Un brief styliste réussi = 30% de temps gagné en studio et un résultat qui colle à votre univers de marque.',
       readTime: 5,
       date: '2026-04-08',
-      author: 'Camille Dorsay · Directrice studio',
+      author: 'Studio Hiving',
       tags: ['Méthode', 'Workflow'],
     },
     {
@@ -157,38 +159,19 @@
     },
   ];
 
-  // ─── ÉQUIPE ───────────────────────────────────────────
-  const TEAM = [
-    { id: 1, name: 'Camille Dorsay', role: 'Directrice studio', bio: '15 ans en photo food. Ex-direction artistique chez Régal. Pilote Hiving depuis l\'ouverture.', tags: ['Direction', 'DA'] },
-    { id: 2, name: 'Léa Marchand', role: 'Cheffe styliste culinaire', bio: 'Diplômée Ferrandi + Vatel. Stylisme pour Picard, Bonne Maman, Ladurée. 200+ shootings/an.', tags: ['Stylisme'] },
-    { id: 3, name: 'Marco Pezzato', role: 'Chef de cuisine résident', bio: 'Ex-Septime, ex-Anne-Sophie Pic. Brigade Hiving sur les tournages films et chef-driven projects.', tags: ['Cuisine', 'Brigade'] },
-    { id: 4, name: 'Sami Belkacem', role: 'Régisseur lumière + tech', bio: 'Régie plateau, parc lumière, Phase One certified. 10 ans en pub TV.', tags: ['Tech', 'Lumière'] },
-    { id: 5, name: 'Inès Tabet', role: 'Coordination & client', bio: 'Devis, planning, brief client. Votre point de contact unique du premier mail au shoot.', tags: ['Coordination'] },
-    { id: 6, name: 'Théo Leduc', role: 'Photographe résident', bio: 'Spécialisé packshot et lifestyle food. Disponible sur option pour les shoots Hiving.', tags: ['Photo'] },
-  ];
-
-  // ─── PRESSE ───────────────────────────────────────────
-  const PRESS = [
-    { id: 1, source: 'Le Monde · Styles', title: 'Hiving, le studio qui change la photo food à Paris', date: '2025-11-12' },
-    { id: 2, source: 'L\'Hôtellerie Restauration', title: 'Le boom des studios food spécialisés', date: '2025-09-04' },
-    { id: 3, source: 'Vanity Fair France', title: 'Comment Hiving photographie le luxe alimentaire', date: '2025-06-22' },
-    { id: 4, source: 'Stratégies', title: 'Picard signe sa nouvelle campagne avec Hiving', date: '2025-04-15' },
-    { id: 5, source: 'Konbini Food', title: 'Dans les coulisses du studio préféré des marques food', date: '2025-02-28' },
-    { id: 6, source: 'Frenchy Food', title: 'Hiving, l\'usine à belles photos', date: '2024-12-10' },
-  ];
-
-  const CLIENTS = [
-    'PICARD', 'BONNE MAMAN', 'LADURÉE', 'BORDIER', 'MAILLE',
-    'MICHEL & AUGUSTIN', 'CRU & CO.', 'SEPTIME', 'L\'ARPÈGE',
-    'DASSAÏ', 'KUSMI TEA', 'COMTE', 'LE BON MARCHÉ',
-  ];
+  // ─── ÉQUIPE · PRESSE · CLIENTS ───────────────────────
+  // Vidés le 2026-11-09 : noms, médias et clients de l'ancien studio non validés par Maxime
+  // (pages equipe, presse, travaux, case-picard redirigées). Ne republier qu'avec son accord.
+  const TEAM = [];
+  const PRESS = [];
+  const CLIENTS = [];
 
   // ─── ADD-ONS / OPTIONS ────────────────────────────────
   const ADDONS_FULL = [
     { id: 'styliste', name: 'Styliste culinaire', desc: '1 styliste pro pour préparer/finaliser les plats', unit: 'jour', price: 650, cat: 'Équipe' },
     { id: 'chef', name: 'Chef cuisine', desc: 'Chef Hiving pour exécution des recettes', unit: 'jour', price: 750, cat: 'Équipe' },
     { id: 'commis', name: 'Commis', desc: 'Aide cuisine + plonge', unit: 'jour', price: 280, cat: 'Équipe' },
-    { id: 'photographe', name: 'Photographe résident', desc: 'Théo Leduc — packshot/lifestyle', unit: 'jour', price: 1200, cat: 'Équipe' },
+    { id: 'photographe', name: 'Photographe résident', desc: 'Packshot / lifestyle, sur option', unit: 'jour', price: 1200, cat: 'Équipe' },
     { id: 'phaseone', name: 'Phase One IQ4 150 MP', desc: 'Boîtier moyen format + 3 optiques', unit: 'jour', price: 480, cat: 'Matériel' },
     { id: 'cambo', name: 'Banc Cambo + tilt-shift', desc: 'Banc de repro pour packshot', unit: 'jour', price: 220, cat: 'Matériel' },
     { id: 'lumiere', name: 'Pack lumière premium', desc: 'Profoto B10X ×4 + softbox + drapeaux', unit: 'jour', price: 320, cat: 'Matériel' },
@@ -200,13 +183,8 @@
   ];
 
   // ─── CERTIFICATIONS ───────────────────────────────────
-  const CERTS = [
-    { name: 'RC Pro AXA', value: '2 M€ couverture' },
-    { name: 'Hygiène HACCP', value: 'Niveau 3 · audit annuel' },
-    { name: 'Affilié SATEV', value: 'Syndicat technique audiovisuel' },
-    { name: 'Membre AFC', value: 'Association française des cinematographers' },
-    { name: 'B Corp', value: 'Certification 2024' },
-  ];
+  // Vidé le 2026-11-09 : assurances, labels et affiliations non validés.
+  const CERTS = [];
 
   Object.assign(window, {
     HIVING_PLATEAUX: PLATEAUX,

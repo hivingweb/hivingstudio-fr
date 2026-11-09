@@ -61,6 +61,26 @@
     <priority>0.85</priority>
   </url>
 
+  <!-- Location (pages d'atterrissage) -->
+  <url>
+    <loc>https://hivingstudio.fr/pages/location-studio-cuisine-paris.html</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://hivingstudio.fr/pages/studio-tournage-recette.html</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://hivingstudio.fr/pages/studio-cuisine-createurs.html</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
   <!-- Conversion -->
   <url>
     <loc>https://hivingstudio.fr/pages/tarifs.html</loc>
@@ -73,20 +93,6 @@
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-  </url>
-
-  <!-- Travaux & cas -->
-  <url>
-    <loc>https://hivingstudio.fr/pages/travaux.html</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://hivingstudio.fr/pages/case-picard.html</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
 
   <!-- Carnet (blog) -->
@@ -115,18 +121,12 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- À propos -->
+  <!-- Questions fréquentes -->
   <url>
-    <loc>https://hivingstudio.fr/pages/equipe.html</loc>
-    <lastmod>2026-05-03</lastmod>
+    <loc>https://hivingstudio.fr/pages/faq.html</loc>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://hivingstudio.fr/pages/presse.html</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 
   <!-- Pages légales -->

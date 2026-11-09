@@ -83,7 +83,23 @@
   .rel-note{border-left:3px solid var(--line); padding-left:12px; margin:10px 0 4px}
   .rel-note.is-brand{border-color:var(--red)}
 
-  /* options & matériel (étape 03) */
+  .panel h2.h3{font-size:19px; letter-spacing:-.01em; margin-bottom:6px}
+  .panel h2.h3 .it{font-family:var(--serif); font-style:italic; font-weight:400}
+  /* récapitulatif + conditions (étape 03) */
+  .recap{margin-top:24px; border:1.5px solid var(--ink); border-radius:16px; padding:16px 18px; background:var(--cream)}
+  .recap .row{display:flex; justify-content:space-between; gap:12px; font-size:14px; padding:3px 0}
+  .recap .row.sub{color:var(--ink-dim); font-size:13px}
+  .recap .row.tot{border-top:1px solid var(--line); margin-top:8px; padding-top:10px; font-size:16px}
+  .recap .row.tot b{font-family:var(--display); font-size:26px; letter-spacing:-.02em}
+  .regle{margin-top:14px; border-left:3px solid var(--lime-deep); padding:4px 0 4px 14px; font-size:14px; line-height:1.5}
+  .regle b{font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:500}
+  .regle p{margin:4px 0 0}
+  .regle .regle-fort{font-weight:700}
+  .accept{display:flex; gap:10px; align-items:flex-start; margin-top:16px; font-size:14px; line-height:1.45}
+  .accept input{flex:none; width:22px; height:22px; margin:0; accent-color:var(--ink)}
+  @media(max-width:640px){ .sumbar .btn{width:100%; justify-content:center} .mcal-grid .day{font-size:15px} }
+
+  /* options & matériel (étape 02) */
   .fmuted{color:var(--ink-faint); font-weight:400; text-transform:none; letter-spacing:0}
 
   /* en-tête de famille : libellé mono + filet éditorial + compteur */
@@ -158,30 +174,27 @@
 <div id="wizard" class="wrap">
   <div class="kick">( location <b>plateaux</b> )</div>
   <h1 class="title">Louer un <span class="it">plateau.</span></h1>
-  <p class="sub">Deux décors, une réservation en ligne. Choisissez votre plateau et votre date : le prix s'affiche et vous réservez. Si vous voulez une équipe de production ou un décor modifié, ça part en devis, chiffré sous 24h.</p>
+  <p class="sub">Trois étapes : le plateau et la date, les options, la facturation. Le prix HT s'affiche tout de suite ; vous recevez ensuite votre devis Pennylane à signer en ligne, puis la facture à régler.</p>
   <div style="height:26px"></div>
 
   <!-- 01 · le plateau -->
   <div class="panel step" id="p1">
-    <div class="kick">( 01 · <b>le plateau</b> )</div>
-    <h3>Choisissez votre <span class="it">décor.</span></h3>
+    <div class="kick">( 01 · <b>le plateau et la date</b> )</div>
+    <h2 class="h3">Choisissez votre <span class="it">décor.</span></h2>
     <div style="height:12px"></div>
     <div class="grid2" id="studio-cards"></div>
-    <div class="hint err" id="e-studio"></div>
-  </div>
+    <div class="hint err" id="e-studio" role="alert"></div>
 
-  <!-- 02 · la date -->
-  <div class="panel step locked" id="p2">
-    <div class="kick">( 02 · <b>la date</b> )</div>
+  <div class="step locked" id="p2" style="margin-top:26px">
     <h3>Quand <span class="it">tournez-vous ?</span></h3>
     <div style="height:12px"></div>
     <div class="grid2">
       <div>
         <div class="mcal">
           <div class="mcal-head">
-            <button type="button" class="mcal-nav" id="cal-prev">←</button>
-            <span class="lbl" id="cal-label"></span>
-            <button type="button" class="mcal-nav" id="cal-next">→</button>
+            <button type="button" class="mcal-nav" id="cal-prev" aria-label="Mois précédent">←</button>
+            <span class="lbl" id="cal-label" aria-live="polite"></span>
+            <button type="button" class="mcal-nav" id="cal-next" aria-label="Mois suivant">→</button>
           </div>
           <div class="mcal-grid" id="cal-grid"></div>
         </div>
@@ -191,118 +204,87 @@
           <span><i class="sw-brand"></i>pris par une autre marque</span>
         </div>
         <div class="hint" id="range-note" style="margin-top:6px"></div>
-        <div class="hint err" id="e-date"></div>
+        <div class="hint err" id="e-date" role="alert"></div>
       </div>
       <div>
-        <label class="f" style="margin-top:0">Durée</label>
-        <div class="radio-row">
-          <input type="radio" name="duration" id="dur-full" value="full" checked><label for="dur-full" id="lab-full">Journée (8h à 22h)</label>
-          <input type="radio" name="duration" id="dur-am" value="half-am"><label for="dur-am" id="lab-am">Matin (8h à 14h)</label>
-          <input type="radio" name="duration" id="dur-pm" value="half-pm"><label for="dur-pm" id="lab-pm">Après-midi (14h à 22h)</label>
-          <input type="radio" name="duration" id="dur-custom" value="custom"><label for="dur-custom">Horaires personnalisés</label>
-        </div>
-        <div id="days-wrap">
-          <label class="f" for="f-days">Nombre de jours</label>
-          <input type="number" id="f-days" min="1" max="10" value="1" style="max-width:120px">
-        </div>
-        <div id="custom-wrap" style="display:none">
-          <label class="f">Vos horaires</label>
-          <div style="display:flex; gap:10px; align-items:center">
-            <select id="h-start" style="max-width:110px"></select>
-            <span class="hint" style="margin:0">à</span>
-            <select id="h-end" style="max-width:110px"></select>
-          </div>
-          <p class="hint">Pour des horaires sur mesure, le tarif exact est confirmé avec le devis définitif sous 24h.</p>
-        </div>
-        <p class="picked" id="picked-date"></p>
+        <label class="f" for="f-days" style="margin-top:0">Nombre de jours</label>
+        <input type="number" id="f-days" min="1" max="10" value="1" inputmode="numeric" style="max-width:120px">
+        <p class="hint" id="lab-full">Journée de 8h à 22h, jours consécutifs.</p>
+        <p class="picked" id="picked-date" aria-live="polite"></p>
+        <p class="hint">Demi-journée, horaires sur mesure, équipe de production ou décor modifié : <a href="mailto:contact@hivingfood.fr?subject=Demande%20sur%20mesure%20%C2%B7%20location%20de%20plateau">écrivez-nous</a>, on vous fait un devis.</p>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- 03 · votre projet -->
   <div class="panel step locked" id="p3">
-    <div class="kick">( 03 · <b>votre projet</b> )</div>
-    <h3>Composez votre <span class="it">tournage.</span></h3>
-    <p class="hint" style="margin-bottom:16px">Le plateau arrive prêt : mobilier, café, wifi, aide au setup. Ajoutez le matériel dont vous avez besoin ; l'équipe de production et le sur-mesure sont chiffrés à part.</p>
+    <div class="kick">( 02 · <b>les options</b> )</div>
+    <h2 class="h3">Ajoutez votre <span class="it">matériel.</span></h2>
+    <p class="hint" style="margin-bottom:16px">Le plateau arrive prêt : mobilier, café, wifi, aide au setup. Ajoutez seulement le matériel dont vous avez besoin.</p>
 
     <label class="f">Options &amp; matériel <span class="fmuted">(à la journée · facultatif)</span></label>
     <div id="opt-list"></div>
-    <p class="hint" id="opt-total" style="margin:12px 0 20px"></p>
-
-    <label class="f">Le plateau</label>
-    <div class="radio-row">
-      <input type="radio" name="keep" id="keep-asis" value="asis" checked><label for="keep-asis">Tel quel</label>
-      <input type="radio" name="keep" id="keep-modify" value="modify"><label for="keep-modify">À modifier</label>
-      <input type="radio" name="keep" id="keep-unknown" value="unknown"><label for="keep-unknown">Je ne sais pas encore</label>
-    </div>
-
-    <label class="f">La production</label>
-    <div class="radio-row">
-      <input type="radio" name="prod" id="prod-self" value="self" checked><label for="prod-self">Je viens avec mon équipe</label>
-      <input type="radio" name="prod" id="prod-hiving" value="hiving"><label for="prod-hiving">Je veux une équipe Hiving</label>
-      <input type="radio" name="prod" id="prod-unknown" value="unknown"><label for="prod-unknown">Je ne sais pas encore</label>
-    </div>
-    <p class="hint" id="custom-note"></p>
-
-    <label class="f" for="f-needs">Un mot sur votre projet ? (facultatif)</label>
-    <textarea id="f-needs" placeholder="Ex. recette en gros plan, ambiance recherchée, références…"></textarea>
+    <p class="hint" id="opt-total" style="margin:12px 0 4px" aria-live="polite"></p>
   </div>
 
-  <!-- 04 · le devis -->
+  <!-- 03 · la réservation -->
   <div class="panel step locked" id="p4">
-    <div class="kick">( 04 · <b>le devis</b> )</div>
-    <h3>Vos coordonnées de <span class="it">facturation.</span></h3>
+    <div class="kick">( 03 · <b>la réservation</b> )</div>
+    <h2 class="h3">Vos coordonnées de <span class="it">facturation.</span></h2>
     <div class="grid2">
       <div>
         <label class="f" for="f-company">Société *</label>
-        <input type="text" id="f-company" maxlength="200" autocomplete="organization">
+        <input type="text" id="f-company" maxlength="200" autocomplete="organization" aria-describedby="e-company">
         <div class="hint err" id="e-company"></div>
       </div>
       <div>
-        <label class="f" for="f-contact">Nom du contact *</label>
-        <input type="text" id="f-contact" maxlength="200" autocomplete="name">
+        <label class="f" for="f-siret">SIREN <span class="fmuted">(facultatif)</span></label>
+        <input type="text" id="f-siret" inputmode="numeric" placeholder="9 chiffres" autocomplete="off" aria-describedby="e-siret">
+        <div class="hint err" id="e-siret"></div>
+      </div>
+      <div>
+        <label class="f" for="f-contact">Nom et prénom *</label>
+        <input type="text" id="f-contact" maxlength="200" autocomplete="name" aria-describedby="e-contact">
         <div class="hint err" id="e-contact"></div>
       </div>
       <div>
-        <label class="f" for="f-email">Email *</label>
-        <input type="email" id="f-email" autocomplete="email">
+        <label class="f" for="f-email">E-mail *</label>
+        <input type="email" id="f-email" autocomplete="email" aria-describedby="e-email">
         <div class="hint err" id="e-email"></div>
-      </div>
-      <div>
-        <label class="f" for="f-phone">Téléphone</label>
-        <input type="tel" id="f-phone" autocomplete="tel">
       </div>
     </div>
     <label class="f" for="f-address">Adresse de facturation *</label>
-    <input type="text" id="f-address" autocomplete="street-address" placeholder="N° et rue">
+    <input type="text" id="f-address" autocomplete="street-address" placeholder="N° et rue" aria-describedby="e-address">
     <div class="hint err" id="e-address"></div>
     <div class="grid2">
       <div>
         <label class="f" for="f-zip">Code postal *</label>
-        <input type="text" id="f-zip" maxlength="12" autocomplete="postal-code" placeholder="75002">
+        <input type="text" id="f-zip" maxlength="12" inputmode="numeric" autocomplete="postal-code" placeholder="75002" aria-describedby="e-zip">
         <div class="hint err" id="e-zip"></div>
       </div>
       <div>
         <label class="f" for="f-city">Ville *</label>
-        <input type="text" id="f-city" maxlength="120" autocomplete="address-level2" placeholder="Paris">
+        <input type="text" id="f-city" maxlength="120" autocomplete="address-level2" placeholder="Paris" aria-describedby="e-city">
         <div class="hint err" id="e-city"></div>
       </div>
     </div>
-    <div class="grid2">
-      <div>
-        <label class="f" for="f-vat">N° TVA intracommunautaire</label>
-        <input type="text" id="f-vat" placeholder="FR12345678901" autocomplete="off">
-        <div class="hint err" id="e-vat"></div>
-      </div>
-      <div>
-        <label class="f" for="f-siret">SIRET</label>
-        <input type="text" id="f-siret" placeholder="14 chiffres" autocomplete="off">
-        <div class="hint err" id="e-siret"></div>
-      </div>
+    <label class="f" for="f-needs">Un mot sur votre projet <span class="fmuted">(facultatif)</span></label>
+    <textarea id="f-needs" placeholder="Ex. recette en gros plan, ambiance recherchée, références…"></textarea>
+
+    <div class="recap" id="recap" aria-live="polite"></div>
+    <div class="regle" role="note">
+      <b>Conditions</b>
+      <p class="regle-fort">Votre date est bloquée 48 h. Elle est confirmée à réception du paiement. Sans paiement, pas de prestation.</p>
+      <p>Vous recevez un devis Pennylane à signer en ligne, puis la facture avec son lien de paiement.</p>
     </div>
-    <p class="hint" style="margin-top:12px">Pour une date libre, la réservation est confirmée aussitôt ; votre facture vous parvient séparément, sous 24h. Le sur-mesure part en devis, sans engagement.</p>
+    <div class="accept">
+      <input type="checkbox" id="f-accept" aria-describedby="e-accept">
+      <label for="f-accept">J'ai lu les <a href="../pages/tarifs.html">conditions de réservation</a> et je les accepte.</label>
+    </div>
+    <div class="hint err" id="e-accept"></div>
     <div class="modal-actions" style="justify-content:flex-start">
-      <button class="btn" id="go">Réserver mon créneau →</button>
+      <button class="btn" id="go">Réserver →</button>
     </div>
   </div>
 </div>
@@ -324,7 +306,7 @@
 <!-- ================= BARRE RÉCAP ================= -->
 <div class="sumbar" id="bar">
   <div class="sum" id="bar-sum"></div>
-  <button class="btn" id="bar-go">Recevoir mon devis →</button>
+  <button class="btn" id="bar-go">Réserver →</button>
 </div>
 
 <!-- demander à libérer un créneau déjà pris -->
@@ -366,18 +348,9 @@ const META = {
 };
 
 let studios = [];
-const S = { studio: null, date: null, duration: 'full', days: 1, keepSet: 'asis', production: 'self', h0: 10, h1: 16, rangeConflict: false };
-
-/* durée : libellés alignés sur la config */
-const MID = 14;
-$('lab-full').textContent = `Journée (${CONFIG.OPEN_HOUR}h à ${CONFIG.CLOSE_HOUR}h)`;
-$('lab-am').textContent = `Matin (${CONFIG.OPEN_HOUR}h à ${MID}h)`;
-$('lab-pm').textContent = `Après-midi (${MID}h à ${CONFIG.CLOSE_HOUR}h)`;
-/* horaires personnalisés */
-$('h-start').innerHTML = [...Array(CONFIG.CLOSE_HOUR - CONFIG.OPEN_HOUR)].map((_, i) => { const h = CONFIG.OPEN_HOUR + i; return `<option value="${h}" ${h === 10 ? 'selected' : ''}>${h}h00</option>`; }).join('');
-$('h-end').innerHTML = [...Array(CONFIG.CLOSE_HOUR - CONFIG.OPEN_HOUR)].map((_, i) => { const h = CONFIG.OPEN_HOUR + 1 + i; return `<option value="${h}" ${h === 16 ? 'selected' : ''}>${h}h00</option>`; }).join('');
-$('h-start').onchange = () => { S.h0 = +$('h-start').value; if (S.h1 <= S.h0){ S.h1 = S.h0 + 1; $('h-end').value = S.h1; } update(); };
-$('h-end').onchange = () => { S.h1 = +$('h-end').value; if (S.h1 <= S.h0){ S.h0 = S.h1 - 1; $('h-start').value = S.h0; } update(); };
+// Parcours simplifié (nov. 2026) : journée(s) complète(s) uniquement ; le sur-mesure passe par e-mail.
+const S = { studio: null, date: null, duration: 'full', days: 1, rangeConflict: false };
+$('lab-full').textContent = `Journée de ${CONFIG.OPEN_HOUR}h à ${CONFIG.CLOSE_HOUR}h, jours consécutifs.`;
 
 /* ---------- 01 · studios ---------- */
 function renderCards(){
@@ -561,14 +534,6 @@ $('rel-go').onclick = async () => {
   $('rel-go').disabled = false;
 };
 
-document.querySelectorAll('input[name=duration]').forEach(r => r.onchange = () => {
-  S.duration = r.value;
-  $('days-wrap').style.display = S.duration === 'full' ? '' : 'none';
-  $('custom-wrap').style.display = S.duration === 'custom' ? '' : 'none';
-  renderCal();
-  renderOptions();   // le « × N j » des options dépend de la durée
-  update();
-});
 $('f-days').oninput = () => {
   const v = Math.min(10, Math.max(1, parseInt($('f-days').value, 10) || 1));
   S.days = v;
@@ -578,13 +543,7 @@ $('f-days').oninput = () => {
 };
 $('f-days').onblur = () => { $('f-days').value = S.days; };
 
-/* ---------- 03 · le projet (2 questions qui pilotent le sur mesure) ---------- */
-document.querySelectorAll('input[name=keep]').forEach(r => r.onchange = () => { S.keepSet = r.value; update(); });
-document.querySelectorAll('input[name=prod]').forEach(r => r.onchange = () => { S.production = r.value; update(); });
-// sur mesure = décor pas « tel quel » OU production assurée par Hiving
-function needsQuote(){ return S.keepSet !== 'asis' || S.production === 'hiving'; }
-
-/* ---------- 03 · options & matériel (catalogue st_options) ---------- */
+/* ---------- 02 · options & matériel (catalogue st_options) ---------- */
 let cat = [];
 const chosen = new Set();
 const OPT_CATS = { lumiere: 'Lumières', camera: 'Caméras', optique: 'Optiques', accessoire: 'Accessoires', materiel: 'Matériel' };
@@ -652,18 +611,27 @@ function dateLabel(full){
   const d = new Date(S.date + 'T12:00:00');
   return full ? fmt.dateFull(d) : fmt.date(d);
 }
-// sur mesure (décor modifié / équipe Hiving) ou horaires perso → devis à chiffrer, sinon facture ferme
-function isCustom(){ return needsQuote() || S.duration === 'custom'; }
-function studioTotal(){
-  if (!S.studio) return 0;
-  if (S.duration === 'custom') return null;
-  if (S.duration.startsWith('half')) return Math.round(S.studio.price_day * 0.6);
-  return S.studio.price_day * S.days;
+function studioTotal(){ return S.studio ? S.studio.price_day * S.days : 0; }
+function total(){ return S.studio ? studioTotal() + optionsTotal() : 0; }
+function periodLabel(){
+  if (!S.date) return 'date à choisir';
+  if (S.days <= 1) return dateLabel(true);
+  const [y, m, d] = S.date.split('-').map(Number);
+  const end = new Date(y, m - 1, d + S.days - 1, 12);
+  return `du ${dateLabel(false)} au ${fmt.date(end)} (${S.days} jours)`;
 }
-function total(){
-  if (!S.studio) return 0;
-  if (isCustom()) return null;                                    // devis (sur-mesure / horaires perso)
-  return studioTotal() + optionsTotal();
+// récapitulatif de l'étape 03 : plateau × jours, options, total HT (TTC indicatif)
+function renderRecap(){
+  if (!S.studio){ $('recap').innerHTML = ''; return; }
+  const n = billDays();
+  const opts = selectable().filter(o => chosen.has(o.id));
+  const ht = total(), tva = ht * CONFIG.VAT_RATE / 100;
+  $('recap').innerHTML = `
+    <div class="row"><span><b>${esc(S.studio.name)}</b></span><span>${fmt.euro(studioTotal())}</span></div>
+    <div class="row sub"><span>${esc(periodLabel())}</span><span>${n} j × ${fmt.euro(S.studio.price_day)}</span></div>
+    ${opts.map(o => `<div class="row sub"><span>${esc(splitLabel(o.label)[0])}${o.unit === 'day' && n > 1 ? ' × ' + n + ' j' : ''}</span><span>${fmt.euro(Number(o.price) * (o.unit === 'day' ? n : 1))}</span></div>`).join('')}
+    <div class="row tot"><span>Total HT</span><b>${fmt.euro(ht)}</b></div>
+    <div class="row sub"><span>TVA ${CONFIG.VAT_RATE} % : ${fmt.euro(tva)}</span><span>soit ${fmt.euro(ht + tva)} TTC</span></div>`;
 }
 function update(){
   const okDate = !!(S.studio && S.date);
@@ -688,24 +656,14 @@ function update(){
     countOptions();
   }
 
-  // la note dit pourquoi la demande bascule en devis
-  $('custom-note').innerHTML = needsQuote()
-    ? 'Votre demande part en <b>devis</b> : notre équipe la chiffre et revient vers vous sous 24h ouvrées. Le créneau n\'est pas bloqué avant votre accord.'
-    : 'Réservation directe : c\'est confirmé aussitôt en ligne ; la <b>facture</b> (plateau + options) vous parvient séparément.';
-
-  // le bouton dit ce qui va se passer : réserver (facture) ou demander un devis (sur mesure)
-  const goTxt = isCustom() ? 'Demander mon devis →' : 'Réserver mon créneau →';
-  $('go').textContent = goTxt; $('bar-go').textContent = goTxt;
+  renderRecap();
 
   const on = !!S.studio;
   $('bar').classList.toggle('on', on);
   document.body.classList.toggle('baron', on);
   if (on){
-    const dur = S.duration === 'half-am' ? 'matin' : S.duration === 'half-pm' ? 'après-midi'
-      : S.duration === 'custom' ? `${S.h0}h à ${S.h1}h` : (S.days > 1 ? S.days + ' jours' : 'journée');
-    const t = total();
-    const priceHtml = t != null ? `total <b>${fmt.euro(t)} HT</b>`
-      : isCustom() ? '<b>sur devis</b>' : '<b>tarif confirmé sous 24h</b>';
+    const dur = S.days > 1 ? S.days + ' jours' : 'journée';
+    const priceHtml = `total <b>${fmt.euro(total())} HT</b>`;
     const optTxt = chosen.size ? `<span class="sep">·</span>${chosen.size} option${chosen.size > 1 ? 's' : ''}` : '';
     $('bar-sum').innerHTML = `<b>${esc(S.studio.name)}</b><span class="sep">·</span>${S.date ? esc(dateLabel(false)) : 'date à choisir'}
       <span class="sep">·</span>${dur}${optTxt}<span class="sep">·</span>${priceHtml}`;
@@ -723,71 +681,97 @@ function validate(){
   if (!S.studio) return problem('p1', 'e-studio', 'Choisissez d\'abord votre plateau.');
   if (!S.date) return problem('p2', 'e-date', 'Choisissez une date libre dans le calendrier.');
   if (!$('f-company').value.trim()) return problem('p4', 'e-company', 'Le nom de votre société est indispensable pour la facture.', 'f-company');
-  if (!$('f-contact').value.trim()) return problem('p4', 'e-contact', 'Indiquez le nom du contact.', 'f-contact');
-  if (!$('f-email').value.trim().includes('@')) return problem('p4', 'e-email', 'Entrez un email valide : c\'est là que part votre document.', 'f-email');
+  const siret = $('f-siret').value.replace(/[\s.\-]/g, '');
+  if (siret && !/^\d{9}$|^\d{14}$/.test(siret))
+    return problem('p4', 'e-siret', 'Le SIREN compte 9 chiffres (ou 14 pour un SIRET). Laissez vide si vous ne l\'avez pas.', 'f-siret');
+  if (!$('f-contact').value.trim()) return problem('p4', 'e-contact', 'Indiquez votre nom.', 'f-contact');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('f-email').value.trim())) return problem('p4', 'e-email', 'Entrez un e-mail valide : c\'est là que part votre devis.', 'f-email');
   // adresse complète : exigée pour éditer une facture conforme
   if (!$('f-address').value.trim()) return problem('p4', 'e-address', 'L\'adresse est obligatoire pour établir la facture.', 'f-address');
   if (!$('f-zip').value.trim()) return problem('p4', 'e-zip', 'Indiquez le code postal.', 'f-zip');
   if (!$('f-city').value.trim()) return problem('p4', 'e-city', 'Indiquez la ville.', 'f-city');
-  // TVA et SIRET restent facultatifs, mais s'ils sont remplis ils doivent être
-  // valides : un numéro mal formé fait rejeter la facture par notre comptabilité.
-  const vat = $('f-vat').value.toUpperCase().replace(/[\s.\-]/g, '');
-  if (vat && !/^[A-Z]{2}[0-9A-Z]{2,13}$/.test(vat))
-    return problem('p4', 'e-vat', 'Format attendu : 2 lettres de pays puis les chiffres, ex. FR12345678901. Laissez vide si vous ne l\'avez pas.', 'f-vat');
-  const siret = $('f-siret').value.replace(/[\s.\-]/g, '');
-  if (siret && !/^\d{9}$|^\d{14}$/.test(siret))
-    return problem('p4', 'e-siret', 'Le SIRET compte 14 chiffres (ou 9 pour un SIREN). Laissez vide si vous ne l\'avez pas.', 'f-siret');
+  if (!$('f-accept').checked) return problem('p4', 'e-accept', 'Merci de confirmer avoir lu les conditions de réservation.', 'f-accept');
   return true;
 }
 
+// Succès : on dit exactement ce qui se passe ensuite (devis Pennylane, 48 h, paiement)
+function showSuccess({ title, amount, link, linkLabel, note }){
+  $('ok-title').innerHTML = title;
+  $('ok-total-lbl').textContent = 'Total HT';
+  $('ok-total').textContent = fmt.euro(amount) + ' HT';
+  if (link){ $('ok-link').href = link; $('ok-link').textContent = linkLabel; $('ok-link').style.display = ''; }
+  else $('ok-link').style.display = 'none';
+  $('ok-note').textContent = note;
+  $('wizard').style.display = 'none';
+  $('bar').classList.remove('on');
+  document.body.classList.remove('baron');
+  $('success').style.display = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  $('ok-title').setAttribute('tabindex', '-1'); $('ok-title').focus({ preventScroll: true });
+}
+function slotTaken(){
+  toast('Ce créneau vient d\'être réservé. Choisissez une autre date, ou écrivez-nous pour une demande de libération.');
+  Object.keys(busyCache).forEach(k => delete busyCache[k]); renderCal();
+}
+
 async function submit(){
-  ['e-studio','e-date','e-company','e-contact','e-email','e-address','e-zip','e-city','e-vat','e-siret'].forEach(id => $(id).textContent = '');
+  ['e-studio','e-date','e-company','e-contact','e-email','e-address','e-zip','e-city','e-siret','e-accept'].forEach(id => $(id).textContent = '');
   if (!validate()) return;
   if (await computeRangeConflict()){ problem('p2', 'e-date', 'Un jour de votre période est déjà pris : changez la date de départ ou réduisez le nombre de jours.'); return; }
   const btns = [$('go'), $('bar-go')];
   btns.forEach(b => b.disabled = true);
+  const opts = selectable().filter(o => chosen.has(o.id));
+  const siren = $('f-siret').value.replace(/[\s.\-]/g, '') || null;
+  const customer = {
+    company: $('f-company').value.trim(), siren, contact_name: $('f-contact').value.trim(), email: $('f-email').value.trim(),
+    billing_address: { line1: $('f-address').value.trim(), zip: $('f-zip').value.trim(), city: $('f-city').value.trim(), country: 'FR' },
+  };
+  const amount = total();
   try {
-    const r = await api.createBrandRequest({
-      studio_id: S.studio.id,
-      date: S.date,
-      days: S.duration === 'full' ? S.days : 1,
-      duration: S.duration,
-      hours: S.duration === 'custom' ? `${S.h0}h à ${S.h1}h` : null,
-      keep_set: S.keepSet, production: S.production,
-      custom: needsQuote(),
-      options: selectable().filter(o => chosen.has(o.id)).map(o => ({ id: o.id, label: o.label, price: Number(o.price), unit: o.unit })),
-      needs: $('f-needs').value.trim() || null,
-      company: $('f-company').value.trim(),
-      contact_name: $('f-contact').value.trim(),
-      email: $('f-email').value.trim(),
-      phone: $('f-phone').value.trim() || null,
-      billing_address: $('f-address').value.trim() || null,
-      billing_zip: $('f-zip').value.trim() || null,
-      billing_city: $('f-city').value.trim() || null,
-      vat: $('f-vat').value.toUpperCase().replace(/[\s.\-]/g, '') || null,
-      siret: $('f-siret').value.replace(/[\s.\-]/g, '') || null,
-    });
-    const invoice = r.doc_type === 'invoice';
-    $('ok-title').innerHTML = invoice
-      ? `Votre <span class="it">réservation</span> est confirmée.`
-      : `Votre devis <span class="it">N° ${esc(r.quote_number)}</span> est prêt.`;
-    $('ok-total-lbl').textContent = invoice ? 'Montant' : 'Estimation';
-    $('ok-total').textContent = r.quote_total == null ? 'Sur devis' : fmt.euro(r.quote_total) + ' HT';
-    $('ok-link').textContent = invoice ? 'Voir ma confirmation' : 'Voir mon devis';
-    $('ok-link').href = '../devis/?id=' + encodeURIComponent(r.id);
-    $('ok-note').textContent = invoice
-      ? `Créneau bloqué à votre nom (${esc(S.studio.name)}). Un email de confirmation vous a été envoyé ; votre facture vous parviendra séparément, sous 24h, payable par virement.`
-      : 'Notre équipe chiffre votre demande sur-mesure et revient sous 24h ouvrées : le créneau n\'est pas encore bloqué.';
-    $('wizard').style.display = 'none';
-    $('bar').classList.remove('on');
-    document.body.classList.remove('baron');
-    $('success').style.display = '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (CONFIG.CRM_RESERVATION_URL){
+      // Nouveau circuit : le CRM crée le devis Pennylane, bloque la date 48 h et suit le paiement.
+      let r, d = {};
+      try {
+        r = await fetch(CONFIG.CRM_RESERVATION_URL, {
+          method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source: 'hivingstudio.fr/pro', idempotency_key: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+            studio_id: S.studio.id, start_date: S.date, days: S.days,
+            options: opts.map(o => ({ catalog: 'st_options', id: o.id, label: o.label, qty: 1, unit: o.unit, unit_price_ht: Number(o.price) })),
+            customer, message: $('f-needs').value.trim() || null,
+            client_total_ht: amount, accept_conditions: true, website: '',
+          }),
+        });
+        d = await r.json().catch(() => ({}));
+      } catch (e){ r = { ok: false, status: 0 }; }
+      if (r.ok){
+        const fin = d.hold_expires_at ? new Date(d.hold_expires_at).toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : null;
+        showSuccess({
+          title: `Votre date est <span class="it">bloquée.</span>`, amount: d.total_ht ?? amount,
+          note: `${S.studio.name} · ${periodLabel()}. Date bloquée${fin ? ' jusqu\'au ' + fin : ' 48 h'}. Votre devis Pennylane${d.quote_number ? ' N° ' + d.quote_number : ''} vous est envoyé par e-mail : signez-le en ligne, puis réglez la facture pour confirmer la réservation. Sans paiement, pas de prestation.`,
+        });
+      } else if (r.status === 409){ slotTaken(); }
+      else if ((r.status === 400 || r.status === 422) && d.error){ toast(esc(d.error)); }
+      else { toast('Réservation en ligne momentanément indisponible, écrivez-nous à ' + CONFIG.CONTACT_EMAIL + '.'); }
+    } else {
+      // Circuit actuel (tant que le CRM n'est pas branché) : demande enregistrée dans la base du CRM.
+      const r = await api.createBrandRequest({
+        studio_id: S.studio.id, date: S.date, days: S.days, duration: 'full', hours: null,
+        keep_set: 'asis', production: 'self', custom: false,
+        options: opts.map(o => ({ id: o.id, label: o.label, price: Number(o.price), unit: o.unit })),
+        needs: $('f-needs').value.trim() || null,
+        company: customer.company, contact_name: customer.contact_name, email: customer.email, phone: null,
+        billing_address: customer.billing_address.line1, billing_zip: customer.billing_address.zip, billing_city: customer.billing_address.city,
+        vat: null, siret: siren,
+      });
+      showSuccess({
+        title: `Votre demande est <span class="it">enregistrée.</span>`, amount: r.quote_total ?? amount,
+        link: '../devis/?id=' + encodeURIComponent(r.id), linkLabel: 'Voir le récapitulatif',
+        note: `${S.studio.name} · ${periodLabel()}. La date est réservée à votre nom. Nous vous envoyons votre devis Pennylane sous 24 h : signez-le en ligne, puis réglez la facture. La réservation est confirmée à réception du paiement ; sans paiement sous 48 h, la date est libérée.`,
+      });
+    }
   } catch (e) {
-    toast(e.message === 'SLOT_TAKEN'
-      ? 'Ce créneau vient d\'être réservé. Choisissez une autre date, ou écrivez-nous pour une demande de libération.'
-      : esc(e.message));
-    if (e.message === 'SLOT_TAKEN'){ Object.keys(busyCache).forEach(k => delete busyCache[k]); renderCal(); }
+    if (e.message === 'SLOT_TAKEN') slotTaken(); else toast(esc(e.message));
   }
   btns.forEach(b => b.disabled = false);
 }

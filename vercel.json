@@ -64,6 +64,46 @@
       "permanent": true
     },
     {
+      "source": "/pages/equipe.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/pages/equipe",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/pages/presse.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/pages/presse",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/pages/travaux.html",
+      "destination": "/pages/services.html",
+      "permanent": true
+    },
+    {
+      "source": "/pages/travaux",
+      "destination": "/pages/services.html",
+      "permanent": true
+    },
+    {
+      "source": "/pages/case-picard.html",
+      "destination": "/pages/services.html",
+      "permanent": true
+    },
+    {
+      "source": "/pages/case-picard",
+      "destination": "/pages/services.html",
+      "permanent": true
+    },
+    {
       "source": "/:file(.*\\.(?:mp4|glb))",
       "destination": "https://xy8wkkceax6fodpg.public.blob.vercel-storage.com/hivingstudio-fr/:file",
       "permanent": false
