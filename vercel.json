@@ -87,7 +87,7 @@
         },
         {
           "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()"
         },
         {
           "key": "Strict-Transport-Security",
@@ -100,25 +100,61 @@
       ]
     },
     {
-      "source": "/(.*)\\.(jpg|jpeg|png|webp|gif|svg|ico|woff2|woff)",
+      "source": "/((?!admin\\.html).*)",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=2592000"
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://pmrqrbjxikljlarhkseu.supabase.co; media-src 'self' blob: https://xy8wkkceax6fodpg.public.blob.vercel-storage.com; connect-src 'self' https://pmrqrbjxikljlarhkseu.supabase.co wss://pmrqrbjxikljlarhkseu.supabase.co; frame-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
         }
       ]
     },
     {
-      "source": "/(.*)\\.(css|js|jsx|json)",
+      "source": "/admin.html",
+      "headers": [
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://pmrqrbjxikljlarhkseu.supabase.co; media-src 'self' blob: https://xy8wkkceax6fodpg.public.blob.vercel-storage.com; connect-src 'self' https://pmrqrbjxikljlarhkseu.supabase.co wss://pmrqrbjxikljlarhkseu.supabase.co; frame-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(jpg|jpeg|png|webp|avif|gif|svg|ico|woff2|woff)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=604800"
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/((?!js/).*)\\.(css|js|jsx|json)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/js/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },
     {
       "source": "/(.*)\\.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/",
       "headers": [
         {
           "key": "Cache-Control",

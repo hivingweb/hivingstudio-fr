@@ -31,3 +31,8 @@ Pages des anciens plateaux (ancien studio Paris 11), supprimées le 2026-11-09, 
 - https://hivingstudio.fr/pages/la-cuisine.html
 - https://hivingstudio.fr/pages/plan-3d.html
 - https://hivingstudio.fr/pages/comparateur.html
+
+## Hors sitemap
+
+- `/404.html` : page d'erreur servie automatiquement par Vercel pour toute adresse inconnue (noindex, pas dans le sitemap).
+- `/site.webmanifest`, `/apple-touch-icon.png`, `/icon-192.png`, `/icon-512.png` : icônes et manifeste du site.

@@ -43,7 +43,8 @@
         }
       }} style={{ display: 'block', textDecoration: 'none' }} data-cursor="">
         <picture>
-          <source srcSet={base + 'assets/logo-hiving-studio-black.webp'} type="image/webp" />
+          <source srcSet={base + 'assets/logo-hiving-studio-black-320.webp 320w, ' + base + 'assets/logo-hiving-studio-black.webp 1024w'}
+            sizes={Math.ceil(size * 1024 / 683) + 'px'} type="image/webp" />
           <img src={base + 'assets/logo-hiving-studio-black.png'} alt="Hiving Studio — Studio cuisine Paris"
             width="1024" height="683" decoding="async"
             style={{ height: size, width: 'auto', display: 'block' }} />
@@ -266,8 +267,10 @@
         color: dark ? PALETTE.bg : PALETTE.ink,
         minHeight: '100vh', fontFamily: PALETTE.sans,
       }}>
+        {/* lien d'évitement : invisible, apparaît au premier Tab (styles .skip-link dans la page) */}
+        <a className="skip-link" href="#contenu" style={{ background: PALETTE.ink, color: PALETTE.paper }}>Aller au contenu</a>
         <GlobalNav active={active} />
-        <main>{children}</main>
+        <main id="contenu" tabIndex={-1} style={{ outline: 'none' }}>{children}</main>
         <GlobalFooter />
       </div>
     );

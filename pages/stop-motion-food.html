@@ -15,22 +15,60 @@
 <meta property="og:url" content="https://hivingstudio.fr/pages/stop-motion-food.html" />
 <meta name="twitter:card" content="summary_large_image" />
 
+<link rel="icon" href="../favicon.svg?v=hf" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+<link rel="manifest" href="../site.webmanifest" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://hivingstudio.fr/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Services",
+      "item": "https://hivingstudio.fr/pages/services.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Stop motion food",
+      "item": "https://hivingstudio.fr/pages/stop-motion-food.html"
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://unpkg.com" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@400;500;600;700&family=Familjen+Grotesk:wght@400;500;600;700&family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
 <script type="application/ld+json" id="ld-service"></script>
 <script type="application/ld+json" id="ld-faq"></script>
 
 <style>body { margin: 0; background: #fafaf5; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } *, *::before, *::after { box-sizing: border-box; }</style>
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
 
-<script type="text/babel" src="../site-i18n.jsx"></script>
-<script type="text/babel" src="../site-data.jsx"></script>
-<script type="text/babel" src="../site-shared.jsx"></script>
+<script defer src="../js/site-i18n.min.js?v=89191c18ed"></script>
+<script defer src="../js/site-data.min.js?v=d492463904"></script>
+<script defer src="../js/site-shared.min.js?v=3ab0e5cbf5"></script>
+<style>
+  /* accessibilité : lien d'évitement, focus clavier visible, mouvements réduits */
+  .skip-link { position: absolute; left: 12px; top: -80px; z-index: 1000; padding: 10px 16px; border-radius: 8px; text-decoration: none; font: 500 13px/1.2 'Inter', sans-serif; }
+  .skip-link:focus { top: 12px; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  }
+</style>
 </head>
 <body>
 <div id="root">
@@ -40,221 +78,6 @@
 </div>
 </div>
 
-<script type="text/babel">
-const P = window.HIVING_PALETTE;
-
-// Détecter le service à partir du nom de fichier
-function detectSlug() {
-  const path = window.location.pathname;
-  const file = path.substring(path.lastIndexOf('/') + 1).replace('.html', '');
-  return file || 'photo-culinaire-paris';
-}
-
-function ServiceDetail() {
-  const slug = detectSlug();
-  const services = window.HIVING_SERVICES;
-  const service = services.find(s => s.slug === slug) || services[0];
-  const others = services.filter(s => s.slug !== service.slug);
-
-  // Inject Schema.org
-  React.useEffect(() => {
-    const ldService = document.getElementById('ld-service');
-    if (ldService) {
-      ldService.textContent = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Service",
-        "name": service.title,
-        "description": service.desc,
-        "provider": { "@type": "LocalBusiness", "name": "HIVING FOOD", "url": "https://hivingstudio.fr", "address": { "@type": "PostalAddress", "streetAddress": "4 rue Mozart", "addressLocality": "Clichy", "postalCode": "92110", "addressCountry": "FR" } },
-        "areaServed": { "@type": "City", "name": "Paris" },
-        "offers": { "@type": "Offer", "price": String(service.from), "priceCurrency": "EUR" }
-      });
-    }
-    const ldFaq = document.getElementById('ld-faq');
-    if (ldFaq && service.faq) {
-      ldFaq.textContent = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": service.faq.map(f => ({
-          "@type": "Question",
-          "name": f.q,
-          "acceptedAnswer": { "@type": "Answer", "text": f.a }
-        }))
-      });
-    }
-  }, [service.slug]);
-
-  return (
-    <window.PageShell active="services">
-      <window.Breadcrumb items={[
-        { label: 'Services', href: 'services.html' },
-        { label: service.title },
-      ]} />
-
-      {/* Hero */}
-      <section style={{ padding: '60px 40px 80px', maxWidth: 1400, margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 80, alignItems: 'flex-end' }}>
-          <div>
-            <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>
-              ¶ {service.eyebrow}
-            </div>
-            <h1 style={{
-              fontFamily: P.display, fontSize: 'clamp(48px, 7vw, 110px)',
-              fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 0.94, margin: 0,
-            }}>
-              {service.title}
-            </h1>
-            <p style={{
-              fontFamily: P.serif, fontSize: 'clamp(22px, 2.2vw, 32px)', lineHeight: 1.35,
-              color: P.ink, marginTop: 40, maxWidth: 720, fontStyle: 'italic',
-            }}>
-              « {service.hero} »
-            </p>
-            <p style={{ fontFamily: P.sans, fontSize: 18, lineHeight: 1.6, color: P.inkSoft, marginTop: 24, maxWidth: 720 }}>
-              {service.desc}
-            </p>
-          </div>
-          <div style={{
-            background: P.lime, padding: 32, borderRadius: 24,
-            border: `1.5px solid ${P.ink}`, position: 'sticky', top: 120,
-          }}>
-            <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', color: P.ink, opacity: 0.7, textTransform: 'uppercase', marginBottom: 8 }}>
-              À partir de
-            </div>
-            <div style={{ fontFamily: P.display, fontSize: 56, fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1 }}>
-              {service.from.toLocaleString('fr-FR')}&nbsp;€
-            </div>
-            <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.12em', marginTop: 4, opacity: 0.7 }}>
-              HT / journée
-            </div>
-            <div style={{ height: 1, background: `${P.ink}30`, margin: '20px 0' }} />
-            <a href="devis.html" style={{
-              display: 'block', background: P.ink, color: P.bg,
-              padding: '16px 22px', borderRadius: 999, textAlign: 'center',
-              fontFamily: P.sans, fontSize: 15, fontWeight: 600, textDecoration: 'none',
-              marginBottom: 10,
-            }}>
-              Devis instantané →
-            </a>
-            <a href="../index.html#reserver" style={{
-              display: 'block', background: 'transparent', color: P.ink,
-              padding: '14px 22px', borderRadius: 999, textAlign: 'center',
-              fontFamily: P.sans, fontSize: 14, fontWeight: 500, textDecoration: 'none',
-              border: `1.5px solid ${P.ink}`,
-            }}>
-              Réserver une visite
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Bullets */}
-      <section style={{ background: P.ink, color: P.bg, padding: '100px 40px' }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-          <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', opacity: 0.5, marginBottom: 24, textTransform: 'uppercase' }}>
-            ¶ Ce qui est inclus
-          </div>
-          <h2 style={{
-            fontFamily: P.display, fontSize: 'clamp(40px, 5.5vw, 76px)',
-            fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 0.96, margin: 0,
-          }}>
-            Tout l'équipement,<br />
-            <span style={{ fontFamily: P.hand, color: P.lime }}>toute l'équipe.</span>
-          </h2>
-          <div style={{
-            marginTop: 64, display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 32,
-          }}>
-            {service.bullets.map((b, i) => (
-              <div key={i} style={{
-                paddingTop: 20, borderTop: `1px solid ${P.bg}25`,
-              }}>
-                <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.5, marginBottom: 12 }}>
-                  {String(i + 1).padStart(2, '0')}
-                </div>
-                <p style={{ fontFamily: P.serif, fontSize: 21, lineHeight: 1.4, margin: 0 }}>
-                  {b}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      {service.faq && (
-        <section style={{ padding: '120px 40px', maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>
-            ¶ Questions fréquentes
-          </div>
-          <h2 style={{
-            fontFamily: P.display, fontSize: 'clamp(40px, 5vw, 64px)',
-            fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1, margin: '0 0 48px',
-          }}>
-            Vos questions,<br />
-            <span style={{ fontFamily: P.hand, color: P.lime }}>nos réponses.</span>
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {service.faq.map((f, i) => (
-              <details key={i} style={{
-                background: P.cream, padding: '24px 28px', borderRadius: 16,
-                cursor: 'pointer',
-              }}>
-                <summary style={{
-                  fontFamily: P.display, fontSize: 22, fontWeight: 600,
-                  letterSpacing: '-0.01em', listStyle: 'none', cursor: 'pointer',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                }}>
-                  <span>{f.q}</span>
-                  <span style={{ fontSize: 28, color: P.lime, marginLeft: 16 }}>+</span>
-                </summary>
-                <p style={{ fontFamily: P.serif, fontSize: 18, lineHeight: 1.6, color: P.inkSoft, marginTop: 16, marginBottom: 0 }}>
-                  {f.a}
-                </p>
-              </details>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Other services */}
-      <section style={{ padding: '80px 40px 120px', maxWidth: 1400, margin: '0 auto' }}>
-        <div style={{ fontFamily: P.mono, fontSize: 11, letterSpacing: '0.18em', color: P.inkSoft, marginBottom: 24, textTransform: 'uppercase' }}>
-          ¶ Autres services
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-          {others.map((s, i) => (
-            <a key={s.slug} href={`${s.slug}.html`} style={{
-              display: 'block', textDecoration: 'none', color: P.ink,
-              background: i === 0 ? P.lime : P.cream,
-              padding: '28px 26px', borderRadius: 20,
-            }}>
-              <div style={{ fontFamily: P.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 10, textTransform: 'uppercase' }}>
-                {s.eyebrow}
-              </div>
-              <div style={{ fontFamily: P.display, fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.05 }}>
-                {s.title} →
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <window.BigCTA
-        eyebrow="Prêt à shooter ?"
-        title="On démarre"
-        hand="quand vous voulez."
-        ctaLabel="Devis instantané"
-        ctaHref="devis.html"
-        ctaSecondaryLabel="Voir les plateaux"
-        ctaSecondaryHref="plateaux.html"
-      />
-    </window.PageShell>
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<ServiceDetail />);
-</script>
+<script defer src="../js/pages/stop-motion-food.min.js?v=81bce0bf74"></script>
 </body>
 </html>

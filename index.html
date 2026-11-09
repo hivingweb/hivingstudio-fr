@@ -8,6 +8,8 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://hivingstudio.fr/">
 <link rel="icon" href="favicon.svg?v=hf" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hiving Studio">
 <meta property="og:locale" content="fr_FR">
@@ -20,24 +22,103 @@
 {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
+  "@id": "https://hivingstudio.fr/#studio",
   "name": "Hiving Studio",
   "description": "2 plateaux food & photo à louer à Clichy : Studio Pro, Studio Famille. Réservation en ligne.",
   "url": "https://hivingstudio.fr/",
   "email": "contact@hivingfood.fr",
-  "image": "https://hivingstudio.fr/img/ph/pro-1.jpg",
+  "image": [
+    "https://hivingstudio.fr/img/ph/pro-1.jpg",
+    "https://hivingstudio.fr/img/ph/famille-1.jpg"
+  ],
+  "logo": "https://hivingstudio.fr/assets/logo-hiving-studio-black.png",
   "priceRange": "850 € HT - 1 000 € HT / jour",
-  "openingHours": "Mo-Su 08:00-22:00",
+  "currenciesAccepted": "EUR",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "4 rue Mozart",
     "postalCode": "92110",
     "addressLocality": "Clichy",
     "addressCountry": "FR"
-  }
+  },
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Clichy"
+    },
+    {
+      "@type": "City",
+      "name": "Paris"
+    }
+  ],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "08:00",
+      "closes": "22:00"
+    }
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "name": "Studio Pro · location à la journée",
+      "url": "https://hivingstudio.fr/#plateaux",
+      "price": "850",
+      "priceCurrency": "EUR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "850",
+        "priceCurrency": "EUR",
+        "unitCode": "DAY",
+        "unitText": "jour",
+        "valueAddedTaxIncluded": false
+      },
+      "availability": "https://schema.org/InStock",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Studio Pro",
+        "serviceType": "Location de plateau de tournage culinaire"
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Studio Famille · location à la journée",
+      "url": "https://hivingstudio.fr/#plateaux",
+      "price": "1000",
+      "priceCurrency": "EUR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "1000",
+        "priceCurrency": "EUR",
+        "unitCode": "DAY",
+        "unitText": "jour",
+        "valueAddedTaxIncluded": false
+      },
+      "availability": "https://schema.org/InStock",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Studio Famille",
+        "serviceType": "Location de plateau de tournage culinaire"
+      }
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/hivingfood/"
+  ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#faf9f4; --cream:#f1ecdf; --ink:#111009; --ink-dim:rgba(17,16,9,.66); --ink-faint:rgba(17,16,9,.42);
@@ -53,6 +134,7 @@
   body{background:var(--paper); color:var(--ink); font-family:var(--display); overflow-x:hidden}
   ::selection{background:var(--lime)}
   img,video{display:block} a{color:inherit}
+  picture{display:contents} picture>source{display:none}
   button{font:inherit; cursor:pointer}
 
   /* ---------- STRIP + NAV ---------- */
@@ -99,7 +181,7 @@
   .hg-col.down{animation-name:hgDown; animation-duration:26s}
   .hero-gallery:hover .hg-col{animation-play-state:paused}
   .hg-ph{flex:0 0 auto; position:relative; border-radius:16px; overflow:hidden; border:6px solid #fff; box-shadow:0 22px 44px -26px rgba(17,16,9,.42); background:#fff}
-  .hg-ph img{width:100%; aspect-ratio:4/5; object-fit:cover; display:block; transition:transform .6s var(--ease)}
+  .hg-ph img{width:100%; height:auto; aspect-ratio:4/5; object-fit:cover; display:block; transition:transform .6s var(--ease)}
   .hg-ph:hover img{transform:scale(1.05)}
   .hg-ph b{position:absolute; left:9px; bottom:9px; font-family:var(--mono); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); background:rgba(250,249,244,.92); border-radius:var(--squig-b); padding:5px 9px; font-weight:500}
   @keyframes hgUp{from{transform:translateY(0)} to{transform:translateY(-50%)}}
@@ -403,9 +485,18 @@
     .pf-row:hover .pf-cta span, .pf-row:focus-within .pf-cta span{transform:none}
     .rthumbs img:hover{transform:none}
   }
+  /* ---------- ACCESSIBILITÉ : évitement, focus clavier, mouvements réduits ---------- */
+  .skip-link{position:absolute; left:12px; top:-80px; z-index:300; background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:var(--squig-b); font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-decoration:none}
+  .skip-link:focus{top:12px}
+  :focus-visible{outline:2px solid currentColor; outline-offset:3px}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important}
+    .strip__in,.hg-col{animation:none!important}
+  }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#top">Aller au contenu</a>
 
 <div class="strip"><div class="strip__in">
   <span>Hiving Studio · Clichy 92</span><b>●</b><span>2 plateaux food & photo</span><b>●</b><span>7j/7 · 8h à 22h</span><b>●</b><span>Métro 13 · RER C · Mairie de Clichy</span><b>●</b>
@@ -453,24 +544,24 @@
 
   <div class="hero-gallery rise" aria-hidden="true" style="transition-delay:.5s">
     <div class="hg-col">
-      <div class="hg-ph"><img src="img/ph/pro-2.jpg" alt=""><b>N°01 · Pro</b></div>
-      <div class="hg-ph"><img src="img/ph/famille-9.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/famille-3.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/pro-3.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/pro-2.jpg" alt=""><b>N°01 · Pro</b></div>
-      <div class="hg-ph"><img src="img/ph/famille-9.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/famille-3.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/pro-3.jpg" alt=""></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/pro-2-400.avif 400w, img/ph/pro-2-800.avif 800w, img/ph/pro-2-1600.avif 1600w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/pro-2-400.webp 400w, img/ph/pro-2-800.webp 800w, img/ph/pro-2-1600.webp 1600w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/pro-2.jpg" alt="" width="1600" height="1201" decoding="async" fetchpriority="high"></picture><b>N°01 · Pro</b></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/famille-9-400.avif 400w, img/ph/famille-9-800.avif 800w, img/ph/famille-9-1200.avif 1200w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/famille-9-400.webp 400w, img/ph/famille-9-800.webp 800w, img/ph/famille-9-1200.webp 1200w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/famille-9.jpg" alt="" width="1200" height="800" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/famille-3-400.avif 400w, img/ph/famille-3-800.avif 800w, img/ph/famille-3-1400.avif 1400w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/famille-3-400.webp 400w, img/ph/famille-3-800.webp 800w, img/ph/famille-3-1400.webp 1400w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/famille-3.jpg" alt="" width="1400" height="1050" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/pro-3-400.avif 400w, img/ph/pro-3-800.avif 800w, img/ph/pro-3-1600.avif 1600w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/pro-3-400.webp 400w, img/ph/pro-3-800.webp 800w, img/ph/pro-3-1600.webp 1600w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/pro-3.jpg" alt="" width="1600" height="1201" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/pro-2-400.avif 400w, img/ph/pro-2-800.avif 800w, img/ph/pro-2-1600.avif 1600w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/pro-2-400.webp 400w, img/ph/pro-2-800.webp 800w, img/ph/pro-2-1600.webp 1600w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/pro-2.jpg" alt="" width="1600" height="1201" decoding="async"></picture><b>N°01 · Pro</b></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/famille-9-400.avif 400w, img/ph/famille-9-800.avif 800w, img/ph/famille-9-1200.avif 1200w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/famille-9-400.webp 400w, img/ph/famille-9-800.webp 800w, img/ph/famille-9-1200.webp 1200w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/famille-9.jpg" alt="" width="1200" height="800" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/famille-3-400.avif 400w, img/ph/famille-3-800.avif 800w, img/ph/famille-3-1400.avif 1400w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/famille-3-400.webp 400w, img/ph/famille-3-800.webp 800w, img/ph/famille-3-1400.webp 1400w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/famille-3.jpg" alt="" width="1400" height="1050" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/pro-3-400.avif 400w, img/ph/pro-3-800.avif 800w, img/ph/pro-3-1600.avif 1600w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/pro-3-400.webp 400w, img/ph/pro-3-800.webp 800w, img/ph/pro-3-1600.webp 1600w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/pro-3.jpg" alt="" width="1600" height="1201" decoding="async"></picture></div>
     </div>
     <div class="hg-col down">
-      <div class="hg-ph"><img src="img/ph/famille-8.jpg" alt=""><b>N°02 · Famille</b></div>
-      <div class="hg-ph"><img src="img/ph/pro-5.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/pro-1.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/famille-1.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/famille-8.jpg" alt=""><b>N°02 · Famille</b></div>
-      <div class="hg-ph"><img src="img/ph/pro-5.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/pro-1.jpg" alt=""></div>
-      <div class="hg-ph"><img src="img/ph/famille-1.jpg" alt=""></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/famille-8-400.avif 400w, img/ph/famille-8-800.avif 800w, img/ph/famille-8-1200.avif 1200w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/famille-8-400.webp 400w, img/ph/famille-8-800.webp 800w, img/ph/famille-8-1200.webp 1200w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/famille-8.jpg" alt="" width="1200" height="800" decoding="async" fetchpriority="high"></picture><b>N°02 · Famille</b></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/pro-5-400.avif 400w, img/ph/pro-5-800.avif 800w, img/ph/pro-5-1200.avif 1200w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/pro-5-400.webp 400w, img/ph/pro-5-800.webp 800w, img/ph/pro-5-1200.webp 1200w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/pro-5.jpg" alt="" width="1200" height="900" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/pro-1-400.avif 400w, img/ph/pro-1-800.avif 800w, img/ph/pro-1-1600.avif 1600w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/pro-1-400.webp 400w, img/ph/pro-1-800.webp 800w, img/ph/pro-1-1600.webp 1600w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/pro-1.jpg" alt="" width="1600" height="1200" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/famille-1-400.avif 400w, img/ph/famille-1-800.avif 800w, img/ph/famille-1-1600.avif 1600w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/famille-1-400.webp 400w, img/ph/famille-1-800.webp 800w, img/ph/famille-1-1600.webp 1600w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/famille-1.jpg" alt="" width="1600" height="1200" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/famille-8-400.avif 400w, img/ph/famille-8-800.avif 800w, img/ph/famille-8-1200.avif 1200w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/famille-8-400.webp 400w, img/ph/famille-8-800.webp 800w, img/ph/famille-8-1200.webp 1200w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/famille-8.jpg" alt="" width="1200" height="800" decoding="async"></picture><b>N°02 · Famille</b></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/pro-5-400.avif 400w, img/ph/pro-5-800.avif 800w, img/ph/pro-5-1200.avif 1200w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/pro-5-400.webp 400w, img/ph/pro-5-800.webp 800w, img/ph/pro-5-1200.webp 1200w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/pro-5.jpg" alt="" width="1200" height="900" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/pro-1-400.avif 400w, img/ph/pro-1-800.avif 800w, img/ph/pro-1-1600.avif 1600w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/pro-1-400.webp 400w, img/ph/pro-1-800.webp 800w, img/ph/pro-1-1600.webp 1600w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/pro-1.jpg" alt="" width="1600" height="1200" decoding="async"></picture></div>
+      <div class="hg-ph"><picture><source type="image/avif" srcset="img/ph/famille-1-400.avif 400w, img/ph/famille-1-800.avif 800w, img/ph/famille-1-1600.avif 1600w" sizes="(max-width:980px) 46vw, 300px"><source type="image/webp" srcset="img/ph/famille-1-400.webp 400w, img/ph/famille-1-800.webp 800w, img/ph/famille-1-1600.webp 1600w" sizes="(max-width:980px) 46vw, 300px"><img src="img/ph/famille-1.jpg" alt="" width="1600" height="1200" decoding="async"></picture></div>
     </div>
   </div>
 
@@ -482,27 +573,27 @@
 
   <div class="seg" id="vseg">
     <div class="stick">
-      <video id="vvid" muted playsinline preload="none" poster="img/ph/pro-1.jpg"></video>
+      <video id="vvid" muted playsinline preload="none" poster="img/ph/pro-1-1600.webp"></video>
       <div class="vig"></div><div class="grain"></div><div class="veil" id="vveil"></div>
       <button class="v-play" id="v-play" type="button" aria-label="Lancer la visite">
         <span class="ic">▶</span>
         <span class="tx">Lancer la visite <b>· 33 s</b></span>
       </button>
       <!-- mobile : la visite en carrousel — 1er clip en lecture auto, puis on swipe -->
-      <div class="mcar" aria-hidden="true">
+      <div class="mcar">
         <div class="mcar-track" id="mtrack">
           <div class="mpanel">
-            <video class="mvid" data-src="video/pro.mp4?v=2" muted playsinline preload="auto" poster="img/ph/pro-1.jpg"></video>
+            <video class="mvid" data-src="video/pro.mp4?v=2" muted playsinline preload="none" poster="img/ph/pro-1-800.webp"></video>
             <div class="mcap-p"><b>Studio Pro</b><span>la cuisine des chefs</span></div>
           </div>
           <div class="mpanel">
-            <video class="mvid" data-src="video/famille.mp4?v=2" muted playsinline preload="none" poster="img/ph/famille-9.jpg"></video>
+            <video class="mvid" data-src="video/famille.mp4?v=2" muted playsinline preload="none" poster="img/ph/famille-9-800.webp"></video>
             <div class="mcap-p"><b>Studio Famille</b><span>comme à la maison, en mieux éclairé</span></div>
           </div>
         </div>
         <button class="mcar-nav prev" id="mprev" type="button" aria-label="Studio précédent">‹</button>
         <button class="mcar-nav next" id="mnext" type="button" aria-label="Studio suivant">›</button>
-        <div class="mcar-dots" id="mdots"><i class="on"></i><i></i></div>
+        <div class="mcar-dots" id="mdots" aria-hidden="true"><i class="on"></i><i></i></div>
         <button class="mcar-tap" id="mtap" type="button" aria-label="Lancer la visite"><span>▶</span></button>
       </div>
 
@@ -518,7 +609,7 @@
       <div class="cap" id="vcap"></div>
 
       <div class="scard" id="card-pro">
-        <h3>Studio <span class="it">Pro.</span></h3>
+        <h3 aria-level="2">Studio <span class="it">Pro.</span></h3>
         <div class="tag">la cuisine des chefs</div>
         <div class="specs">
           <div class="spec"><div class="v">80 m²</div><div class="k">surface</div></div>
@@ -530,7 +621,7 @@
         </div>
       </div>
       <div class="scard" id="card-fam">
-        <h3>Studio <span class="it">Famille.</span></h3>
+        <h3 aria-level="2">Studio <span class="it">Famille.</span></h3>
         <div class="tag">comme à la maison, en mieux éclairé</div>
         <div class="specs">
           <div class="spec"><div class="v">65 m²</div><div class="k">surface</div></div>
@@ -559,13 +650,13 @@
         <article class="pf-row" data-r>
           <div class="pf-media">
             <div class="pf-frame">
-              <img class="rmain" src="img/ph/pro-1.jpg" alt="Studio Pro, cuisine professionnelle inox" loading="lazy">
+              <picture><source type="image/avif" srcset="img/ph/pro-1-400.avif 400w, img/ph/pro-1-800.avif 800w, img/ph/pro-1-1600.avif 1600w" sizes="(max-width:980px) 92vw, (max-width:1400px) 52vw, 720px"><source type="image/webp" srcset="img/ph/pro-1-400.webp 400w, img/ph/pro-1-800.webp 800w, img/ph/pro-1-1600.webp 1600w" sizes="(max-width:980px) 92vw, (max-width:1400px) 52vw, 720px"><img class="rmain" src="img/ph/pro-1.jpg" alt="Studio Pro, cuisine professionnelle inox" width="1600" height="1200" loading="lazy" decoding="async"></picture>
             </div>
             <div class="rthumbs">
-              <img class="on" src="img/ph/pro-1.jpg" alt="Studio Pro vue 1" loading="lazy">
-              <img src="img/ph/pro-2.jpg" alt="Studio Pro vue 2" loading="lazy">
-              <img src="img/ph/pro-3.jpg" alt="Studio Pro vue 3" loading="lazy">
-              <img src="img/ph/pro-5.jpg" alt="Studio Pro vue 4" loading="lazy">
+              <picture><source type="image/avif" srcset="img/ph/pro-1-400.avif 400w, img/ph/pro-1-800.avif 800w, img/ph/pro-1-1600.avif 1600w" sizes="(max-width:980px) 23vw, 170px"><source type="image/webp" srcset="img/ph/pro-1-400.webp 400w, img/ph/pro-1-800.webp 800w, img/ph/pro-1-1600.webp 1600w" sizes="(max-width:980px) 23vw, 170px"><img class="on" src="img/ph/pro-1.jpg" alt="Studio Pro vue 1" loading="lazy" decoding="async"></picture>
+              <picture><source type="image/avif" srcset="img/ph/pro-2-400.avif 400w, img/ph/pro-2-800.avif 800w, img/ph/pro-2-1600.avif 1600w" sizes="(max-width:980px) 23vw, 170px"><source type="image/webp" srcset="img/ph/pro-2-400.webp 400w, img/ph/pro-2-800.webp 800w, img/ph/pro-2-1600.webp 1600w" sizes="(max-width:980px) 23vw, 170px"><img src="img/ph/pro-2.jpg" alt="Studio Pro vue 2" loading="lazy" decoding="async"></picture>
+              <picture><source type="image/avif" srcset="img/ph/pro-3-400.avif 400w, img/ph/pro-3-800.avif 800w, img/ph/pro-3-1600.avif 1600w" sizes="(max-width:980px) 23vw, 170px"><source type="image/webp" srcset="img/ph/pro-3-400.webp 400w, img/ph/pro-3-800.webp 800w, img/ph/pro-3-1600.webp 1600w" sizes="(max-width:980px) 23vw, 170px"><img src="img/ph/pro-3.jpg" alt="Studio Pro vue 3" loading="lazy" decoding="async"></picture>
+              <picture><source type="image/avif" srcset="img/ph/pro-5-400.avif 400w, img/ph/pro-5-800.avif 800w, img/ph/pro-5-1200.avif 1200w" sizes="(max-width:980px) 23vw, 170px"><source type="image/webp" srcset="img/ph/pro-5-400.webp 400w, img/ph/pro-5-800.webp 800w, img/ph/pro-5-1200.webp 1200w" sizes="(max-width:980px) 23vw, 170px"><img src="img/ph/pro-5.jpg" alt="Studio Pro vue 4" loading="lazy" decoding="async"></picture>
             </div>
           </div>
 
@@ -599,13 +690,13 @@
         <article class="pf-row rev" data-r>
           <div class="pf-media">
             <div class="pf-frame">
-              <img class="rmain" src="img/ph/famille-1.jpg" alt="Studio Famille, cuisine maison chaleureuse" loading="lazy">
+              <picture><source type="image/avif" srcset="img/ph/famille-1-400.avif 400w, img/ph/famille-1-800.avif 800w, img/ph/famille-1-1600.avif 1600w" sizes="(max-width:980px) 92vw, (max-width:1400px) 52vw, 720px"><source type="image/webp" srcset="img/ph/famille-1-400.webp 400w, img/ph/famille-1-800.webp 800w, img/ph/famille-1-1600.webp 1600w" sizes="(max-width:980px) 92vw, (max-width:1400px) 52vw, 720px"><img class="rmain" src="img/ph/famille-1.jpg" alt="Studio Famille, cuisine maison chaleureuse" width="1600" height="1200" loading="lazy" decoding="async"></picture>
             </div>
             <div class="rthumbs">
-              <img class="on" src="img/ph/famille-1.jpg" alt="Studio Famille vue 1" loading="lazy">
-              <img src="img/ph/famille-8.jpg" alt="Studio Famille vue 2" loading="lazy">
-              <img src="img/ph/famille-3.jpg" alt="Studio Famille vue 3" loading="lazy">
-              <img src="img/ph/famille-9.jpg" alt="Studio Famille vue 4" loading="lazy">
+              <picture><source type="image/avif" srcset="img/ph/famille-1-400.avif 400w, img/ph/famille-1-800.avif 800w, img/ph/famille-1-1600.avif 1600w" sizes="(max-width:980px) 23vw, 170px"><source type="image/webp" srcset="img/ph/famille-1-400.webp 400w, img/ph/famille-1-800.webp 800w, img/ph/famille-1-1600.webp 1600w" sizes="(max-width:980px) 23vw, 170px"><img class="on" src="img/ph/famille-1.jpg" alt="Studio Famille vue 1" loading="lazy" decoding="async"></picture>
+              <picture><source type="image/avif" srcset="img/ph/famille-8-400.avif 400w, img/ph/famille-8-800.avif 800w, img/ph/famille-8-1200.avif 1200w" sizes="(max-width:980px) 23vw, 170px"><source type="image/webp" srcset="img/ph/famille-8-400.webp 400w, img/ph/famille-8-800.webp 800w, img/ph/famille-8-1200.webp 1200w" sizes="(max-width:980px) 23vw, 170px"><img src="img/ph/famille-8.jpg" alt="Studio Famille vue 2" loading="lazy" decoding="async"></picture>
+              <picture><source type="image/avif" srcset="img/ph/famille-3-400.avif 400w, img/ph/famille-3-800.avif 800w, img/ph/famille-3-1400.avif 1400w" sizes="(max-width:980px) 23vw, 170px"><source type="image/webp" srcset="img/ph/famille-3-400.webp 400w, img/ph/famille-3-800.webp 800w, img/ph/famille-3-1400.webp 1400w" sizes="(max-width:980px) 23vw, 170px"><img src="img/ph/famille-3.jpg" alt="Studio Famille vue 3" loading="lazy" decoding="async"></picture>
+              <picture><source type="image/avif" srcset="img/ph/famille-9-400.avif 400w, img/ph/famille-9-800.avif 800w, img/ph/famille-9-1200.avif 1200w" sizes="(max-width:980px) 23vw, 170px"><source type="image/webp" srcset="img/ph/famille-9-400.webp 400w, img/ph/famille-9-800.webp 800w, img/ph/famille-9-1200.webp 1200w" sizes="(max-width:980px) 23vw, 170px"><img src="img/ph/famille-9.jpg" alt="Studio Famille vue 4" loading="lazy" decoding="async"></picture>
             </div>
           </div>
 
@@ -633,10 +724,10 @@
     <div class="wrap">
       <h2 data-r>Tout ce qu'il faut <span class="it">savoir.</span></h2>
       <div class="infos" data-r>
-        <div class="info"><h4>Adresse</h4><div class="big">Clichy, <span class="it">Grand Paris.</span></div><p>4 rue Mozart, 92110<br>à 8 min de Saint-Lazare</p></div>
-        <div class="info"><h4>Accès</h4><div class="big">Métro 13 <span class="it">&</span> 14</div><p>Mairie de Clichy · Saint-Ouen<br>RER C · Porte de Clichy</p></div>
-        <div class="info"><h4>Horaires</h4><div class="big">8h à 22h, <span class="it">7j/7.</span></div><p>Toute la semaine,<br>week-ends compris</p></div>
-        <div class="info"><h4>Inclus</h4><div class="big">Tout est <span class="it">prêt.</span></div><p>Mobilier, café & wifi, aide<br>au setup · éclairage en option</p></div>
+        <div class="info"><h4 aria-level="3">Adresse</h4><div class="big">Clichy, <span class="it">Grand Paris.</span></div><p>4 rue Mozart, 92110<br>à 8 min de Saint-Lazare</p></div>
+        <div class="info"><h4 aria-level="3">Accès</h4><div class="big">Métro 13 <span class="it">&</span> 14</div><p>Mairie de Clichy · Saint-Ouen<br>RER C · Porte de Clichy</p></div>
+        <div class="info"><h4 aria-level="3">Horaires</h4><div class="big">8h à 22h, <span class="it">7j/7.</span></div><p>Toute la semaine,<br>week-ends compris</p></div>
+        <div class="info"><h4 aria-level="3">Inclus</h4><div class="big">Tout est <span class="it">prêt.</span></div><p>Mobilier, café & wifi, aide<br>au setup · éclairage en option</p></div>
       </div>
       <div class="infos-hand" data-r><a href="mailto:contact@hivingfood.fr?subject=Équipe de production">+ une équipe de production <b>sur demande</b> ↗</a></div>
     </div>
@@ -905,6 +996,9 @@ document.querySelectorAll('[data-r]').forEach(el => io2.observe(el));
 document.querySelectorAll('.rthumbs').forEach(strip => {
   const main = strip.parentElement.querySelector('.rmain');
   strip.querySelectorAll('img').forEach(th => th.addEventListener('click', () => {
+    /* <picture> : on recopie aussi les sources AVIF/WebP de la vignette, sinon elles gardent l'ancienne photo */
+    const pm = main.closest('picture'), pt = th.closest('picture');
+    if (pm && pt) pm.querySelectorAll('source').forEach(s => { const o = pt.querySelector('source[type="' + s.type + '"]'); if (o) s.srcset = o.srcset; });
     main.src = th.src;
     strip.querySelectorAll('img').forEach(x => x.classList.toggle('on', x === th));
   }));
