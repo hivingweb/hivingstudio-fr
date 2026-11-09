@@ -107,5 +107,5 @@ Condition de mise en ligne : l'auteur GitHub du commit doit être relié à un c
 
 ## 9. Équipe d'agents
 
-Six sous-agents Claude Code (`seo`, `sea`, `social-media`, `contenu`, `dev`, `relecteur`) sont dans `.claude/agents/` ; ils appliquent ce fichier.
+Dix sous-agents Claude Code (`seo`, `sea`, `social-media`, `contenu`, `dev`, `relecteur`, `creatif`, `geo`, `analyste`, `veille`) sont dans `.claude/agents/` ; ils appliquent ce fichier.
 Rôles, phrases d'exemple et circuit type (contenu → seo → relecteur → preview → validation de Maxime → fusion) : voir `docs/equipe-agents.md`.
