@@ -1202,7 +1202,7 @@ function openBumped(list){
     const name = x.bumped_name || x.bumped_email || 'Créateur';
     const date = fmt.dateFull(x.bumped_start);
     const subject = encodeURIComponent(`Hiving Studio · votre créneau du ${date}`);
-    const body = encodeURIComponent(`Bonjour ${name}, une marque a réservé le studio sur ton créneau du ${date}. Il a été libéré · tu peux te repositionner sur un autre créneau ici : https://hivingstudio.com/app/. Merci pour ta souplesse !`);
+    const body = encodeURIComponent(`Bonjour ${name}, une marque a réservé le studio sur ton créneau du ${date}. Il a été libéré · tu peux te repositionner sur un autre créneau ici : https://hivingstudio.fr/app/. Merci pour ta souplesse !`);
     return `<div class="booking-row">
       <div><b>${esc(name)}</b><br><span class="hint">créneau du ${esc(date)}</span></div>
       <a class="btn sm" href="mailto:${esc(x.bumped_email || '')}?subject=${subject}&amp;body=${body}">Prévenir par mail</a>

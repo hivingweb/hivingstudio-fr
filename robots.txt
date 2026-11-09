@@ -1,5 +1,5 @@
 # robots.txt — Hiving Studio
-# https://hiving.food
+# https://hivingstudio.fr
 
 User-agent: *
 Allow: /
@@ -33,4 +33,4 @@ Crawl-delay: 10
 User-agent: AhrefsBot
 Crawl-delay: 10
 
-Sitemap: https://hiving.food/sitemap.xml
+Sitemap: https://hivingstudio.fr/sitemap.xml

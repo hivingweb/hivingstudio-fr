@@ -2,29 +2,28 @@
 
 Ne jamais casser une de ces adresses sans redirection dans `vercel.json` (voir CLAUDE.md §4). Source : sitemap.xml au 2026-11-09.
 
-- https://hiving.food/
-- https://hiving.food/pages/plateaux.html
-- https://hiving.food/pages/le-blanc.html
-- https://hiving.food/pages/la-table.html
-- https://hiving.food/pages/la-cuisine.html
-- https://hiving.food/pages/plan-3d.html
-- https://hiving.food/pages/services.html
-- https://hiving.food/pages/photo-culinaire-paris.html
-- https://hiving.food/pages/packshot-produit-alimentaire.html
-- https://hiving.food/pages/stop-motion-food.html
-- https://hiving.food/pages/spot-tv-cuisine.html
-- https://hiving.food/pages/tarifs.html
-- https://hiving.food/pages/devis.html
-- https://hiving.food/pages/comparateur.html
-- https://hiving.food/pages/travaux.html
-- https://hiving.food/pages/case-picard.html
-- https://hiving.food/pages/carnet.html
-- https://hiving.food/pages/article-photo-food.html
-- https://hiving.food/pages/article-styliste.html
-- https://hiving.food/pages/article-tendances-2026.html
-- https://hiving.food/pages/equipe.html
-- https://hiving.food/pages/presse.html
-- https://hiving.food/pages/mentions-legales.html
-- https://hiving.food/pages/politique-confidentialite.html
+- https://hivingstudio.fr/
+- https://hivingstudio.fr/pages/plateaux.html
+- https://hivingstudio.fr/pages/le-blanc.html
+- https://hivingstudio.fr/pages/la-table.html
+- https://hivingstudio.fr/pages/la-cuisine.html
+- https://hivingstudio.fr/pages/plan-3d.html
+- https://hivingstudio.fr/pages/services.html
+- https://hivingstudio.fr/pages/photo-culinaire-paris.html
+- https://hivingstudio.fr/pages/packshot-produit-alimentaire.html
+- https://hivingstudio.fr/pages/stop-motion-food.html
+- https://hivingstudio.fr/pages/spot-tv-cuisine.html
+- https://hivingstudio.fr/pages/tarifs.html
+- https://hivingstudio.fr/pages/devis.html
+- https://hivingstudio.fr/pages/comparateur.html
+- https://hivingstudio.fr/pages/travaux.html
+- https://hivingstudio.fr/pages/case-picard.html
+- https://hivingstudio.fr/pages/carnet.html
+- https://hivingstudio.fr/pages/article-photo-food.html
+- https://hivingstudio.fr/pages/article-styliste.html
+- https://hivingstudio.fr/pages/article-tendances-2026.html
+- https://hivingstudio.fr/pages/equipe.html
+- https://hivingstudio.fr/pages/presse.html
+- https://hivingstudio.fr/pages/mentions-legales.html
+- https://hivingstudio.fr/pages/politique-confidentialite.html
 
-> ⚠ Le sitemap de ce site liste des adresses **hiving.food** (ancien domaine) et aucune adresse hivingstudio.fr : à refaire. Les balises canonical pointent vers hivingstudio.com : domaine principal à décider.
