@@ -176,7 +176,7 @@
             <div style={{ fontFamily: PALETTE.mono, fontSize: 10, letterSpacing: '0.18em', opacity: 0.5, marginBottom: 16, textTransform: 'uppercase' }}>{t('footer.contact')}</div>
             <div style={{ fontFamily: PALETTE.sans, fontSize: 14, lineHeight: 1.8 }}>
               {t('footer.address')}<br />
-              hello@hiving.food<br />
+              contact@hiving.me<br />
               +33 1 43 38 00 00<br />
               <span style={{ opacity: 0.6 }}>{t('footer.hours')}</span>
             </div>

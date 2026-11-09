@@ -64,10 +64,10 @@
       title: 'Photo culinaire Paris',
       eyebrow: 'Service · Photographie',
       hero: 'Le studio photo food le plus complet de Paris.',
-      desc: 'Trois plateaux dédiés, lumière naturelle nord, équipe stylisme intégrée. Pour les marques food, chefs étoilés et magazines exigeants.',
+      desc: 'Deux plateaux dédiés, lumière naturelle nord, équipe stylisme intégrée. Pour les marques food, chefs étoilés et magazines exigeants.',
       keywords: 'studio photo culinaire paris, photographe food paris, location studio food, plateau photo gastronomie',
       bullets: [
-        '3 plateaux modulaires de 70 à 120 m²',
+        '2 plateaux modulaires de 65 et 80 m²',
         'Cyclo blanc + 18 décors bois/marbre',
         'Parc lumière LED + naturelle nord',
         'Stylistes culinaires sur place',
@@ -184,7 +184,7 @@
     { id: 2, name: 'Léa Marchand', role: 'Cheffe styliste culinaire', bio: 'Diplômée Ferrandi + Vatel. Stylisme pour Picard, Bonne Maman, Ladurée. 200+ shootings/an.', tags: ['Stylisme'] },
     { id: 3, name: 'Marco Pezzato', role: 'Chef de cuisine résident', bio: 'Ex-Septime, ex-Anne-Sophie Pic. Brigade Hiving sur les tournages films et chef-driven projects.', tags: ['Cuisine', 'Brigade'] },
     { id: 4, name: 'Sami Belkacem', role: 'Régisseur lumière + tech', bio: 'Régie plateau, parc lumière, Phase One certified. 10 ans en pub TV.', tags: ['Tech', 'Lumière'] },
-    { id: 5, name: 'Inès Tabet', role: 'Coordination & client', bio: 'Devis, planning, brief client. Ton point de contact unique du premier mail au shoot.', tags: ['Coordination'] },
+    { id: 5, name: 'Inès Tabet', role: 'Coordination & client', bio: 'Devis, planning, brief client. Votre point de contact unique du premier mail au shoot.', tags: ['Coordination'] },
     { id: 6, name: 'Théo Leduc', role: 'Photographe résident', bio: 'Spécialisé packshot et lifestyle food. Disponible sur option pour les shoots Hiving.', tags: ['Photo'] },
   ];
 
