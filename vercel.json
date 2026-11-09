@@ -12,6 +12,11 @@
       ],
       "destination": "https://hivingstudio.fr/:path*",
       "permanent": true
+    },
+    {
+      "source": "/:file(.*\\.(?:mp4|glb))",
+      "destination": "https://xy8wkkceax6fodpg.public.blob.vercel-storage.com/hivingstudio-fr/:file",
+      "permanent": false
     }
   ],
   "headers": [
