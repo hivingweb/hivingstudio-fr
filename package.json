@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "description": "Fonctions Vercel des formulaires (api/). Aucune étape de construction.",
+  "dependencies": {
+    "nodemailer": "10.4.1"
+  }
+}

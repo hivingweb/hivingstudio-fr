@@ -79,7 +79,47 @@ function copieCrm() {
   return String(process.env.CRM_COPIE_TO || '').split(',').map((a) => a.trim()).filter((a) => EMAIL_RE.test(a));
 }
 
-async function envoyerEmail({ sujet, corps, replyTo, copieCachee = [] }) {
+// Envoi des e-mails : deux voies possibles, réglées dans Vercel (aucun secret dans le code).
+// 1. Google Workspace (SMTP) si SMTP_USER et SMTP_PASS sont réglées : le compte Google
+//    (ex. contact@hivingfood.fr) et son « mot de passe d'application ». Aucun DNS à changer.
+// 2. Sinon Resend, si RESEND_API_KEY est réglée.
+async function envoyerEmail(message) {
+  if (process.env.SMTP_USER && process.env.SMTP_PASS) return envoyerParSmtp(message);
+  return envoyerParResend(message);
+}
+
+async function envoyerParSmtp({ sujet, corps, replyTo, copieCachee = [] }) {
+  let transport;
+  try {
+    const nodemailer = require('nodemailer');
+    transport = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: Number(process.env.SMTP_PORT || 465),
+      secure: Number(process.env.SMTP_PORT || 465) === 465,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    });
+  } catch (e) {
+    console.error('[formulaire] SMTP indisponible', e && e.message);
+    return { ok: false, raison: 'config' };
+  }
+  try {
+    await transport.sendMail({
+      // Google impose d'envoyer depuis le compte connecté (ou l'un de ses alias).
+      from: `${SITE.nom} <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+      to: adresseContact(),
+      bcc: copieCachee.length ? copieCachee : undefined,
+      replyTo: replyTo || undefined,
+      subject: ligne(sujet, 200),
+      text: corps,
+    });
+  } catch (e) {
+    console.error('[formulaire] SMTP a refusé l\'envoi', e && e.message);
+    return { ok: false, raison: 'envoi' };
+  }
+  return { ok: true };
+}
+
+async function envoyerParResend({ sujet, corps, replyTo, copieCachee = [] }) {
   const cle = process.env.RESEND_API_KEY;
   if (!cle) {
     console.error('[formulaire] RESEND_API_KEY absente : e-mail non envoyé');
